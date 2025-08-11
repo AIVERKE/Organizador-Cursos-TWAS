@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Asistencia Registrada</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 100px;
+    }
+
+    body {
+      font-family: sans-serif;
+      line-height: 1.6;
+      margin: 0;
+      padding-top: 95px;
+      background-color: #f4f4f4;
+      color: #333;
+    }
+
+    .informacion {
+      text-align: center;
+      padding: 4rem 2rem;
+      background: #fff;
+      max-width: 600px;
+      margin: 5rem auto;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .informacion p {
+      font-size: 1.3rem;
+      color: #0077c2;
+      margin-bottom: 2rem;
+    }
+
+    .btn-volver {
+      display: inline-block;
+      border: 1px solid #0077c2;
+      padding: 0.75rem 1.5rem;
+      background: transparent;
+      color: #0077c2;
+      font-weight: bold;
+      text-decoration: none;
+      border-radius: 5px;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    .btn-volver:hover {
+      background: #0077c2;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <section class="informacion">
+    <p>La asistencia ha sido registrada correctamente.</p>
+    <a class="btn-volver" href="{{ url_for('auth.dashboard') }}">Volver al inicio</a>
+  </section>
+</body>
+</html>

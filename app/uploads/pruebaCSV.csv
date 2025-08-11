@@ -1,0 +1,33 @@
+nombre,apellido,email,documento,pais_origen,nombre_curso
+Carlos,Peña,carlos.pena1@example.com,984512,Bolivia,Curso CRUD 
+Lucía,Mendoza,lucia.mz@example.com,845123,Bolivia,Curso CRUD 
+Mateo,Alvarez,m.alvarez2@example.com,741258,Bolivia,Curso CRUD
+Ana,Suárez,ana.srz@example.com,852963,Bolivia,Curso CRUD
+Sofía,Castro,sofia.cs@example.com,963741,Bolivia,Curso CRUD
+Andrés,Gómez,andres.gomez@example.com,654987,Bolivia,Curso CRUD
+Valeria,Ramos,valeria.r@example.com,852456,Bolivia,Curso enfermeria
+Julio,Paz,julio.pz@example.com,951357,Bolivia,Curso enfermeria
+Mariana,Quispe,mariana.q@example.com,123789,Bolivia,Curso enfermeria
+Luis,Torrez,luis.tz@example.com,741369,Bolivia,Curso enfermeria
+Camila,Flores,camila.fl@example.com,369258,Bolivia,Curso CRUD
+Emilio,López,emilio.lz@example.com,159753,Bolivia,Curso CRUD
+Daniela,Fernández,daniela.fz@example.com,357159,Bolivia,curso coso 1
+Tomás,Rivera,tomas.r@example.com,258951,Bolivia,curso coso 1
+Elena,Mamani,elena.m@example.com,147258,Bolivia,curso coso 1
+Gabriel,Vargas,gabriel.vg@example.com,963852,Bolivia,curso coso 1
+
+
+nombre,apellido,email,documento,pais_origen
+Ana,Gómez,ana.gomez@example.com,ABC123456,Bolivia
+Carlos,Lopez,carlos.lopez@example.com,DEF789012,Perú
+María,Fernández,maria.fernandez@example.com,GHI345678,Argentina
+Luis,Pérez,luis.perez@example.com,JKL901234,Chile
+Sofía,Rodríguez,sofia.rodriguez@example.com,MNO567890,Uruguay
+
+
+nombre,descripcion,modalidad
+Introducción a Python,Curso básico de Python teórico,Catedra
+Bases de Datos,Teoría y práctica de SQL y Postgres,Laboratorio
+Desarrollo Web,HTML, CSS y JS para principiantes,Catedra-Laboratorio
+Machine Learning,Fundamentos y ejemplos prácticos,Catedra
+DevOps,CI/CD con Docker y Kubernetes,Laboratorio

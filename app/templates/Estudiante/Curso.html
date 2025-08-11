@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Curso</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/Estudiante/styleCurso.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<!-- Lista de cursos inscritos del estudiante -->
+
+<h2>Mis Cursos Inscritos</h2>
+<ul class="lista-cursos">
+  {% for curso in cursos %}
+  <li>
+    <strong>{{ curso.nombre }}</strong><br>
+    Descripción: {{ curso.descripcion }}<br>
+    Modalidad: {{ curso.modalidad }}
+  </li>
+{% else %}
+  <li>No estás inscrito en ningún curso.</li>
+{% endfor %}
+
+</ul>
+
+
+  <div class="curso-contenido">
+  <label for="curso">Curso: </label>
+
+  <h2>cursos - mañana</h2>
+  <table class="tabla-asistencia">
+    <thead>
+      <tr>
+        <th>Lunes</th><th>Martes</th><th>Miércoles</th><th>Jueves</th><th>Viernes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td data-label="Lunes" data-turno="manana" data-dia="lunes"></td>
+        <td data-label="Martes" data-turno="manana" data-dia="martes"></td>
+        <td data-label="Miércoles" data-turno="manana" data-dia="miercoles"></td>
+        <td data-label="Jueves" data-turno="manana" data-dia="jueves"></td>
+        <td data-label="Viernes" data-turno="manana" data-dia="viernes"></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>cursos - tarde</h2>
+  <table class="tabla-asistencia">
+    <thead>
+      <tr>
+        <th>Lunes</th><th>Martes</th><th>Miércoles</th><th>Jueves</th><th>Viernes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td data-label="Lunes" data-turno="tarde" data-dia="lunes"></td>
+        <td data-label="Martes" data-turno="tarde" data-dia="martes"></td>
+        <td data-label="Miércoles" data-turno="tarde" data-dia="miercoles"></td>
+        <td data-label="Jueves" data-turno="tarde" data-dia="jueves"></td>
+        <td data-label="Viernes" data-turno="tarde" data-dia="viernes"></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+
+<script src="{{ url_for('static', filename='js/controlAsistencia.js') }}"></script>
+</body>
+</html>

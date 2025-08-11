@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Curso Postgrado UMSA</title>
+   <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styleinicio.css') }}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+</head>
+<body>
+  <!-- HEADER -->
+  <header class="header">
+  <a href="https://twas.org/"><img src="{{ url_for('static', filename='images/Unesco-TWAS.jpg') }}" alt="UNESCO" class="logo" /></a>
+   <nav class="nav">
+  <a href="#inicioid" class="active">Inicio/Home</a>
+  <a href="#informacionid" class="active">Información/Information</a>
+  <a href="#ubicacionid" class="active">Ubicación/Location</a>
+  <a href="#nosotrosid" class="active">Sobre Nosotros/About Us</a>
+  <a href="#footerid" class="active">Contacto/Contact</a>
+    </nav>
+
+    <div class="login-container">
+      <a href="{{ url_for('auth.login') }}"><button class="btn-login">Iniciar Sesion/Login</button></a>
+      <a href="https://www.fcpn.edu.bo/"><img src="/static/images/umsalogo.webp" alt="UMSA" class="logo-umsa" /></a>
+    </div>
+  </header>
+
+  <!-- INICIO -->
+  <section class="inicio" id="inicioid">
+    <div class="overlay">
+      <h1 class="titulo">CURSO POSTGRADO / POSTGRADUATE COURSE <br>3RA VERSIÓN / 3RD VERSION</h1>
+      <h3 class="subtitulo">UNIVERSIDAD MAYOR DE SAN ANDRES</h3>
+      <p class="texto">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Dolorum voluptas Lorem, ipsum dolor sit amet consectetur adipisicing elit. Optio fuga amet cum deserunt asperiores. Laboriosam, provident maxime consectetur qui corporis ducimus, cumque dolores illo officia id at, odit incidunt ipsa.</p>
+    </div>
+  </section>
+
+  <!-- INFORMACIÓN -->
+  <section id="informacionid" class="informacion" >
+    <h2 class="subtitulo">INFORMACIÓN / INFORMATION</h2>
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin ac ligula vitae nunc aliquet tincidunt. Lorem ipsum dolor sit amet consectetur adipisicing elit. Ullam necessitatibus minus soluta provident aliquid tempore exercitationem, doloremque repellat sint repudiandae reiciendis dolorum doloribus reprehenderit illum accusamus, sed quasi! Voluptatum, ex!</p>
+    <br>
+    <h2>Calendario de Eventos</h2>
+    
+    <div class="tabla-horario">
+      <h3>Cursos -  Turno mañana</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Horario</th>
+            <th>Lunes</th>
+            <th>Martes</th>
+            <th>Miércoles</th>
+            <th>Jueves</th>
+            <th>Viernes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>08:00</td><td>Clase</td><td>Clase</td><td>Clase</td><td>Clase</td><td>Clase</td>
+          </tr>
+          <tr>
+            <td>08:00</td><td>Clase</td><td>Clase</td><td>Clase</td><td>Clase</td><td>Clase</td>
+          </tr>
+          <tr>
+            <td>08:00</td><td>Clase</td><td>Clase</td><td>Clase</td><td>Clase</td><td>Clase</td>
+          </tr>
+          <tr>
+            <td>08:00</td><td>Clase</td><td>Clase</td><td>Clase</td><td>Clase</td><td>Clase</td>
+          </tr>
+        </tbody>
+      </table>
+<br>
+      <h3>Cursos - Turno Tarde</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Horario</th>
+            <th>Lunes</th>
+            <th>Martes</th>
+            <th>Miércoles</th>
+            <th>Jueves</th>
+            <th>Viernes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>14:00</td><td>Clase</td><td>Clase</td><td>Clase</td><td>Clase</td><td>Clase</td>
+          </tr>
+          <tr>
+            <td>14:00</td><td>Clase</td><td>Clase</td><td>Clase</td><td>Clase</td><td>Clase</td>
+          </tr>
+          <tr>
+            <td>14:00</td><td>Clase</td><td>Clase</td><td>Clase</td><td>Clase</td><td>Clase</td>
+          </tr>
+          <tr>
+            <td>14:00</td><td>Clase</td><td>Clase</td><td>Clase</td><td>Clase</td><td>Clase</td>
+          </tr>
+          <tr>
+            <td>14:00</td><td>Clase</td><td>Clase</td><td>Clase</td><td>Clase</td><td>Clase</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- UBICACIÓN -->
+<section class="ubicacion" id="ubicacionid">
+  <h2 class="subtitulo">UBICACIÓN / LOCATION</h2>
+  <div class="mapa-placeholder">
+    <iframe
+      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1987.6002808428773!2d-68.06870843920794!3d-16.53885564579275!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x915f21b1d1b8b953%3A0x13bc56f9a856c85d!2sFacultad%20de%20Ciencias%20Puras%20y%20Naturales%20-%20Cota%20Cota!5e0!3m2!1ses!2sbo!4v1752639557865!5m2!1ses!2sbo"
+      allowfullscreen=""
+      loading="lazy"
+      referrerpolicy="no-referrer-when-downgrade">
+    </iframe>
+    
+</section>
+
+
+  <!-- SOBRE NOSOTROS -->
+  <section class="nosotros" id="nosotrosid">
+  <h2 class="subtitulo">SOBRE NOSOTROS / ABOUT US</h2>
+  <p>El curso está dirigido por el equipo académico de la Carrera de Química. Coordinador general: Dr. Juan Pérez. Equipo técnico y administrativo comprometido con la excelencia académica.</p>
+
+  <div class="organizadores">
+    <div class="organizador">
+      <img src="/static/images/org1.jpg" alt="Organizador 1">
+      <h4>Dr. alan Maldonado</h4>
+      <p>Coordinador General / General Coordinator</p>
+    </div>
+    <div class="organizador">
+      <img src="/static/images/org2.jpg" alt="Organizador 2">
+      <h4>Lic. Diegue Gutierrez</h4>
+      <p>Asistente Técnica / Technical Assistant</p>
+    </div>
+    <div class="organizador">
+      <img src="/static/images/org3.jpg" alt="Organizador 3">
+      <h4>Ing. Michael Quispe</h4>
+      <p>Logística Académica / Academic Logistics</p>
+    </div>
+  </div>
+</section>
+
+  <!-- FOOTER --> 
+<footer class="footer" id="footerid">
+    <div class="footer-top">
+      <div >
+        <strong>Donde estamos:</strong>
+        <p>Av. Villazón N° 1995, Plaza del Bicentenario - La Paz, Bolivia</p>
+      </div>
+      <div>
+        <strong>Contáctanos:</strong>
+        <p>Tel: (591-2) 2441570 / 2440571</p>
+        <p>Fax: 2441092</p>
+        <p>Email: decanato@fcpn.edu.bo</p>
+      </div>
+      <div>
+        <strong>Diseño Curricular:</strong>
+        <p>Carrera de Ciencias Químicas<br>5to Piso - Aula 21<br>Cota Cota, Calle 27 #1995</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2025 - Todos los derechos reservados - Carrera de Química UMSA</p>
+      <div class="social-icons">
+        <a href="#" class="icon facebook"><i class="fab fa-facebook-f"></i></a>
+        <a href="#" class="icon twitter"><i class="fab fa-twitter"></i></a>
+        <a href="#" class="icon instagram"><i class="fab fa-instagram"></i></a>
+        <a href="#" class="icon linkedin"><i class="fab fa-linkedin-in"></i></a>
+        <a href="#" class="icon youtube"><i class="fab fa-youtube"></i></a>
+      </div>
+      <div class="dev-bba"> Desarrollado por / Developed by | <a href="https://www.instagram.com/thebattle_bread?igsh=ZHl3b29vcDN3OWhk">BattleBread Academy</a></div>
+    </div>
+  </footer>
+</body>
+</html>

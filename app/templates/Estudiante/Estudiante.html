@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Gestión Estudiante</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/Estudiante/styleEstudiantes.css') }}"> <!--pendiente a editar si es necesario-->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<!-- DEBUG -->
+<!-- <p>{{ url_for('auth.cursos_estudiante') }}</p> -->
+
+  <!-- Top bar -->
+ <div class="top-bar">
+  <div class="logo-back">
+    <img class="logo" src="{{ url_for('static', filename='images/TWAS_Logo.webp') }}"/>
+  </div>
+
+  <h1 class="titulo">GESTION ESTUDIANTE</h1>
+
+  <div class="acciones-derecha">
+    <div class="top-actions">
+      <button onclick="location.href='/estudiante'">Estudiante</button>
+      <button onclick="location.href='/auth/logout'">Cerrar Sesión</button>
+    </div>
+    <div class="logou">
+      <img class="logo-umsa" src="{{ url_for('static', filename='images/umsalogo.webp') }}" alt="Logo UMSA"/>
+    </div>
+  </div>
+</div>
+
+  <!-- Contenedor principal -->
+  <div class="container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <h2>BIENVENIDO</h2>
+      <h3>
+
+<!--
+  {{ estudiante[1] | upper }}<br>
+  {{ estudiante[2] | upper }}
+        -->
+</h3>
+      <p>Funciones</p>
+      <ul class="menu">
+        <li><a href="#" class="activo" onclick="mostrarSeccion('datos')">Datos Personales</a></li>
+        <!-- <li><a href="#" onclick="mostrarIframe('Curso.html', this)">Curso</a></li>     de momento agrego otro similar abajo para no arruinar esta linea xd-->
+
+      <li>
+  <a href="#" onclick="mostrarIframe('{{ url_for('auth.cursos_estudiante')}}', this)">Curso</a> 
+  <!-- la wbda de aca arriba dice tener un error, pero no tiene ningno, el programa funciona de todas formas -->
+</li>
+
+
+
+
+
+
+      </ul>
+    </aside>
+
+    <!-- Contenido -->
+    <main class="contenido">
+      <!-- Datos personales por defecto -->
+      <div id="seccion-datos" class="datos-container">
+        <div class="datos-content">
+          <div class="info-estudiante">
+            <!-- <input class="input-info" value="Nombre" readonly />
+            <input class="input-info" value="Identificación" readonly />
+            <input class="input-info" value="Género" readonly />
+            <input class="input-info" value="Edad" readonly />
+            <input class="input-info" value="Nacionalidad" readonly /> -->
+
+            <input class="input-info" value="{{ estudiante[1]}} {{ estudiante[2]}}" readonly />
+<input class="input-info" value="{{ estudiante[5] }}" readonly />
+<!-- <input class="input-info" value="(coloca género aquí)" readonly />
+<input class="input-info" value="(edad o calcula)" readonly /> -->
+<input class="input-info" value="{{ estudiante[6] }}" readonly />
+
+          </div>
+          <div class="qr-container">
+            {% if qr_path %}
+              <img src="{{ qr_path }}" id="qr-estudiante" class="qr-img" alt="QR Estudiante" />
+            {% else %}
+              <p>No se ha generado un código QR para este estudiante.</p>
+              <form method="GET" action="{{ url_for('qrs.generate_qr_by_id', id_usuario=estudiante[0]) }}">
+                <button type="submit" class="btn-generar-qr">Generar QR</button>
+              </form>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <!-- Iframe dinámico -->
+      <iframe id="seccion-iframe" name="contenido-frame" class="iframe-oculto"></iframe>
+    </main>
+  </div>
+
+  <script src="{{ url_for('static', filename='js/estudianteControl.js') }}"></script>
+
+</body>
+</html>

@@ -1,0 +1,135 @@
+body {
+  font-family: 'Montserrat Alternates', sans-serif;
+  margin: 0;
+  background-color: white;
+}
+
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 30px;
+  border-bottom: 2px solid #0066b3;
+}
+
+.logo {
+  height: 80px;
+}
+
+.titulo {
+  flex-grow: 1;
+  text-align: center;
+  font-size: 24px;
+  font-weight: 600;
+  color: #0066b3;
+}
+
+.botones-header {
+  display: flex;
+  gap: 10px;
+}
+
+.botones-header button {
+  background-color: white;
+  color: #0066b3;
+  border: 2px solid #0066b3;
+  padding: 6px 20px;
+  font-weight: 600;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.botones-header button:hover {
+  background-color: #0066b3;
+  color: white;
+}
+
+.contenido {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  margin: 60px auto;
+  max-width: 1100px;
+  padding: 0 30px;
+}
+
+.info-izquierda {
+  width: 300px;
+  color: #0066b3;
+}
+
+.volver {
+  font-size: 22px;
+  text-decoration: none;
+  color: #0066b3;
+}
+
+.enviar-a {
+  margin-top: 20px;
+  font-size: 18px;
+}
+
+.email-label {
+  margin-top: 40px;
+  margin-bottom: 5px;
+  font-size: 16px;
+}
+
+.email-input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #0066b3;
+  border-radius: 4px;
+  font-size: 14px;
+  color: #333;
+  background-color: #f5f5f5;
+}
+
+.formulario {
+  background-color: #0066b3;
+  padding: 40px;
+  flex: 1;
+  border-radius: 6px;
+  color: white;
+  max-width: 700px;
+}
+
+.formulario label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.formulario input[type="text"],
+.formulario textarea {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  color: #333;
+}
+
+.formulario textarea {
+  resize: vertical;
+}
+
+.boton-enviar {
+  background-color: white;
+  color: #0066b3;
+  border: 2px solid white;
+  padding: 10px 24px;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 4px;
+  float: right;
+  transition: all 0.3s ease;
+}
+
+.boton-enviar:hover {
+  background-color: #0066b3;
+  color: white;
+  border: 2px solid white;
+}

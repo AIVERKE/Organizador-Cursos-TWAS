@@ -1,0 +1,41 @@
+<!doctype html>
+<html>
+<head>
+  <title>Subir {{ titulo }}</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <style>
+    .back-arrow img { width: 30px; height: auto; }
+  </style>
+</head>
+
+  <body class="container mt-4">
+    <div class="back-arrow"><a href="{{ url_for('auth.dashboard') }}"><img  src="{{ url_for('static', filename='images/Flecha-izq.png') }}"></a></div>
+    <h2>Subir archivo Excel o CSV para {{ titulo }}</h2>
+    <form method="POST" enctype="multipart/form-data">
+      <input type="file" name="file" accept=".xlsx,.xls,.csv" class="form-control mb-3">
+      <button type="submit" name="accion" value="vista" class="btn btn-primary">Ver contenido</button>
+      {% if tabla %}
+        <button type="submit" name="accion" value="guardar" class="btn btn-success">Confirmar y guardar {{ titulo }}</button>
+      {% endif %}
+    </form>
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="alert alert-info mt-3">
+          {% for msg in messages %}
+            <p>{{ msg }}</p>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    {% if tabla %}
+      <h3 class="mt-4">Vista previa de {{ titulo }}:</h3>
+      <div class="table-responsive">
+        {{ tabla|safe }}
+      </div>
+    {% endif %}
+
+  </body>
+
+</html>

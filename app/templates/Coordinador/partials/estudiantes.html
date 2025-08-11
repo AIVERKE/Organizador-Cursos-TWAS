@@ -1,0 +1,137 @@
+<h3>Gestión de Estudiantes</h3>
+
+<table border="1" cellpadding="10" cellspacing="0" class="table table-bordered table-striped">
+  <thead>
+    <tr>
+      <th>N °</th>
+      <th>Apellidos</th>
+      <th>Nombres</th>
+      <th>Email</th>
+      <th>Documento</th>
+      <th>País Origen</th>
+      <th>Rol</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for estudiante in estudiantes %}
+    <tr>
+      <!-- <td data-label="N °">{{ estudiante.id_usuario }}</td> -->
+      <td data-label="N °">{{ loop.index }}</td>
+      <td data-label="Apellidos">{{ estudiante.apellido }}</td>
+      <td data-label="Nombres">{{ estudiante.nombre }}</td>
+      <td data-label="Email">{{ estudiante.email }}</td>
+      <td data-label="Documento">{{ estudiante.documento }}</td>
+      <td data-label="País Origen">{{ estudiante.pais_origen }}</td>
+      <td data-label="Rol">{{ estudiante.id_rol }}</td>
+      <td data-label="Acciones">
+        <button class="btn btn-primary edit-btn" data-id="{{ estudiante.id_usuario }}">
+            Editar
+        </button>
+        <button class="btn btn-primary more-btn" data-id="{{ estudiante.id_usuario }}">
+            Mas Información
+        </button>
+        <button class="btn btn-danger del-btn" data-id="{{ estudiante.id_usuario }}">
+            Eliminar
+        </button>
+        <button onclick="window.location.href='{{ url_for('certificate.enviar_certificado', user_id=estudiante.id_usuario) }}'" class="btn btn-success cert-btn">Enviar Certificado</button>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+
+<!--  Modal / Tabla Emergente Actualizar Estudiantes -->
+<div id="modal-editar" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="cerrarModalEdit()">&times;</span>
+    <h3>Editar Estudiante</h3>
+    <form id="form-editar">
+      <input type="hidden" id="id_usuario" name="id_usuario">
+      <label>Nombre:</label>
+      <input type="text" id="nombre" name="nombre"><br>
+      <label>Apellido:</label>
+      <input type="text" id="apellido" name="apellido"><br>
+      <label>Email:</label>
+      <input type="email" id="email" name="email"><br>
+      <label>Contraseña:</label>
+      <input type="password" id="contrasena" name="contrasena" placeholder="Nueva contraseña (opcional)"><br>
+      <label>Documento:</label>
+      <input type="text" id="documento" name="documento"><br>
+      <label>País de Origen:</label>
+      <input type="text" id="pais_origen" name="pais_origen"><br>
+      <input type="hidden" id="id_rol" name="id_rol" value="3">
+      <button type="submit">Guardar</button>
+    </form>
+  </div>
+</div>
+
+<!--  Modal / Tabla Emergente Crear Estudiantes -->
+<div id="modal-crear" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="cerrarModalCrear()">&times;</span>
+    <h3>Nuevo Estudiante</h3>
+    <form id="form-crear">
+      <label>Nombre:</label>
+      <input type="text" id="nombre_crear" name="nombre" required><br>
+      <label>Apellido:</label>
+      <input type="text" id="apellido_crear" name="apellido" required><br>
+      <label>Email:</label>
+      <input type="email" id="email_crear" name="email" required><br>
+      <label>Contraseña:</label>
+      <input type="password" id="contrasena_crear" name="contrasena" required><br>
+      <label>Documento:</label>
+      <input type="text" id="documento_crear" name="documento" required><br>
+      <label>País de Origen:</label>
+      <input type="text" id="pais_origen_crear" name="pais_origen" required><br>
+      <input type="hidden" name="id_rol" value="3">
+      <button type="submit">Crear</button>
+    </form>
+  </div>
+</div>
+
+
+<!-- Modal Información Estudiante -->
+<div id="modal-info" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="cerrarModalInfo()">&times;</span>
+    <h3>Detalle del Estudiante</h3>
+
+    <!-- Tabla de materias inscritas -->
+    <table id="tabla-materias" class="table">
+      <thead>
+        <tr>
+          <th>Curso</th>
+          <th>Nota</th>
+          <th>Acción</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <!-- Form para añadir materia -->
+    <form id="form-agregar-materia">
+      <label for="select-curso">Agregar curso:</label>
+      <select id="select-curso">
+          <option value="">Selecciona un curso...</option>
+      </select>
+      <button type="submit">Agregar</button>
+    </form>
+  </div>
+</div>
+
+
+<br>
+
+<button onclick="" class="menu-btn-h create-btn">Agregar Usuarios</button>
+<!-- <a href="{{ url_for('rxls.index') }}" class="menu-btn-h rxls-btn">
+  Agregar Estudiantes Excel
+</a>
+
+ -->
+<button onclick="window.location.href='{{ url_for('rxls.index', tipo='estudiantes') }}'"
+        class="menu-btn-h rxls-btn"> Agregar Estudiantes Excel </button>
+
+<button onclick="window.location.href='{{ url_for('certificate.generar_certificados', rol_boton=3) }}'" class="menu-btn-h">Descargar Certificados</button>
+<button onclick="window.location.href='{{ url_for('certificate.enviar_certificados_todos', rol_boton=3) }}'" class="menu-btn-h">Enviar Certificados</button>

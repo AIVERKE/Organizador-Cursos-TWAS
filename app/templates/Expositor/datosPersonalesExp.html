@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Datos Personales</title>  
+  <link rel="stylesheet" href="{{url_for('static', filename='css/Expositor/datosPersonalesExp.css')}}">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="contenedor-datos">
+    <div class="formulario">
+      <input type="text" placeholder="{{nombre}} {{apellido}}" disabled>
+      <input type="text" placeholder="{{email}}" disabled>
+      <input type="text" placeholder="{{documento}}" disabled>
+      <input type="text" placeholder="{{pais_origen}}" disabled>      
+    </div>    
+  </div>
+</body>
+</html>

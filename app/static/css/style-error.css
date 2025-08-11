@@ -1,0 +1,95 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body, html {
+  width: 95%;
+  height: 95%;
+  font-family: 'Courier New', Courier, monospace;
+  background-color: #ffffff;
+}
+.contenedor {
+  position: relative;
+  width: 80%;
+  height: 90vh;
+  background: url('/static/images/errorexe.png') no-repeat center center;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: translateX(200px); 
+}
+.texto{
+    display: block;
+  font-size: 30px;
+  font-weight: bold;
+  margin-top: 10px;
+  color: #1455BE;
+}
+/* Texto sobre la pantalla */
+.pantalla {
+  position: absolute;
+  top: 33%;
+  left: 45%;
+  transform: translateX(-25%);
+  text-align: center;
+  color: #1455BE;
+}
+.error-label {
+  font-size: 1.5rem;
+}
+.cursor {
+  animation: blink 1.5s step-end infinite;
+  font-weight: bold;
+}
+.codigo-error {
+  display: block;
+  font-size: 5rem;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+/* Vapor animado */
+.vapor {
+  position: absolute;
+  width: 30px;
+  height: 80px;
+  background: transparent;
+  border-left: 2px solid #1455BE;
+  opacity: 0;
+  animation: steamRise 4s infinite ease-in-out;
+}
+.vapor1 { left: 25%; bottom: 42%; animation-delay: 0s; }
+.vapor2 { left: 27%; bottom: 42%; animation-delay: 1s; }
+.vapor3 { left: 29%; bottom: 46%; animation-delay: 2s; }
+
+/* Cursor parpadeante */
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+/* Vapor sube */
+@keyframes steamRise {
+  0% { opacity: 0; transform: translateY(0); }
+  20% { opacity: 0.5; }
+  50% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(-40px); }
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+  .pantalla {
+    top: 30%;
+  }
+  .error-label { font-size: 1.2rem; }
+  .codigo-error { font-size: 3.5rem; }
+  .vapor {
+    height: 50px;
+    border-left: 1.5px solid #1455BE;
+  }
+}

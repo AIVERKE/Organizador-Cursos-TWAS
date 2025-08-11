@@ -1,0 +1,121 @@
+/* static/css/datosPersonalesExp.css */
+body {
+  font-family: 'Montserrat Alternates', sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.titulo{
+  font-size: 48px;
+}
+.subtitulo{
+  font-size: 24px;
+}
+.texto{
+  font-size: 14px;
+}
+
+.contenedor-datos {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+}
+
+.formulario {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-right: 40px;
+}
+
+.formulario input {
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #0070c0;
+  border-radius: 2px;
+  width: 100%;
+}
+
+.foto {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.marco-foto {
+  width: 250px;
+  height: 250px;
+  background-color: #d9d9d9;
+  color: #333;
+  font-size: 14px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px dashed #666;
+  padding: 10px;
+}
+
+
+@media (max-width: 768px) {
+  .titulo {
+    font-size: 28px;
+  }
+
+  .subtitulo {
+    font-size: 18px;
+  }
+
+  .texto {
+    font-size: 13px;
+  }
+
+  .contenedor-datos {
+    flex-direction: column;
+    padding: 15px;
+  }
+
+  .formulario {
+    margin-right: 0;
+    gap: 12px;
+  }
+
+  .formulario input {
+    font-size: 14px;
+    padding: 8px;
+  }
+
+  .foto {
+    margin-top: 20px;
+    justify-content: center;
+  }
+
+  .marco-foto {
+    width: 200px;
+    height: 200px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .titulo {
+    font-size: 22px;
+  }
+
+  .subtitulo {
+    font-size: 16px;
+  }
+
+  .marco-foto {
+    width: 150px;
+    height: 150px;
+    font-size: 12px;
+  }
+
+  .formulario input {
+    font-size: 13px;
+    padding: 6px;
+  }
+}

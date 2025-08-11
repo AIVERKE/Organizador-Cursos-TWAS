@@ -1,0 +1,232 @@
+/* static/css/expositor.css */
+body {
+  margin: 0;
+  font-family: 'Montserrat Alternates', sans-serif;
+  background: #fff;
+}
+.titulo{
+  font-size: 48px;
+}
+.subtitulo{
+  font-size: 24px;
+}
+.texto{
+  font-size: 14px;
+}
+.top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  padding: 10px 30px;
+  border-bottom: 2px solid #0070c0;
+  position: relative;
+  gap: 1rem; /* Espacio entre elementos al hacer wrap */
+}
+
+.top-bar .logo {
+  height: 80px;
+  width: 150px;
+  flex-shrink: 0;
+}
+
+.top-bar h1 {
+  color: #0070c0;
+  font-weight: 500;
+  font-family: 'Montserrat Alternates', sans-serif;
+  margin: 0 auto;
+  text-align: center;
+  flex-grow: 1;
+  min-width: 200px;
+}
+
+.top-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 1.2rem;
+  flex-shrink: 0;
+}
+
+.top-actions button {
+  padding: 0.5rem 1.3rem;
+  background: white;
+  color: #0077c2;
+  border: 1px solid #0077c2;
+  cursor: pointer;
+  font-family: 'Montserrat Alternates', sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  border-radius: 4px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.top-actions button:hover {
+  background-color: #0077c2;
+  color: white;
+}
+
+.logo-der {
+  height: 70px;
+  width: auto;
+  max-width: 60px;
+  flex-shrink: 0;
+}
+
+.main {
+  display: flex;
+  height: calc(100vh - 80px);
+}
+
+.sidebar {
+  width: 260px;
+  background: white;
+  padding: 30px;
+  border-right: 2px solid #0070c0;
+}
+
+.sidebar h2, .sidebar h3, .sidebar p {
+  color: #0070c0;
+  margin: 10px 0;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin-top: 20px;
+}
+
+.sidebar li a {
+  display: block;
+  padding: 12px;
+  border: 1px solid #ccc;
+  margin-bottom: 5px;
+  color: #333;
+  text-decoration: none;
+}
+
+.sidebar li a:hover,
+.sidebar li a:focus {
+  background-color: #0070c0;
+  color: white;
+}
+
+.contenido {
+  flex-grow: 1;
+  padding: 20px;
+}
+
+iframe#contenido-frame {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+.back-arrow {
+  font-size: 24px;
+  color: #006ab0;
+  margin-bottom: 20px;
+}
+/*******************************************/
+/* ========== Responsivo========== */
+/*******************************************/
+@media (max-width: 768px) {
+  .top-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 16px;
+  }
+
+  .top-bar .logo {
+    height: 56px;
+    width: auto;
+  }
+
+  .top-bar .logo-der {
+    position: static;   /* deja de ser absoluta para no superponerse */
+    width: 40px;
+  }
+
+  .top-bar h1,
+  .titulo {
+    font-size: 28px;
+    margin: 0;
+  }
+
+  .top-actions {
+    width: 100%;
+    display: flex;
+    gap: 8px;
+    flex-direction: column;
+  }
+
+  .top-actions button {
+    width: 100%;
+    font-size: 14px;
+    padding: 10px 14px;
+  }
+
+  .main {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .sidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: 2px solid #0070c0;
+    padding: 16px;
+    text-align: left;
+  }
+
+  .sidebar ul {
+    margin-top: 10px;
+  }
+
+  .sidebar li a {
+    padding: 10px 12px;
+  }
+
+  .contenido {
+    padding: 16px;
+  }
+
+  iframe#contenido-frame {
+    height: 60vh; /* alto cómodo en móvil */
+  }
+
+  .back-arrow {
+    font-size: 20px;
+    margin-bottom: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .top-bar .logo {
+    height: 44px;
+  }
+
+  .top-bar h1,
+  .titulo {
+    font-size: 22px;
+  }
+
+  .top-actions button {
+    font-size: 13px;
+    padding: 10px 12px;
+  }
+
+  .sidebar {
+    padding: 12px;
+  }
+
+  .sidebar h2,
+  .sidebar h3,
+  .sidebar p {
+    font-size: 16px;
+  }
+
+  .sidebar li a {
+    font-size: 14px;
+  }
+}

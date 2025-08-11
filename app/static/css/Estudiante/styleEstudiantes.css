@@ -1,0 +1,272 @@
+body {
+  margin: 0;
+  font-family: 'Montserrat Alternates', sans-serif;
+  background: #fff;
+}
+
+.subtitulo {
+  font-size: 24px;
+}
+
+.texto {
+  font-size: 14px;
+}
+
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  border-bottom: 2px solid #0077c2;
+  flex-wrap: wrap;
+}
+
+.logo {
+  height: 80px;
+  width: 150px;
+}
+
+.logo-umsa {
+  height: 80px;
+  width: 50px;
+}
+
+.titulo {
+  font-size: 30px;
+  color: #0077c2;
+  margin: 0 auto;
+  text-align: center;
+  flex-grow: 1;
+}
+
+.top-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.top-actions button {
+  padding: 0.5rem 1rem;
+  background: white;
+  color: #0077c2;
+  border: 1px solid #0077c2;
+  cursor: pointer;
+  font-family: 'Montserrat Alternates', sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  border-radius: 4px;
+  font-weight: 600; /* agregado */
+}
+
+.top-actions button:hover {
+  background-color: #0077c2;
+  color: white;
+}
+
+.acciones-derecha {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.container {
+  display: flex;
+  height: calc(100vh - 80px);
+}
+
+.sidebar {
+  width: 270px;
+  padding: 2rem;
+  border-right: 1px solid #0077c2;
+}
+
+.sidebar h2,
+.sidebar h3,
+.sidebar p {
+  color: #0077c2;
+  margin: 0 0 1rem;
+}
+
+.menu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.menu li {
+  border: 1px solid #ccc;
+  border-top: none;
+}
+
+.menu li:first-child {
+  border-top: 1px solid #ccc;
+}
+
+.menu a {
+  display: block;
+  padding: 1rem;
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.menu a:hover,
+.menu a.activo {
+  background: #0077c2;
+  color: white;
+}
+
+.contenido {
+  flex: 1;
+  padding: 2rem;
+  overflow: auto;
+}
+
+.datos-container {
+  background: #fff;
+  border-left: 2px solid #0077c2;
+  padding-left: 2rem;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+  margin-left: 1rem;
+  height: auto;
+}
+
+.datos-content {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.info-estudiante {
+  flex: 1;
+  max-width: 450px;
+}
+
+.input-info {
+  width: 100%;
+  padding: 0.8rem;
+  margin-bottom: 1rem;
+  border: 1px solid #0077c2;
+  border-radius: 3px;
+  font-family: 'Montserrat Alternates', sans-serif;
+}
+
+.qr-container {
+  flex-shrink: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 0.5rem;
+}
+
+.qr-img {
+  width: 300px;
+  height: 300px;
+  object-fit: contain;
+}
+
+.iframe-oculto {
+  width: 100%;
+  height: 100%;
+  border: none;
+  min-height: 500px;
+}
+
+.btn-generar-qr {
+    font-family: 'Montserrat Alternates', sans-serif;
+    background-color: transparent;
+    border: 1px solid #0077c2;
+    color: #0077c2;
+    padding: 8px 16px;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-generar-qr:hover {
+    background-color: #0077c2;
+    color: #fff;
+}
+
+
+@media (max-width: 600px) {
+  .logo {
+    height: 50px;
+    width: 100px;
+  }
+}
+/* ===================== */
+/* RESPONSIVE AJUSTES PARA CELULARES */
+/* ===================== */
+@media (max-width: 768px) {
+  .top-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .acciones-derecha {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .top-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .top-actions button {
+    width: 100%;
+    font-size: 14px;
+  }
+
+  .titulo {
+    font-size: 24px;
+    text-align: left;
+  }
+
+  .container {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .sidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid #0077c2;
+    padding: 1rem;
+    text-align: center;
+  }
+
+  .contenido {
+    padding: 1rem;
+  }
+
+  .datos-container {
+    border-left: none;
+    border-top: 2px solid #0077c2;
+    padding: 1rem;
+    margin-left: 0;
+  }
+
+  .datos-content {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .qr-container {
+    justify-content: center;
+  }
+
+  .qr-img {
+    width: 200px;
+    height: 200px;
+  }
+}

@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Coordinador</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;600;700&display=swap" rel="stylesheet">
+   <link rel="stylesheet" href="{{ url_for('static', filename='css/Coordinador/styleCoordinador.css') }}">
+    <!-- Bootstrap CSS -->
+    <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"> -->
+
+  </head>
+  <body>
+<header>
+  <div class="top-bar">
+    <div class="logo-back">
+      <img class="logo" src="{{ url_for('static', filename='images/TWAS_Logo.webp') }}" alt="TWAS_Logo"/>
+    </div>
+    <h1 class="titulo">GESTION COORDINADOR</h1>
+    <div class="acciones-derecha">
+      <div class="top-actions">
+        <form action="/auth/logout" method="POST">
+          <button onclick="location.href='/estudiante'">Coordinador</button>
+          <button type="submit">Cerrar Sesión</button>
+        </form>
+      </div>
+      <div class="logou">
+        <img class="logo-umsa" src="{{ url_for('static', filename='images/umsalogo.webp') }}" alt="Logo UMSA" />
+      </div>
+    </div>
+  </div>
+</header>
+
+    <main>
+      <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+          <h1>BIENVENIDO COORDINADOR</h1>
+          <h3>{{ nombre }}<br>{{ apellidos }}</h3>
+          <h2>Funciones</h2>
+
+          <button 
+          class="menu-btn" onclick="showSection('usuarios/coor/estudiantes')">Estudiantes</button>
+          <button 
+          class="menu-btn" onclick="showSection('usuarios/coor/expositores')">Ponentes</button>
+<!--           <button 
+          class="menu-btn" onclick="showSection('eventos/coor/eventos')">Eventos</button> -->
+          <button 
+          class="menu-btn" onclick="showSection('cursos/coor/cursos')">Cursos</button>
+        </div>
+
+        <!-- Contenido -->
+        <section id="contenido">
+          <!-- Aquí se mostrará el CRUD correspondiente -->
+        </section>
+      </div>
+    </main>
+
+    <script>
+      function showSection(section) {
+        fetch(`/${section}`)
+          .then((response) => response.text())
+          .then((html) => {
+            document.getElementById("contenido").innerHTML = html;
+            // Detectamos si estamos en estudiantes o expositores según la URL
+            const tipoUsuario = section.includes('estudiantes') ? 'estudiantes' : 'expositores';
+            inicializarEventos(tipoUsuario);
+            inicializarEventosCursos();
+          });
+      }
+      window.showSection = showSection;
+      function inicializarEventos(tipo) {
+        const endpointBase = `/usuarios/coor/${tipo}`;
+        const idRol = tipo === 'estudiantes' ? 3 : 2;
+
+        // Botones editar
+        document.querySelectorAll('.edit-btn').forEach(btn => {
+          btn.addEventListener('click', function () {
+            const id = this.dataset.id;
+            fetch(`${endpointBase}/info/${id}`)
+              .then(response => {
+                if (!response.ok) throw new Error('No se pudo obtener el usuario');
+                return response.json();
+              })
+              .then(data => {
+                document.getElementById('id_usuario').value = data.id_usuario;
+                document.getElementById('nombre').value = data.nombre;
+                document.getElementById('apellido').value = data.apellido;
+                document.getElementById('email').value = data.email;
+                document.getElementById('contrasena').value = '';
+                document.getElementById('documento').value = data.documento;
+                document.getElementById('pais_origen').value = data.pais_origen;
+                document.getElementById('id_rol').value = idRol;
+
+                document.getElementById('modal-editar').classList.add("activo");
+              })
+              .catch(err => alert("Error al obtener los datos: " + err.message));
+          });
+        });
+
+        // Envío editar
+        const formEditar = document.getElementById('form-editar');
+        if (formEditar) {
+          formEditar.addEventListener('submit', function (e) {
+            e.preventDefault();
+            const id = document.getElementById('id_usuario').value;
+            const data = {
+              nombre: document.getElementById('nombre').value,
+              apellido: document.getElementById('apellido').value,
+              email: document.getElementById('email').value,
+              contrasena: document.getElementById('contrasena').value,
+              documento: document.getElementById('documento').value,
+              pais_origen: document.getElementById('pais_origen').value,
+              id_rol: idRol
+            };
+
+            fetch(`${endpointBase}/${id}`, {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(data)
+            })
+            .then(response => {
+              if (response.ok) {
+                alert(`${tipo === 'estudiantes' ? 'Estudiante' : 'Expositor'} actualizado correctamente.`);
+                cerrarModalEdit();
+                showSection(`usuarios/coor/${tipo}`);
+              } else {
+                return response.json().then(err => {
+                  throw new Error(err.error || "Error desconocido");
+                });
+              }
+            })
+            .catch(err => alert("Error al actualizar: " + err.message));
+          });
+        }
+
+        // Crear usuario
+        document.querySelectorAll('.create-btn').forEach(btn => {
+          btn.addEventListener("click", function () {
+            const modal = document.getElementById("modal-crear");
+            if (modal) modal.classList.add("activo");
+          });
+        });
+
+        const formCrear = document.getElementById("form-crear");
+        if (formCrear) {
+          formCrear.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const datos = {
+              nombre: document.getElementById("nombre_crear").value,
+              apellido: document.getElementById("apellido_crear").value,
+              email: document.getElementById("email_crear").value,
+              contrasena: document.getElementById("contrasena_crear").value,
+              documento: document.getElementById("documento_crear").value,
+              pais_origen: document.getElementById("pais_origen_crear").value,
+              id_rol: idRol
+            };
+
+            try {
+              const res = await fetch(`${endpointBase}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(datos)
+              });
+
+              const resultado = await res.json();
+
+              if (res.ok) {
+                alert(`${tipo === 'estudiantes' ? 'Estudiante' : 'Expositor'} creado correctamente.`);
+                cerrarModalCrear();
+                showSection(`usuarios/coor/${tipo}`);
+              } else {
+                alert("Error: " + resultado.error);
+              }
+            } catch (err) {
+              alert("Error al crear el usuario.");
+            }
+          });
+        }
+
+        // Eliminar
+        document.querySelectorAll('.del-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const id = btn.dataset.id;
+            if (confirm(`¿Seguro que quieres eliminar este ${tipo}?`)) {
+              fetch(`${endpointBase}/${id}`, { method: 'DELETE' })
+                .then(response => {
+                  if (response.ok) {
+                    alert(`${tipo} eliminado correctamente.`);
+                    showSection(`usuarios/coor/${tipo}`);
+                  } else {
+                    return response.json().then(err => {
+                      throw new Error(err.error || "Error desconocido");
+                    });
+                  }
+                })
+                .catch(err => alert("Error al eliminar: " + err.message));
+            }
+          });
+        });
+
+        // Botón de cerrar modal
+        const btnClose = document.querySelector(".close");
+        if (btnClose) {
+          btnClose.addEventListener("click", cerrarModalCrear);
+          btnClose.addEventListener("click", cerrarModalEdit);
+        }
+
+
+// Mostrar detalle cuando se hace click en “Más Información”
+        // Boton Mas Informacion Usuarios Estudiante
+        document.querySelectorAll('.more-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const id = btn.dataset.id;
+            fetch(`/usuarios/coor/estudiantes/info_detalle/${id}`)
+              .then(response => {
+                if (!response.ok) {
+                  throw new Error(`Error HTTP ${response.status}`);
+                }
+                return response.json();
+              })
+              .then(data => {
+                // Poblar tabla de materias
+                const tbody = document.querySelector('#tabla-materias tbody');
+                tbody.innerHTML = '';
+                data.materias.forEach(m => {
+                  const tr = document.createElement('tr');
+                  tr.innerHTML = `
+                    <td>${m.nombre_curso}</td>
+                    <td>${m.nota_final ?? '–'}</td>
+                    <td>
+                      <button class="btn btn-danger btn-sm del-materia"
+                       data-id_insc="${m.id_inscripcion}" data-id_nota="${m.id_nota}">
+                        Quitar
+                      </button>
+                    </td>`;
+                  tbody.appendChild(tr);
+                });
+
+                // Poblar select de cursos disponibles
+                const select = document.getElementById('select-curso');
+                select.innerHTML = '';
+                data.disponibles.forEach(c => {
+                  const opt = document.createElement('option');
+                  opt.value = c.id_curso;
+                  opt.textContent = c.nombre;
+                  select.appendChild(opt);
+                });
+
+                // Eliminar materias
+                document.querySelectorAll('.del-materia').forEach(btnDel => {
+                  btnDel.onclick = () => {
+                    const insc = btnDel.dataset.id_insc;
+                    const not = btnDel.dataset.id_nota;
+                    fetch(`/usuarios/coor/estudiantes/inscripciones/${insc}/${not}`, { method: 'DELETE' })
+                      .then(() => {
+                        btn.click(); // recarga el modal
+                      });
+                  };
+                });
+
+                // Submit form agregar materia
+                const form = document.getElementById('form-agregar-materia');
+                form.onsubmit = e => {
+                  e.preventDefault();
+                  const nuevoCurso = select.value;
+                  fetch(`/usuarios/coor/estudiantes/${id}/inscripciones`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id_curso: nuevoCurso })
+                  })
+                  .then(() => {
+                    btn.click(); // recarga el modal
+                  });
+                };
+
+                // Mostrar modal
+                document.getElementById('modal-info').classList.add('activo');
+                console.log(data);
+              })
+              .catch(error => {
+                console.error("Error al obtener datos del servidor:", error);
+                // Opcional: mostrar un mensaje al usuario
+              });
+          });
+        });
+
+        // Mas informacion boton Expositor
+        document.querySelectorAll('.more-exp-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const id = btn.dataset.id;
+            Promise.all([
+              fetch(`/usuarios/coor/expositores/${id}/dictados`).then(r => {
+                if (!r.ok) throw new Error(`Error HTTP ${r.status}`);
+                return r.json();
+              }),
+              fetch(`/usuarios/coor/expositores/disponibles`).then(r => {
+                if (!r.ok) throw new Error(`Error HTTP ${r.status}`);
+                return r.json();
+              })
+            ])
+            .then(([dictados,disponibles])=>{
+              // console.log(dictados);
+              // console.log(disponibles);
+              const tbody = document.querySelector('#tabla-cursos-exp tbody');
+                tbody.innerHTML = '';
+                if (dictados.length === 0) {
+                  tbody.innerHTML = `<tr><td colspan="2">No tiene cursos asignados.</td></tr>`;
+                } else {
+                  dictados.forEach(c => {
+                    const fila = document.createElement('tr');
+                    fila.innerHTML = `
+                      <td>${c.nombre} - ${c.descripcion}</td>
+                      <td><button class="btn btn-sm btn-danger del-exp-curso" data-id_curso="${c.id_curso}">Quitar</button></td>
+                    `;
+                    tbody.appendChild(fila);
+                  });
+                }
+
+                // Poblar el select de cursos disponibles
+                const select = document.getElementById('select-curso-exp');
+                select.innerHTML = '<option value="">Selecciona un curso...</option>';
+                disponibles.forEach(c => {
+                  const opt = document.createElement('option');
+                  opt.value = c.id_curso;
+                  opt.textContent = c.nombre;
+                  select.appendChild(opt);
+                });
+
+                // Quitar curso
+                document.querySelectorAll('.del-exp-curso').forEach(delBtn => {
+                  delBtn.onclick = () => {
+                    const idCurso = delBtn.dataset.id_curso;
+                    fetch(`/usuarios/coor/expositores/dictados/${idCurso}`, {
+                      method: 'DELETE'
+                    })
+                    .then(r => {
+                      if (!r.ok) throw new Error('Error al quitar curso');
+                      return r.json();
+                    })
+                    .then(() => btn.click()) // recargar datos
+                    .catch(err => console.error(err));
+                  };
+                });
+                // Agregar nuevo curso
+                const form = document.getElementById('form-agregar-materia-exp');
+                form.onsubmit = e => {
+                  e.preventDefault();
+                  const idCursoNuevo = select.value;
+                  if (!idCursoNuevo) return;
+                  fetch(`/usuarios/coor/expositores/${id}/dictados`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id_curso: idCursoNuevo })
+                  })
+                  .then(r => {
+                    if (!r.ok) throw new Error('Error al asignar curso');
+                    return r.json();
+                  })
+                  .then(() => btn.click()) // recargar datos
+                  .catch(err => console.error(err));
+                };  
+                // Mostrar nombre y modal
+                document.getElementById('nombre').textContent = nombre;
+                document.getElementById('modal-info-curso').classList.add('activo');
+            })
+            .catch(err => alert("Error al obtener datos del servidor " + err.message));
+          }); 
+        });
+      }
+
+      function inicializarEventosCursos(){
+
+        // boton editar Curso
+        document.querySelectorAll('.edit-curso-btn').forEach(btn => {
+          btn.addEventListener('click', function () {
+            const id = this.dataset.id;
+            const id_version = this.dataset.id_version;
+            const id_ponente = this.dataset.id_ponente;
+            fetch(`/cursos/coor/cursos/info/${id}`)
+              .then(response => {
+                if (!response.ok) throw new Error('No se pudo obtener el curso');
+                return response.json();
+              })
+              .then(data => {
+                document.getElementById('id_curso').value = data.id_curso;
+                document.getElementById('nombre').value = data.nombre;
+                document.getElementById('descripcion').value = data.descripcion;
+                document.getElementById('modalidad').value = data.modalidad;
+                document.getElementById('version').value = data.nombre_version;
+                document.getElementById('ponente').value = data.nombreu +" "+data.apellidou;
+                document.getElementById('nombre_ponente').value = data.nombreu;
+                document.getElementById('apellido_ponente').value = data.apellidou;
+                document.getElementById('id_version').value = data.id_version;
+                document.getElementById('id_ponente').value = data.id_ponente;
+
+                document.getElementById('modal-editar').classList.add("activo");
+              })
+              .catch(err => alert("Error al obtener los datos: " + err.message));
+          });
+        });
+
+        // Envío editar Curso
+        const formEditar = document.getElementById('form-editar-curso');
+        if (formEditar) {
+          formEditar.addEventListener('submit', function (e) {
+            e.preventDefault();
+            const id_curso = document.getElementById('id_curso').value;
+            const data = {
+              id_curso,
+              nombre: document.getElementById('nombre').value,
+              descripcion: document.getElementById('descripcion').value,
+              modalidad: document.getElementById('modalidad').value,
+            };
+
+            fetch(`/cursos/coor/cursos/${id_curso}`, {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(data)
+            })
+            .then(response => {
+              if (response.ok) {
+                alert(`Curso actualizado correctamente`);
+                cerrarModalEdit();
+                showSection(`cursos/coor/cursos`);
+              } else {
+                return response.json().then(err => {
+                  throw new Error(err.error || "Error desconocido");
+                });
+              }
+            })
+            .catch(err => alert("Error al actualizar: " + err.message));
+          });
+        }
+
+        // Boton Crear curso
+        document.querySelectorAll('.create-curso-btn').forEach(btn => {
+          btn.addEventListener("click", function () {
+            const modal = document.getElementById("modal-crear");
+            if (modal) modal.classList.add("activo");
+          });
+        });
+
+        const formCrear = document.getElementById("form-crear-curso");
+        if (formCrear) {
+          formCrear.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const datos = {
+              nombre: document.getElementById("nombre_crear").value,
+              descripcion: document.getElementById("descripcion_crear").value,
+              modalidad: document.getElementById("modalidad_crear").value,
+              id_version: 1,
+              id_ponente:1,
+            };
+
+            try {
+              const res = await fetch(`/cursos/coor/cursos`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(datos)
+              });
+
+              const resultado = await res.json();
+
+              if (res.ok) {
+                alert(`Curso creado correctamente.`);
+                cerrarModalCrear();
+                showSection(`cursos/coor/cursos`);
+              } else {
+                alert("Error: " + resultado.error);
+              }
+            } catch (err) {
+              alert("Error al crear el Curso.");
+            }
+          });
+        }
+        // Boton/Eliminar Curso
+        document.querySelectorAll('.del-curso-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const id = btn.dataset.id;
+            if (confirm(`¿Seguro que quieres eliminar este Curso?`)) {
+              fetch(`/cursos/coor/cursos/${id}`, { method: 'DELETE' })
+                .then(response => {
+                  if (response.ok) {
+                    alert(`Curso eliminado correctamente.`);
+                    showSection(`cursos/coor/cursos`);
+                  } else {
+                    return response.json().then(err => {
+                      throw new Error(err.error || "Error desconocido");
+                    });
+                  }
+                })
+                .catch(err => alert("Error al eliminar: " + err.message));
+            }
+          });
+        });
+        let idCurso = null;
+        document.querySelectorAll('.more-curso-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const idCurso = btn.dataset.id;
+
+            Promise.all([
+              fetch(`/cursos/coor/cursos/${idCurso}/ponente`).then(r => {
+                if (!r.ok) throw new Error(`Error HTTP ${r.status}`);
+                return r.json(); // { id_usuario, nombre, apellido, ... }
+              }),
+              fetch(`/cursos/coor/cursos/ponentes-disponibles`).then(r => {
+                if (!r.ok) throw new Error(`Error HTTP ${r.status}`);
+                return r.json(); // Array de usuarios ponentes
+              })
+            ])
+            .then(([ponente, disponibles]) => {
+              console.log(ponente[0]);
+              console.log(disponibles);
+              ponente=ponente[0];
+              // Renderizar tabla de ponente actual
+              const tbody = document.querySelector('#tabla-curso tbody');
+              tbody.innerHTML = '';
+
+              if (!ponente || ponente.id_usuario === 1) {
+                tbody.innerHTML = `<tr><td colspan="2">Sin ponente asignado</td></tr>`;
+              } else {
+                const fila = document.createElement('tr');
+                fila.innerHTML = `
+                  <td>${ponente.nombre}</td>
+                  <td><button class="btn btn-sm btn-danger quitar-ponente" data-id="${idCurso}">Quitar</button></td>
+                `;
+                tbody.appendChild(fila);
+              }
+
+              // Poblar el <select> con ponentes disponibles
+              const select = document.getElementById('select-exp');
+              select.innerHTML = `<option value="">Selecciona un ponente...</option>`;
+              disponibles.forEach(p => {
+                const opt = document.createElement('option');
+                opt.value = p.id;
+                opt.textContent = `${p.nombre}`;
+                select.appendChild(opt);
+              });
+
+              // Evento: quitar ponente
+              document.querySelectorAll('.quitar-ponente').forEach(qBtn => {
+                qBtn.onclick = () => {
+                  const idCurso = qBtn.dataset.id;
+                  fetch(`/cursos/coor/cursos/${idCurso}/desasignar_ponente`, {
+                    method: 'DELETE'
+                  })
+                  .then(r => {
+                    if (!r.ok) throw new Error('Error al quitar ponente');
+                    return r.json();
+                  })
+                  .then(() => btn.click()) // recargar
+                  .catch(err => alert(err.message));
+                };
+              });
+
+              // Evento: asignar ponente
+              const form = document.getElementById('form-agregar-exp');
+              form.onsubmit = e => {
+                e.preventDefault();
+                const idPonente = select.value;
+                console.log(idPonente);
+                if (!idPonente) return;
+
+                fetch(`/cursos/coor/cursos/${idCurso}/asignar_ponente`, {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ id_ponente: idPonente })
+                })
+                .then(r => {
+                  if (!r.ok) throw new Error('Error al asignar ponente');
+                  return r.json();
+                })
+                .then(() => btn.click()) // recargar
+                .catch(err => alert(err.message));
+              };
+
+              // Mostrar el modal
+              document.getElementById('modal-info-curso').classList.add('activo');
+            })
+            .catch(err => alert("Error al obtener datos del servidor: " + err.message));
+          });
+        });
+
+      }
+      // Cerrar modales
+      const btnClose = document.querySelector(".close");
+      if (btnClose) {
+        btnClose.addEventListener("click", cerrarModalCrear);
+        btnClose.addEventListener("click", cerrarModalEdit);
+      }
+      function cerrarModalEdit() {
+        const modal = document.getElementById("modal-editar");
+        if (modal) modal.classList.remove("activo");
+      }
+      function cerrarModalCrear() {
+        const modal = document.getElementById("modal-crear");
+        if (modal) modal.classList.remove("activo");
+      }
+      function cerrarModalInfo() {
+        const modal = document.getElementById("modal-info");
+        if (modal) modal.classList.remove("activo");
+      }
+      function cerrarModalCursos() {
+        const modal = document.getElementById("modal-info-curso");
+        if (modal) modal.classList.remove("activo");
+      }
+
+      document.addEventListener("DOMContentLoaded", () => { 
+        inicializarEventos();
+        inicializarEventosCursos();     
+      });
+
+    </script>
+  </body>
+</html>

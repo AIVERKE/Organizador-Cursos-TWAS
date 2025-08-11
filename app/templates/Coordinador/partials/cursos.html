@@ -1,0 +1,142 @@
+<h3>Gestión de Cursos</h3>
+
+<table border="1" cellpadding="10" cellspacing="0">
+
+  <thead>
+    <tr>
+      <th>N °</th>
+      <th>Nombres</th>
+      <th>Descripcion</th>            
+      <th>Modalidad</th>
+      <th>Version</th>
+      <th>Ponente</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for curso in cursos %}        
+    <tr>
+
+      <!-- <td data-label="N °">{{ curso.id_curso }}</td> -->
+      <td data-label="N °">{{ loop.index }}</td>
+      <td data-label="Nombres">{{ curso.nombre }}</td>
+      <td data-label="Descripcion">{{ curso.descripcion }}</td>
+      <td data-label="Modalidad">{{ curso.modalidad }}</td>
+      <!-- <td data-label="Version">{{ curso.id_version }}</td> -->
+      <td data-label="Version">{{ curso.nombre_version }}</td>
+      <!-- <td data-label="Ponente">{{ curso.id_ponente }}</td> -->
+      <td data-label="Ponente">{{ curso.nombreu + " " + curso.apellidou}}</td>
+      <td data-label="Acciones">
+        <button class="btn btn-primary edit-curso-btn" 
+        data-id="{{curso.id_curso}}" 
+        data-id-version="{{curso.id_version}}" 
+        data-id-ponente="{{curso.id_ponente}}">
+            Editar Curso Base
+        </button>
+
+        <button class="btn btn-primary more-curso-btn" 
+        data-id="{{curso.id_curso}}" 
+        data-id-version="{{curso.id_version}}" 
+        data-id-ponente="{{curso.id_ponente}}">
+            Mas Información
+        </button>
+
+        <button class="btn btn-primary del-curso-btn" 
+        data-id="{{curso.id_curso}}" 
+        data-id-version="{{curso.id_version}}" 
+        data-id-ponente="{{curso.id_ponente}}">
+            Eliminar
+        </button>                    
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+
+<!--  Modal / Tabla Emergente Actualizar Curso -->
+<div id="modal-editar" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="cerrarModalEdit()">&times;</span>
+    <h3>Editar Curso</h3>
+    <form id="form-editar-curso">
+        <input type="hidden" id="id_curso" name="id_curso">
+        <label>Nombre Curso:</label>
+        <input type="text" id="nombre" name="nombre"><br>
+        <label>Descripcion:</label>
+        <input type="text" id="descripcion" name="descripcion"><br>
+        <label>Modalidad:</label>
+        <input type="text" id="modalidad" name="modalidad"><br>
+        <!-- <label>Version:</label> -->
+        <input type="hidden" id="version" name="version"><br>
+        <!-- <label>Ponente:</label> -->
+        <input type="hidden" id="nombre_ponente" name="nombre_ponente"><br>
+        <input type="hidden" id="apellido_ponente" name="apellido_ponente"><br>
+        <input type="hidden" id="ponente" name="ponente"><br>
+        <input type="hidden" id="id_version" name="id_version">
+        <input type="hidden" id="id_ponente" name="id_ponente">
+        <button type="submit">Guardar</button>
+    </form>
+  </div>
+</div>
+
+<!--  Modal / Tabla Emergente Crear Curso -->
+<div id="modal-crear" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="cerrarModalCrear()">&times;</span>
+    <h3>Nuevo Curso</h3>
+    <form id="form-crear-curso">
+        <label>Nombre Curso:</label>
+        <input type="text" id="nombre_crear" name="nombre" required><br>
+        <label>Descripcion:</label>
+        <input type="text" id="descripcion_crear" name="descripcion" required><br>
+        <label>Modalidad:</label>
+        <input type="text" id="modalidad_crear" name="modalidad" required><br>
+        <br>
+        <button type="submit">Crear</button>
+    </form>
+  </div>
+</div>
+
+<!--  Modal / Tabla Emergente Mas Informacion Cursos -->
+<div id="modal-editar-deep" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="cerrarModalCrear()">&times;</span>
+    <h3>Informacón Curso +</h3>
+    <form id="form-crear-curso">
+    </form>
+  </div>
+</div>
+
+<!--  Modal / Tabla Emergente Mas Informacion Cursos -->
+<div id="modal-info-curso" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="cerrarModalCursos()">&times;</span>
+    <h3>Informacón Curso +</h3>
+    <!-- Tabla de expositor asignado -->
+    <table id="tabla-curso" class="table">
+      <thead>
+        <tr>
+          <th>Ponente</th>
+          <th>Acción</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <!-- Form para añadir docente -->
+    <form id="form-agregar-exp">
+      <label for="select-exp">Agregar Ponente:</label>
+      <select id="select-exp">
+          <option value="">Selecciona un ponente...</option>
+      </select>
+      <button type="submit">Agregar</button>
+    </form>
+  </div>
+</div>
+
+<br>
+
+<button onclick="" class="menu-btn-h create-btn">Agregar Curso</button>
+<button onclick="window.location.href='{{ url_for('rxls.index', tipo='cursos') }}'"
+        class="menu-btn-h rxls-btn"> Agregar Cursos Excel </button>

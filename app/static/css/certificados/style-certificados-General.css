@@ -1,0 +1,115 @@
+body {
+  font-family: 'Montserrat Alternates', sans-serif;
+  margin: 0;
+  background-color: white;
+}
+
+.encabezado {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px 30px;
+  border-bottom: 2px solid #0066b3;
+}
+
+.encabezado .logo img {
+  height: 80px;
+}
+
+.encabezado .titulo {
+  flex-grow: 1;
+  text-align: center;
+  font-size: 24px;
+  font-weight: 600;
+  color: #0066b3;
+}
+
+.encabezado .acciones {
+  display: flex;
+  gap: 10px;
+}
+
+.encabezado .acciones button {
+  background-color: white;
+  color: #0066b3;
+  border: 1px solid #0066b3;
+  padding: 6px 16px;
+  cursor: pointer;
+  font-weight: 600;
+  border-radius: 4px;
+}
+
+.contenedor-principal {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 50px;
+}
+
+.formulario {
+  background-color: #0066b3;
+  padding: 40px;
+  width: 90%;
+  max-width: 700px;
+  border-radius: 6px;
+  color: white;
+}
+
+.formulario label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.formulario input[type="text"],
+.formulario textarea {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  color: #333;
+}
+
+.formulario textarea {
+  resize: vertical;
+}
+
+.boton-enviar {
+  background-color: white;
+  color: #0066b3;
+  border: none;
+  padding: 10px 20px;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 4px;
+  float: right;
+}
+
+.flash-messages {
+  margin: 20px auto;
+  max-width: 700px;
+  text-align: center;
+}
+
+.flash-messages ul {
+  padding: 0;
+  list-style: none;
+}
+
+.flash-messages li {
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+}
+
+.flash-messages .error {
+  background-color: #ffe5e5;
+  color: red;
+}
+
+.flash-messages .success {
+  background-color: #e6ffe6;
+  color: green;
+}

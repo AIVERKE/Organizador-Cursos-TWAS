@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>403 - Acceso Denegado</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Montserrat Alternates', sans-serif;
+            padding: 20px;
+            background-color: #f8f9fa;
+            text-align: center;
+        }
+
+        .curso-contenido {
+            max-width: 900px;
+            margin: auto;
+        }
+
+        h1 {
+            color: #0074c7;
+            font-size: 72px;
+            margin-top: 50px;
+        }
+
+        h2 {
+            color: #0074c7;
+            margin-top: 30px;
+            font-family: 'Montserrat Alternates', sans-serif;
+        }
+
+        p {
+            font-size: 20px;
+            margin: 20px 0;
+            color: #333;
+        }
+
+        a {
+            color: #0074c7;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="curso-contenido">
+        <h1>403</h1>
+        <h2>Acceso Denegado</h2>
+        <p>Usted no tiene los permisos necesarios para acceder a esta funcionalidad.</p>
+        <p><a href="{{ url_for('auth.dashboard') }}">Volver al inicio</a></p>
+    </div>
+</body>
+</html>

@@ -1,0 +1,46 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Curso del Expositor</title>  
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/Expositor/CursoExp.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="curso-container">
+    <div class="encabezado-curso">
+      <input type="text" placeholder="{{nombre_curso}}" disabled>
+      <form action="/scan/scanning" method="GET">        
+        <button class="btn-qr" type="submit">Escanear QR</button>
+      </form>
+      <p>{{descripcion}}</p>
+      <button class="btn-qr">Escanear QR</button>
+    </div>
+    <div class="tabla-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Nro</th>
+            <th>Apellidos</th>
+            <th>Nombres</th>
+            <th>Origen</th>
+            <th>Correo</th>            
+          </tr>
+        </thead>
+        <tbody>          
+          {% for estudiante in estudiantes %}          
+          <tr>            
+            <td>{{estudiante.numero}}</td>
+            <td>{{estudiante.apellido}}</td>
+            <td>{{estudiante.nombre}}</td>
+            <td>{{estudiante.pais_origen}}</td>
+            <td>{{estudiante.email}}</td>                                    
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</body>
+</html>

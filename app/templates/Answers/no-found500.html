@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Error 500</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style-error.css') }}">
+
+</head>
+<body>
+   <h2 class="texto">Error Interno del Servidor</h2>
+        <p>El servidor detectó un error interno y no pudo completar su solicitud. El servidor está sobrecargado o hay un error en la aplicación.</p>
+  <div class="contenedor">
+    <div class="pantalla">
+      <span class="error-label">Error<span class="cursor">|</span></span>
+      <span class="codigo-error">500</span> <!--aqui editar el codigo de error-->
+      
+
+    </div>
+    <!-- Vapor animado -->
+    <div class="vapor vapor1"></div>
+    <div class="vapor vapor2"></div>
+    <div class="vapor vapor3"></div>
+  </div>
+</body>
+</html>

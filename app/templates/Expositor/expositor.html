@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestión Expositor</title>  
+  <link rel="stylesheet" href="{{url_for('static', filename='css/Expositor/styleExpositor.css')}}">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="top-bar">   
+    <img src="{{ url_for('static', filename='images/TWAS_Logo.webp') }}" alt="unesco_logo" class="logo">
+     <b><h1>GESTIÓN EXPOSITOR</h1></b>
+   <div class="top-actions">
+  <form action="/auth/logout" method="POST">                
+    <button type="submit">Cerrar Sesión</button>
+  </form>
+  <img src="{{ url_for('static', filename='images/umsalogo.webp') }}" alt="umsa_logo" class="logo-der">
+</div>   
+   
+  </div>
+
+  <div class="main">
+    <aside class="sidebar">
+      <h2 class="subtitulo">BIENVENIDO</h2>
+      <h3>{{nombre}}<br>{{apellido}}</h3>
+      <p>Funciones</p>
+      <ul>
+        <li><a href="{{ url_for('ponente.datos') }}" target="contenido-frame">Datos Personales</a></li>        
+        <li><a href="{{ url_for('ponente.curso') }}" target="contenido-frame">Curso</a></li>        
+        <li><a href="{{ url_for('ponente.calificacion') }}" target="contenido-frame">Calificación</a></li>
+      </ul>
+    </aside>
+
+    <main class="contenido">
+      <iframe name="contenido-frame" id="contenido-frame" src="{{ url_for('ponente.datos') }}"></iframe>
+    </main>
+  </div>
+</body>
+</html>

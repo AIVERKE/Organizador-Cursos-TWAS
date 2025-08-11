@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Calificaciones del Curso</title>  
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/Expositor/calificacionExp.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="calificacion-container">
+    <div class="tabla-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Nro</th>
+            <th>Apellidos</th>
+            <th>Nombres</th>
+            <th>Asistencias</th>
+            <th>Nota Promedio</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for estudiante in estudiantes %}
+            <tr data-id-inscripcion="{{ estudiante.id_inscripcion }}">            
+              <td>{{estudiante.nro}}</td>
+              <td>{{estudiante.apellido}}</td>
+              <td>{{estudiante.nombre}}</td>
+              <td>{{estudiante.total_asistencias}}</td>
+              <td>
+                <input 
+                  type="number" 
+                  min="0" max="100" 
+                  value="{{ estudiante.nota_final }}" 
+                  onchange="confirmarCambio(this)">
+              </td>   
+              <td class="estado"></td>
+            </tr>                    
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    function actualizarEstado(input) {
+      const nota = parseFloat(input.value);
+      const tr = input.closest("tr");
+
+      const tdAsistencias = tr.querySelector("td:nth-child(3)"); // tercera columna: asistencias
+      const asistencias = parseInt(tdAsistencias.textContent);
+
+      const tdEstado = input.parentElement.nextElementSibling;
+
+      if (asistencias < 1) {
+        tdEstado.textContent = "Abandono";
+        tdEstado.className = "estado abandono";
+      } else if (nota >= 71) {
+        tdEstado.textContent = "Aprobado";
+        tdEstado.className = "estado aprobado";
+      } else if (nota >= 51) {
+        tdEstado.textContent = "Participacion";
+        tdEstado.className = "estado participacion";
+      } else {
+        tdEstado.textContent = "Abandono";
+        tdEstado.className = "estado abandono";
+      }
+    }
+
+    // Ejecutar al cargar para valores ya existentes
+    window.onload = () => {
+      document.querySelectorAll("input[type='number']").forEach(input => actualizarEstado(input));
+    };
+  </script>
+  <script>
+    function confirmarCambio(input) {
+      const nuevaNota = parseFloat(input.value);
+      const tr = input.closest("tr");
+      const id_inscripcion = tr.getAttribute("data-id-inscripcion");
+
+      if (confirm(`¿Deseas cambiar la nota a ${nuevaNota}?`)) {
+        fetch("/ponente/actualizar_nota", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            id_inscripcion: id_inscripcion,
+            nota_final: nuevaNota
+          })
+        })
+        .then(response => {
+          if (!response.ok) throw new Error("Error en la actualización");
+          return response.json();
+        })
+        .then(data => {
+          alert("Nota actualizada");
+          actualizarEstado(input);
+          input.defaultValue = nuevaNota;  // Actualiza el valor base
+        })
+        .catch(error => {
+          alert("Error al actualizar la nota.");
+          input.value = input.defaultValue; // Revierte si hay error
+          console.error(error);
+        });
+      } else {
+        input.value = input.defaultValue; // Revertir si cancela
+      }
+    }
+  </script>
+
+</body>
+</html>

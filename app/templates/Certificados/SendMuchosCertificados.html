@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Gestión Coordinador</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/certificados/style-certificados-General.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <div class="encabezado">
+    <div class="logo">
+      <img src="{{ url_for('static', filename='images/TWAS_Logo.webp') }}" alt="UNESCO">
+    </div>
+    <div class="titulo">
+      GESTIÓN COORDINADOR
+    </div>
+    <div class="acciones">
+      <button onclick="location.href='/coordinador'">Coordinador</button>
+      <button onclick="location.href='/logout'">Cerrar Sesión</button>
+    </div>
+    <div class="logo">
+     <img src="{{ url_for('static', filename='images/umsalogo.webp') }}" alt="UMSA">
+    </div>
+  </div>
+
+  <div class="contenedor-principal">
+<form method="POST" action="{{ url_for('certificate.enviar_certificados_todos', rol_boton=rol_boton) }}" class="formulario">
+  <label for="asunto">Asunto:</label>
+  <input type="text" id="asunto" name="asunto" required value="{{ asunto|default('Tu certificado generado') }}">
+
+  <label for="mensaje">Cuerpo</label>
+  <textarea id="mensaje" name="mensaje" rows="10" required>{{ mensaje|default('Hola, adjuntamos tu certificado.') }}</textarea>
+
+  <button type="submit" class="boton-enviar">Enviar Certificados</button>
+</form>
+
+
+  </div>
+
+  <div class

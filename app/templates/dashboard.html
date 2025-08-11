@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Gestión Estudiante</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styleinicio.css') }}"> 
+</head>
+<body>
+  <div class="top-bar">
+    <div class="logo">
+      <!-- <img src="../static/images/logo-UNESCO.png" alt="UNESCO Logo"> -->
+    </div>
+    <div class="title">GESTIÓN ESTUDIANTE</div>
+    <div class="buttons">
+      <form action="/auth/logout" method="POST">
+        <button type="button">Estudiante</button>
+        <button type="submit">Cerrar Sesión</button>
+      </form>
+    </div>
+    <div class="logo-right">
+      <img src="/static/images/umsalogo.webp" alt="UMSA Logo">
+    </div>
+  </div>
+  <div class="content">
+    <a href="#" class="back-arrow">←</a>
+    <h2>BIENVENIDO</h2>
+    <h3>{{ estudiante[1] }}</h3>
+    <h4>Funciones</h4>
+    <div class="funciones">
+      <a href="#">Datos Personales</a>
+      <a href="#">Cursos</a>
+      <a href="#">Asistencia</a>
+    </div>
+  </div>
+</body>
+</html>

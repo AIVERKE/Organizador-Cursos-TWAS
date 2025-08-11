@@ -1,0 +1,129 @@
+/* static/css/cursoExp.css */
+body {
+  font-family: 'Montserrat Alternates', sans-serif;
+  margin: 0;
+  padding: 0;
+}
+.titulo{
+  font-size: 48px;
+}
+.subtitulo{
+  font-size: 24px;
+}
+.texto{
+  font-size: 14px;
+}
+.curso-container {
+  padding: 20px;
+}
+
+.encabezado-curso {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.encabezado-curso input {
+  padding: 10px;
+  border: 1px solid #0070c0;
+  width: 300px;
+  font-size: 16px;
+}
+
+.btn-qr {
+  background-color: #0070c0;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.btn-qr:hover {
+  background-color: #005999;
+}
+
+.tabla-container {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 16px;
+}
+
+th, td {
+  border: 1px solid #0070c0;
+  padding: 10px;
+  text-align: left;
+}
+
+th {
+  background-color: #f2f8ff;
+}
+
+
+@media (max-width: 768px) {
+  .titulo {
+    font-size: 28px;
+  }
+
+  .subtitulo {
+    font-size: 18px;
+  }
+
+  .texto {
+    font-size: 13px;
+  }
+
+  .curso-container {
+    padding: 15px;
+  }
+
+  .encabezado-curso {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .encabezado-curso input {
+    width: 100%;
+    font-size: 14px;
+    padding: 8px;
+  }
+
+  .btn-qr {
+    width: 100%;
+    font-size: 14px;
+    padding: 10px;
+  }
+
+  table {
+    font-size: 14px;
+  }
+
+  th, td {
+    padding: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .titulo {
+    font-size: 22px;
+  }
+
+  .encabezado-curso input,
+  .btn-qr {
+    font-size: 13px;
+  }
+
+  table {
+    font-size: 13px;
+  }
+
+  th, td {
+    padding: 6px;
+  }
+}

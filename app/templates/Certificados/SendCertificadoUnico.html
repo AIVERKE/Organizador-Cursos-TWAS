@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Enviar Certificado</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/certificados/enviar_certificado.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <header>
+    <img src="{{ url_for('static', filename='images/TWAS_Logo.webp') }}" alt="Logo UNESCO" class="logo">
+    
+    <div class="titulo">GESTIÓN COORDINADOR</div>
+    
+    <div class="botones-header">
+      <button onclick="location.href='/coordinador'">Coordinador</button>
+      <button onclick="location.href='/logout'">Cerrar Sesión</button>
+    </div>
+
+    <img src="{{ url_for('static', filename='images/umsalogo.webp') }}" alt="Logo UMSA" class="logo">
+  </header>
+
+  <main class="contenido">
+
+    <div class="info-izquierda">
+      <a href="javascript:history.back()" class="volver">←</a>
+      <p class="enviar-a">Enviar Certificado a:<br> <strong>{{ student }} {{ apellido }}</strong></p>
+      <p class="email-label">Email</p>
+      <!-- Mostrar email en un input readonly para que se pueda copiar pero no modificar -->
+      <input type="email" class="email-input" name="email" value="{{ email }}" readonly>
+    </div>
+
+    <form method="POST" class="formulario">
+      <label for="asunto">Asunto:</label>
+      <input type="text" id="asunto" name="asunto" required
+             value="{{ asunto|default('Tu certificado generado') }}">
+
+      <label for="mensaje">Cuerpo</label>
+      <textarea id="mensaje" name="mensaje" rows="10" required>{{ mensaje|default('Hola, adjuntamos tu certificado.') }}</textarea>
+
+      <button type="submit" class="boton-enviar">Enviar Certificado</button>
+    </form>
+
+  </main>
+
+</body>
+</html>

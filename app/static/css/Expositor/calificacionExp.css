@@ -1,0 +1,118 @@
+
+body {
+  font-family: 'Montserrat Alternates', sans-serif;
+  margin: 0;
+  padding: 0;
+}
+.titulo{
+  font-size: 48px;
+}
+.subtitulo{
+  font-size: 24px;
+}
+.texto{
+  font-size: 14px;
+}
+
+.calificacion-container {
+  padding: 20px;
+} 
+
+.tabla-container {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 16px;
+}
+
+th, td {
+  border: 1px solid #0070c0;
+  padding: 10px;
+  text-align: center;
+}
+
+th {
+  background-color: #f2f8ff;
+}
+
+input[type="number"] {
+  width: 60px;
+  padding: 5px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.estado.aprobado {
+  background-color: #c8f7c5;
+  color: #1e7e34;
+  font-weight: bold;
+}
+
+.estado.participacion {
+  background-color: #fff7c2;
+  color: #b07b00;
+  font-weight: bold;
+}
+
+.estado.abandono {
+  background-color: #f8d7da;
+  color: #a71d2a;
+  font-weight: bold;
+}
+
+
+@media (max-width: 768px) {
+  .titulo {
+    font-size: 28px;
+  }
+
+  .subtitulo {
+    font-size: 18px;
+  }
+
+  .texto {
+    font-size: 13px;
+  }
+
+  .calificacion-container {
+    padding: 15px;
+  }
+
+  table {
+    font-size: 14px;
+  }
+
+  th, td {
+    padding: 8px;
+  }
+
+  input[type="number"] {
+    width: 100%;
+    max-width: 80px;
+    font-size: 13px;
+    padding: 6px;
+  }
+}
+
+@media (max-width: 480px) {
+  .titulo {
+    font-size: 22px;
+  }
+
+  table {
+    font-size: 13px;
+  }
+
+  th, td {
+    padding: 6px;
+  }
+
+  input[type="number"] {
+    font-size: 12px;
+    max-width: 60px;
+    padding: 5px;
+  }
+}
