@@ -1,313 +1,103 @@
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-html {
-  scroll-behavior: smooth;
-  scroll-padding-top: 100px; /* según altura de tu navbar */
-}
+/* Reset + tipografía */
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 100px; }
 body {
-  font-family: sans-serif;
+  font-family: 'Montserrat Alternates', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
   line-height: 1.6;
-  margin: 0;
-  padding-top: 95px; /* Ajusta si tu navbar es más alto o más bajo */
+  padding-top: 84px; /* espacio para navbar fixed-top */
 }
 
-.header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem;
-  border-bottom: 4px solid #026caf;
-  background-color: rgb(255, 255, 255); /* o el color que estés usando */
-  z-index: 1000;
-}
-.titulo{
-  font-size: 48px;
-}
-.subtitulo{
-  font-size: 24px;
-}
-.texto{
-  font-size: 14px;
-}
-.logo {
-  height: 65px;
-}
-.nav {
-  display: flex;
-  gap: 1rem;
-  background-color: white;
-}
+/* I18N: mostrar/ocultar según idioma */
+.lang-es .i18n-en { display: none !important; }
+.lang-en .i18n-es { display: none !important; }
 
-.nav a {
-  text-decoration: none;
-  color: #333; 
-  font-weight: bold;
-  padding: 5px 5px;
-  transition: all 0.3s ease;
-}
+/* Encabezados y textos principales (hereda Bootstrap) */
+.titulo { font-size: clamp(28px, 4vw, 48px); }
+.subtitulo { font-size: clamp(18px, 2.6vw, 24px); }
+.texto { font-size: clamp(14px, 1.6vw, 16px); }
 
-.nav a.active {
-  color: #0077c2;
-  background-color: #ffffff; 
-  border-radius: 1px;
-}
+/* Logos */
+.logo { height: 65px; }
+.logo-umsa { height: 48px; width: auto; }
 
-.nav a:hover {
-  color: #0077c2; 
-  background-color: #eeeeee; 
-  border-radius: 1px;
-}
-
-.login-container {
-  margin-right: 15px;
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  transition: color 0.3s ease;
-}
-
-.btn-login {
-  margin-right: 15px;
-  border: 1px solid #0077c2;
-  padding: 0.5rem 1rem;
-  background: transparent;
-  color: #0077c2;
-  cursor: pointer;
-  transition: background 0.3s ease, color 0.3s ease;
-}
-
-.btn-login:hover {
-  background: #0077c2;
-  color: white;
-}
-
-.logo-umsa {
-  height: 80px;
-  width: 50px;
-}
+/* HERO */
 .inicio {
   background-image: url('/static/images/Lapaz-city.webp');
   background-size: cover;
   background-position: center;
-  padding: 6rem 2rem;
-  color: white;
+  min-height: 90vh;
+  color: #fff;
   position: relative;
-  text-align: right;
-  height: 95vh;
-
-}
-
-.inicio .overlay {
-  background: rgba(0,0,0,0.3);
-  padding: 2rem;
-}
-
-.informacion {
-  text-align: center;
-  padding: 2rem;
-  background: #fff;
-}
-.informacion h2 {
-  color: #0077c2;
-  margin-bottom: 1rem;
-}
-.tabla-horario table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-bottom: 2rem;
-}
-.tabla-horario th, .tabla-horario td {
-  border: 2px solid #0077c2;
-  padding: 0.5rem;
-  text-align: center;
-}
-.ubicacion {
-  color: #0077b5;
-  padding: 2rem 0;
-  background: #ffffff;
-  text-align: center;
-  height: 600px;
-}
-
-.mapa-placeholder {
-  width: 98vw;
-  height: 71vh;
-  margin: 0 auto;
-  overflow: hidden;
-}
-
-.mapa-placeholder iframe {
-  width:100%;
-  height: 100%;
-  border: 0;
-  display: block;
-}
-.nosotros {
-  padding: 2rem;
-  text-align: center;
-}
-
-/* --- SECCIÓN NOSOTROS --- */
-.nosotros {
-  padding: 2rem;
-  text-align: center;
-}
-
-.nosotros h2 {
-  color: #0077c2;
-  margin-bottom: 1rem;
-}
-
-.nosotros p {
-  max-width: 800px;
-  margin: 0 auto 2rem auto;
-  font-size: 1.1rem;
-}
-
-.organizadores {
   display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 2rem;
+}
+.inicio .overlay {
+  background: rgba(0, 0, 0, 0.35);
 }
 
+/* Información */
+.informacion { background: #fff; }
+
+/* Tablas (se apoya en .table-* de Bootstrap) */
+.tabla-horario table { width: 100%; }
+
+/* Ubicación */
+.ubicacion { background: #ffffff; color: #0077b5; }
+
+/* Nosotros */
+.nosotros h2 { color: #0077c2; }
+.organizadores { /* el grid lo maneja Bootstrap; mantenemos efectos */
+  gap: 1.5rem;
+}
 .organizador {
   background: #f9f9f9;
   padding: 1rem;
   border-radius: 12px;
   text-align: center;
-  width: 250px;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
-
 .organizador img {
-  width: 100%;
-  height: 250px;
+  width: 220px;
+  height: 220px;
   object-fit: cover;
   border-radius: 50%;
-  margin-bottom: 1rem;
+  margin: 0 auto 1rem auto;
+  display: block;
   border: 4px solid #0077c2;
 }
-
-.organizador h4 {
-  margin: 0.5rem 0 0.2rem 0;
-  color: #0077c2;
-}
-
-.organizador p {
-  margin: 0;
-  color: #333;
-  font-size: 0.95rem;
-}
-
+.organizador h4 { margin: 0.5rem 0 0.2rem; color: #0077c2; }
+.organizador p { margin: 0; color: #333; }
 .organizador:hover {
-  transform: translateY(-10px) scale(1.03);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 10px 20px rgba(0,0,0,.15);
 }
 
-/* --- FOOTER --- */
+/* Footer */
 .footer {
   background: #314163;
-  color: white;
-  padding: 2rem 1rem;
-  width: 100%;
+  color: #fff;
+  padding: 2rem 0;
 }
-
-.footer-top {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: 2rem;
+.footer .social-icons {
+  display: flex; justify-content: center; gap: 1rem; margin-top: .5rem;
 }
-
-.footer-bottom {
-  margin-top: 1rem;
-  text-align: center;
+.footer .social-icons .icon {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 45px; height: 45px; background: #fff; border-radius: 50%;
+  color: #314163; font-size: 1.2rem;
+  transition: transform .3s ease, box-shadow .3s ease, background .3s ease, color .3s ease;
 }
+.footer .social-icons .icon:hover { transform: scale(1.12); box-shadow: 0 8px 16px rgba(0,0,0,.2); }
+.footer .social-icons .facebook:hover { background:#3b5998; color:#fff; }
+.footer .social-icons .twitter:hover { background:#1da1f2; color:#fff; }
+.footer .social-icons .instagram:hover { background:#e4405f; color:#fff; }
+.footer .social-icons .linkedin:hover { background:#0077b5; color:#fff; }
+.footer .social-icons .youtube:hover { background:#ff0000; color:#fff; }
 
-.social-icons {
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
-  margin-top: 1rem;
-}
+.dev-bba { font-size: 12px; text-align: right; color: #ffffff; }
+.dev-bba a { color: #9e9fa1; text-decoration: none; transition: color .3s ease; }
+.dev-bba a:hover { color: #767a07; }
 
-.social-icons .icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 45px;
-  height: 45px;
-  background-color: white;
-  border-radius: 50%;
-  text-decoration: none;
-  color: #314163;
-  font-size: 1.2rem;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.social-icons .icon:hover {
-  transform: scale(1.2);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-}
-
-/* Colores por red (opcional) */
-.social-icons .facebook:hover { background-color: #3b5998; color: white; }
-.social-icons .twitter:hover { background-color: #1da1f2; color: white; }
-.social-icons .instagram:hover { background-color: #e4405f; color: white; }
-.social-icons .linkedin:hover { background-color: #0077b5; color: white; }
-.social-icons .youtube:hover { background-color: #ff0000; color: white; }
-
-.dev-bba {
-  font-size: 12px;               
-  text-align: right;            
-  color: #ffffff;                   
-  padding: 1rem;
-}
-
-.dev-bba a {
-  color: #9e9fa1;                
-  text-decoration: none;
-  transition: color 0.3s ease;   
-}
-
-.dev-bba a:hover {
-  color: #767a07;               
-}
-
-
-/* RESPONSIVE */
+/* Responsive extras (Bootstrap cubre la mayoría) */
 @media (max-width: 768px) {
-  .header {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  .nav {
-    flex-wrap: wrap;
-  }
-  .inicio {
-    text-align: center;
-  }
-  .footer-top {
-    flex-direction: column;
-  }
-  .organizadores {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .organizador {
-    width: 80%;
-  }
-}
-html {
-  scroll-behavior: smooth;
+  .inicio { min-height: 70vh; }
 }
