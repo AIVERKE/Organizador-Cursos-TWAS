@@ -1,5 +1,5 @@
 FLASK_ENV=development
-DATABASE_URL=postgresql://organizador_cursos_twas_user:ePjZNi3bdzE3DPKywlnoiYlQtjWVEFK1@dpg-d2dlevadbo4c73blfb2g-a.oregon-postgres.render.com/organizador_cursos_twas?sslmode=require
+DATABASE_URL=link_base_de_datos
 SECRET_KEY=mi_clave_segura_1234
 JWT_SECRET_KEY=mi_clave_segura_1234
 MAIL_SERVER=smtp.gmail.com
