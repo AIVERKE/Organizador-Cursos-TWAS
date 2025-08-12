@@ -1,11 +1,12 @@
-# .env
 FLASK_ENV=development
-DATABASE_URL=postgresql://{tu_usuario_postgres}:{tu_contraseña}@localhost:5432/{tu_base_de_datos}
+DATABASE_URL=postgresql://organizador_cursos_twas_user:ePjZNi3bdzE3DPKywlnoiYlQtjWVEFK1@dpg-d2dlevadbo4c73blfb2g-a.oregon-postgres.render.com/organizador_cursos_twas?sslmode=require
 SECRET_KEY=mi_clave_segura_1234
+JWT_SECRET_KEY=mi_clave_segura_1234
 MAIL_SERVER=smtp.gmail.com
 MAIL_USERNAME=mquispel@fcpn.edu.bo
 MAIL_PASSWORD=yepc sjha jibi qndt
-
+CORS_ORIGINS=*
+REMEMBER_COOKIE_DURATION=1
 
 password-aplication : L8$d%Qw#92Z@mP!
 correo :   battlebreadband@gmail.com 
