@@ -68,7 +68,7 @@ pip install -r requirements.txt
 psql -U postgres < sql.sql
 database/init_db.sql o scripts_sql/estructura_inicial.sql
 `
-
+ 
 4. Ajustes iniciales: Copiar el archivo de ejemplo de configuración de entorno (patuEnv.txt) y editar variables.
 `cp patuEnv.txt .env`
 
