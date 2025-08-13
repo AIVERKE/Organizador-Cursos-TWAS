@@ -12,7 +12,7 @@
   <!-- Bootstrap (local) -->
   <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
 
-  <!-- Tu CSS al final para poder sobrescribir -->
+  <!-- CSS al final para poder sobrescribir -->
   <link rel="stylesheet" href="{{ url_for('static', filename='css/styleinicio.css') }}">
 </head>
 <body>
@@ -22,7 +22,7 @@
   <div class="container">
     <a class="navbar-brand d-flex align-items-center gap-2" href="https://twas.org/">
       <img src="{{ url_for('static', filename='images/Unesco-TWAS.jpg') }}" alt="UNESCO" class="logo me-2" style="height:48px;">
-      <span class="fw-semibold">TWAS</span>
+      <img src="{{ url_for('static', filename='images/TYAN.webp') }}" alt="UNESCO" class="logo me-2" style="height:48px;">
     </a>
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain" aria-controls="navMain" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,7 +52,7 @@
         <!-- Botón Traductor -->
         <button id="btnLang" class="btn btn-outline-secondary btn-sm" type="button" aria-label="Change language">
           <i class="fa-solid fa-globe"></i>
-          <span class="i18n i18n-es">EN</span><span class="i18n i18n-en">ES</span>
+          <span class="i18n i18n-es">ENGLISH</span><span class="i18n i18n-en">ESPAÑOL</span>
         </button>
 
         <!-- Botón Login -->
@@ -82,7 +82,8 @@
         <span class="i18n i18n-en">UNIVERSIDAD MAYOR DE SAN ANDRÉS</span>
       </h3>
       <p class="texto mb-0">
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Optio fuga amet cum deserunt asperiores. Laboriosam, provident maxime consectetur qui corporis ducimus, cumque dolores illo officia id, odit incidunt ipsa.
+        <span class="i18n i18n-es">Da la bienvenida a todos los ponentes y participantes al Curso de Postgrado <br> Organizado por La Academia Mundial de Ciencias(TWAS) y Red de jóvenes afiliados/antiguos alumnos de la TWAS (TYAN) <br> al Curso de PostGrado 3ra Version Universidad Mayor de San Andres La Paz - Bolivia</span>
+        <span class="i18n i18n-en">Welcomes all the speakers and participants to the Postgraduate Course <br> Organized by The World Academy of Sciences(TWAS) and TWAS Young affiliates/alumni network (TYAN) <br> to the 3rd Version Postgraduate Course at the Universidad Mayor de San Andres, La Paz, Bolivia</span> 
       </p>
     </div>
   </div>
@@ -99,61 +100,143 @@
       Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin ac ligula vitae nunc aliquet tincidunt. Lorem ipsum dolor sit amet consectetur adipisicing elit. Ullam necessitatibus minus soluta provident aliquid tempore exercitationem, doloremque repellat sint repudiandae reiciendis dolorum doloribus reprehenderit illum accusamus, sed quasi! Voluptatum, ex!
     </p>
 
-    <h2 class="h4 text-center mb-4">
+    <h2 class="h4 text-center mb-4"> 
       <span class="i18n i18n-es">Calendario de Eventos</span>
       <span class="i18n i18n-en">Events Calendar</span>
+      <br>
+      <span class="i18n-es">Escuelas prácticas TYAN-TWAS en Bolivia, 2025</span>
+      <span class="i18n-en">TYAN-TWAS hands-on schools in Bolivia, 2025</span>
     </h2>
 
     <div class="tabla-horario">
       <h3 class="h5 mb-2">
-        <span class="i18n i18n-es">Cursos - Turno Mañana</span>
-        <span class="i18n i18n-en">Courses - Morning</span>
+        <span class="i18n i18n-es">Turno Mañana</span>
+        <span class="i18n i18n-en">Morning</span>
       </h3>
       <div class="table-responsive mb-4">
-        <table class="table table-bordered table-striped align-middle">
-          <thead class="table-primary">
-            <tr>
-              <th><span class="i18n i18n-es">Horario</span><span class="i18n i18n-en">Time</span></th>
-              <th><span class="i18n i18n-es">Lunes</span><span class="i18n i18n-en">Monday</span></th>
-              <th><span class="i18n i18n-es">Martes</span><span class="i18n i18n-en">Tuesday</span></th>
-              <th><span class="i18n i18n-es">Miércoles</span><span class="i18n i18n-en">Wednesday</span></th>
-              <th><span class="i18n i18n-es">Jueves</span><span class="i18n i18n-en">Thursday</span></th>
-              <th><span class="i18n i18n-es">Viernes</span><span class="i18n i18n-en">Friday</span></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr><td>08:00</td><td>Clase</td><td>Clase</td><td>Clase</td><td>Clase</td><td>Clase</td></tr>
-            <tr><td>08:00</td><td>Clase</td><td>Clase</td><td>Clase</td><td>Clase</td><td>Clase</td></tr>
-            <tr><td>08:00</td><td>Clase</td><td>Clase</td><td>Clase</td><td>Clase</td><td>Clase</td></tr>
-            <tr><td>08:00</td><td>Clase</td><td>Clase</td><td>Clase</td><td>Clase</td><td>Clase</td></tr>
-          </tbody>
-        </table>
-      </div>
+    <table class="table table-bordered table-striped align-middle">
+                <thead class="table-primary">
+                    <tr>
+                        <th><span class="i18n i18n-es">Horario</span><span class="i18n i18n-en">Time</span></th>
+                        <th><span class="i18n i18n-es">Lunes 6 de Octubre</span><span class="i18n i18n-en">Monday October 6</span></th>
+                        <th><span class="i18n i18n-es">Martes 7 de Octubre</span><span class="i18n i18n-en">Tuesday October 7</span></th>
+                        <th><span class="i18n i18n-es">Miércoles 8 de Octubre</span><span class="i18n i18n-en">Wednesday October 8</span></th>
+                        <th><span class="i18n i18n-es">Jueves 9 de Octubre</span><span class="i18n i18n-en">Thursday October 9</span></th>
+                        <th><span class="i18n i18n-es">Viernes 10 de Octubre</span><span class="i18n i18n-en">Friday October 10</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>8:30-8:45</td>
+                        <td><span class="i18n i18n-es">Registro</span><span class="i18n i18n-en">Registration</span></td>
+                        <td><span class="i18n i18n-es">Registro</span><span class="i18n i18n-en">Registration</span></td>
+                        <td><span class="i18n i18n-es">Registro</span><span class="i18n i18n-en">Registration</span></td>
+                        <td><span class="i18n i18n-es">Registro</span><span class="i18n i18n-en">Registration</span></td>
+                        <td><span class="i18n i18n-es">Registro</span><span class="i18n i18n-en">Registration</span></td>
+                    </tr>
+                    <tr>
+                        <td>9:00-9:45</td>
+                        <td>
+                            <span class="i18n i18n-es">Inauguración del evento:</span>
+                            <span class="i18n i18n-en">Event opening:</span> 
+                            <br>
+                            <ul>
+                                <li><span class="i18n i18n-es">Dra. Maria Eugenia Garcia, <br>Rectora de la Universidad Mayor de San Andrés</span>
+                                    <span class="i18n i18n-en">Dr. Maria Eugenia Garcia, <br>Rector of the Universidad Mayor de San Andrés</span></li>
+                                <li><span class="i18n i18n-es">Dr. Marcelo Knobel,<br> Director Ejecutivo de TWAS</span>
+                                    <span class="i18n i18n-en">Dr. Marcelo Knobel,<br> Executive Director of TWAS</span></li>
+                                <li><span class="i18n i18n-es">Dr. Max Paoli,<br> Coordinador General TYAN-TWAS</span>
+                                    <span class="i18n i18n-en">Dr. Max Paoli,<br> General Coordinator TYAN-TWAS</span></li>
+                                <li><span class="i18n i18n-es">Dr. André João,<br> Jefe del Sector de Cooperación Cultural y Educativa</span>
+                                    <span class="i18n i18n-en">Dr. André João,<br> Head of the Cultural and Educational Cooperation Sector</span></li>
+                                <li><span class="i18n i18n-es">M.Sc. Aldo Valdez,<br> Decano de la Facultad de FCPN</span>
+                                    <span class="i18n i18n-en">M.Sc. Aldo Valdez,<br> Dean of the Faculty of FCPN</span></li>
+                                <li><span class="i18n i18n-es">Ing. Jorge Vásquez, <br>Jefe del Programa de Ingeniería Química</span>
+                                    <span class="i18n i18n-en">Ing. Jorge Vásquez, <br>Head of the Chemical Engineering Program</span></li>
+                            </ul>
+                        </td>
+                        <td>
+                            <ul>
+                                <li><span class="i18n i18n-es">Dr. Franco Cabrerizo (Argentina),<br> presentación oral</span>
+                                    <span class="i18n i18n-en">Dr. Franco Cabrerizo (Argentina),<br> oral presentation</span></li>
+                                <li><span class="i18n i18n-es">Dr. Warshi Dandeniya (Sri Lanka),<br> presentación oral</span>
+                                    <span class="i18n i18n-en">Dr. Warshi Dandeniya (Sri Lanka),<br> oral presentation</span></li>
+                            </ul>
+                        </td>
+                        <td>
+                            <span class="i18n i18n-es">Dra. Mónica Izurieta (Ecuador),<br> presentación oral</span>
+                            <span class="i18n i18n-en">Dr. Mónica Izurieta (Ecuador),<br> oral presentation</span>
+                        </td>
+                        <td>
+                            <span class="i18n i18n-es">Dr. Ranga Ambati (India),<br> presentación oral</span>
+                            <span class="i18n i18n-en">Dr. Ranga Ambati (India),<br> oral presentation</span>
+                        </td>
+                        <td>
+                            <span class="i18n i18n-es">Dr. Pablo Bolaños (Costa Rica),<br> presentación oral</span>
+                            <span class="i18n i18n-en">Dr. Pablo Bolaños (Costa Rica),<br> oral presentation</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>09:45-10:00</td>
+                        <td><span class="i18n i18n-es">Descanso</span><span class="i18n i18n-en">Break</span></td>
+                        <td><span class="i18n i18n-es">Descanso</span><span class="i18n i18n-en">Break</span></td>
+                        <td><span class="i18n i18n-es">Descanso</span><span class="i18n i18n-en">Break</span></td>
+                        <td><span class="i18n i18n-es">Descanso</span><span class="i18n i18n-en">Break</span></td>
+                        <td><span class="i18n i18n-es">Descanso</span><span class="i18n i18n-en">Break</span></td>
+                    </tr>
+                    <tr>
+                        <td>10:00-12:00</td>
+                        <td><span class="i18n i18n-es">Cursos teóricos 1,2,3,4</span><span class="i18n i18n-en">Theoretical courses 1,2,3,4</span></td>
+                        <td><span class="i18n i18n-es">Cursos teóricos 1,2,3,4</span><span class="i18n i18n-en">Theoretical courses 1,2,3,4</span></td>
+                        <td><span class="i18n i18n-es">Cursos teóricos 1,2,3,4</span><span class="i18n i18n-en">Theoretical courses 1,2,3,4</span></td>
+                        <td><span class="i18n i18n-es">Cursos teóricos 1,2,3,4</span><span class="i18n i18n-en">Theoretical courses 1,2,3,4</span></td>
+                        <td>
+                            <span class="i18n i18n-es">Cursos teóricos 1,2,3,4</span>
+                            <span class="i18n i18n-en">Theoretical courses 1,2,3,4</span>
+                            <br>
+                            <span class="i18n i18n-es">Clausura del evento:</span>
+                            <span class="i18n i18n-en">Closing of the event:</span>
+                            <ul>
+                                <li><span class="i18n i18n-es">Dra. Maria Eugenia Garcia, Rectora de la Universidad Mayor de San Andrés</span>
+                                    <span class="i18n i18n-en">Dr. Maria Eugenia Garcia, Rector of the Universidad Mayor de San Andrés</span></li>
+                                <li><span class="i18n i18n-es">M.Sc. Aldo Valdez, Decano de la Facultad de FCPN</span>
+                                    <span class="i18n i18n-en">M.Sc. Aldo Valdez, Dean of the Faculty of FCPN</span></li>
+                                <li><span class="i18n i18n-es">Ing. Jorge Vásquez, Jefe del Programa de Ingeniería Química</span>
+                                    <span class="i18n i18n-en">Ing. Jorge Vásquez, Head of the Chemical Engineering Program</span></li>
+                            </ul>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
-      <h3 class="h5 mb-2">
-        <span class="i18n i18n-es">Cursos - Turno Tarde</span>
-        <span class="i18n i18n-en">Courses - Afternoon</span>
-      </h3>
-      <div class="table-responsive">
-        <table class="table table-bordered table-striped align-middle">
-          <thead class="table-primary">
-            <tr>
-              <th><span class="i18n i18n-es">Horario</span><span class="i18n i18n-en">Time</span></th>
-              <th><span class="i18n i18n-es">Lunes</span><span class="i18n i18n-en">Monday</span></th>
-              <th><span class="i18n i18n-es">Martes</span><span class="i18n i18n-en">Tuesday</span></th>
-              <th><span class="i18n i18n-es">Miércoles</span><span class="i18n i18n-en">Wednesday</span></th>
-              <th><span class="i18n i18n-es">Jueves</span><span class="i18n i18n-en">Thursday</span></th>
-              <th><span class="i18n i18n-es">Viernes</span><span class="i18n i18n-en">Friday</span></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr><td>14:00</td><td>Clase</td><td>Clase</td><td>Clase</td><td>Clase</td><td>Clase</td></tr>
-            <tr><td>14:00</td><td>Clase</td><td>Clase</td><td>Clase</td><td>Clase</td><td>Clase</td></tr>
-            <tr><td>14:00</td><td>Clase</td><td>Clase</td><td>Clase</td><td>Clase</td><td>Clase</td></tr>
-            <tr><td>14:00</td><td>Clase</td><td>Clase</td><td>Clase</td><td>Clase</td><td>Clase</td></tr>
-            <tr><td>14:00</td><td>Clase</td><td>Clase</td><td>Clase</td><td>Clase</td><td>Clase</td></tr>
-          </tbody>
-        </table>
+        <h3 class="h5 mb-2">
+            <span class="i18n i18n-es">Turno Tarde</span>
+            <span class="i18n i18n-en">Afternoon</span>
+        </h3>
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped align-middle">
+                <thead class="table-primary">
+                    <tr>
+                        <th><span class="i18n i18n-es">Horario</span><span class="i18n i18n-en">Time</span></th>
+                        <th><span class="i18n i18n-es">Lunes 6 de Octubre</span><span class="i18n i18n-en">Monday October 6</span></th>
+                        <th><span class="i18n i18n-es">Martes 7 de Octubre</span><span class="i18n i18n-en">Tuesday October 7</span></th>
+                        <th><span class="i18n i18n-es">Miércoles 8 de Octubre</span><span class="i18n i18n-en">Wednesday October 8</span></th>
+                        <th><span class="i18n i18n-es">Jueves 9 de Octubre</span><span class="i18n i18n-en">Thursday October 9</span></th>
+                        <th><span class="i18n i18n-es">Viernes 10 de Octubre</span><span class="i18n i18n-en">Friday October 10</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>14:00-17:00</td>
+                        <td></td>
+                        <td><span class="i18n i18n-es">Cursos prácticos 1,2,3,4</span><span class="i18n i18n-en">Practical courses 1,2,3,4</span></td>
+                        <td><span class="i18n i18n-es">Cursos prácticos 1,2,3,4</span><span class="i18n i18n-en">Practical courses 1,2,3,4</span></td>
+                        <td><span class="i18n i18n-es">Cursos prácticos 1,2,3,4</span><span class="i18n i18n-en">Practical courses 1,2,3,4</span></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
       </div>
     </div>
   </div>
@@ -214,6 +297,14 @@
           <p><span class="i18n i18n-es">Logística Académica</span><span class="i18n i18n-en">Academic Logistics</span></p>
         </div>
       </div>
+       <div class="row g-4 organizadores">
+      <div class="col-12 col-sm-6 col-lg-4">
+        <div class="organizador h-100">
+          <img src="/static/images/org1.jpg" alt="Organizador 1">
+          <h4>Dr. Alan Maldonado</h4>
+          <p><span class="i18n i18n-es">Coordinador General</span><span class="i18n i18n-en">General Coordinator</span></p>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -254,29 +345,7 @@
 
 <!-- Bootstrap (local) -->
 <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
-
-<!-- Traductor simple ES/EN -->
-<script>
-(function() {
-  const root = document.documentElement; // <html>
-  const btn = document.getElementById('btnLang');
-
-  // Persistir preferencia
-  const saved = localStorage.getItem('lang') || 'es';
-  setLang(saved);
-
-  btn?.addEventListener('click', () => {
-    const next = root.classList.contains('lang-es') ? 'en' : 'es';
-    setLang(next);
-  });
-
-  function setLang(code) {
-    root.classList.toggle('lang-es', code === 'es');
-    root.classList.toggle('lang-en', code === 'en');
-    localStorage.setItem('lang', code);
-  }
-})();
-</script>
+<script src="{{ url_for('static', filename='js/botonTraductor.js') }}"></script>
 
 </body>
 </html>
