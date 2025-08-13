@@ -8,8 +8,13 @@
 </head>
 <body>
   <div class="calificacion-container">
+
+    <div class="buscador-container">
+      <input type="text" id="buscador" placeholder="Buscar estudiante...">
+    </div>
+
     <div class="tabla-container">
-      <table>
+      <table id="tabla-estudiantes">
         <thead>
           <tr>
             <th>Nro</th>
@@ -107,6 +112,19 @@
         input.value = input.defaultValue; // Revertir si cancela
       }
     }
+  </script>
+
+  <script>
+    // Script para filtrar estudiantes
+    document.getElementById("buscador").addEventListener("keyup", function() {
+      let filtro = this.value.toLowerCase();
+      let filas = document.querySelectorAll("#tabla-estudiantes tbody tr");
+
+      filas.forEach(function(fila) {
+        let textoFila = fila.textContent.toLowerCase();
+        fila.style.display = textoFila.includes(filtro) ? "" : "none";
+      });
+    });
   </script>
 
 </body>

@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -11,14 +10,19 @@
   <div class="curso-container">
     <div class="encabezado-curso">
       <input type="text" placeholder="{{nombre_curso}}" disabled>
+      <p>{{descripcion}}</p>
       <form action="/scan/scanning" method="GET">        
         <button class="btn-qr" type="submit">Escanear QR</button>
       </form>
-      <p>{{descripcion}}</p>
-      <button class="btn-qr">Escanear QR</button>
     </div>
+
+    <!-- Buscador -->
+    <div class="buscador-container">
+      <input type="text" id="buscador" placeholder="Buscar estudiante...">
+    </div>
+
     <div class="tabla-container">
-      <table>
+      <table id="tabla-estudiantes">
         <thead>
           <tr>
             <th>Nro</th>
@@ -42,5 +46,18 @@
       </table>
     </div>
   </div>
+
+  <script>
+    // Script para filtrar estudiantes
+    document.getElementById("buscador").addEventListener("keyup", function() {
+      let filtro = this.value.toLowerCase();
+      let filas = document.querySelectorAll("#tabla-estudiantes tbody tr");
+
+      filas.forEach(function(fila) {
+        let textoFila = fila.textContent.toLowerCase();
+        fila.style.display = textoFila.includes(filtro) ? "" : "none";
+      });
+    });
+  </script>
 </body>
 </html>

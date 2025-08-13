@@ -127,3 +127,16 @@ th {
     padding: 6px;
   }
 }
+
+/* Estilos rápidos para el buscador */
+.buscador-container {
+  margin: 15px 0;
+  text-align: right;
+}
+.buscador-container input {
+  padding: 6px;
+  font-size: 14px;
+  width: 250px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
