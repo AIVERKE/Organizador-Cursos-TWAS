@@ -73,7 +73,7 @@ def obtener_id_curso(id_usuario):
             return None
     finally:
         conn.close()
-
+#--------------------------------------------------------------------------------------------
 def actualizar_nota_final(id_inscripcion, nota_final):
     conn = nueva_conexion()
     try:
@@ -85,6 +85,31 @@ def actualizar_nota_final(id_inscripcion, nota_final):
     finally:
         cursor.close()
         conn.close()
+
+def actualizar_nota_asistencia(id_inscripcion, nota_asistencia):
+    conn = nueva_conexion()
+    try:
+        cursor = conn.cursor()
+        cursor.execute("""
+            UPDATE notas SET nota_asistencia = %s WHERE id_inscripcion = %s
+        """, (nota_asistencia, id_inscripcion))
+        conn.commit()
+    finally:
+        cursor.close()
+        conn.close()
+
+def actualizar_nota_acumulada(id_inscripcion, nota_acumulada):
+    conn = nueva_conexion()
+    try:
+        cursor = conn.cursor()
+        cursor.execute("""
+            UPDATE notas SET nota_acumulada = %s WHERE id_inscripcion = %s
+        """, (nota_acumulada, id_inscripcion))
+        conn.commit()
+    finally:
+        cursor.close()
+        conn.close()
+#-----------------------------------------------------
 
 def obtener_nombre_curso(id_usuario):
     conn = nueva_conexion()
