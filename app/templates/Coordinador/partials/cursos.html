@@ -1,6 +1,9 @@
 <h3>Gestión de Cursos</h3>
 
-<table border="1" cellpadding="10" cellspacing="0">
+<!-- 🔍 Buscador -->
+<input type="text" id="buscador-cursos" placeholder="Buscar curso..." style="margin-bottom: 10px; padding: 5px; width: 250px;">
+
+<table border="1" cellpadding="10" cellspacing="0" id="tabla-cursos">
 
   <thead>
     <tr>
@@ -16,7 +19,6 @@
   <tbody>
     {% for curso in cursos %}        
     <tr>
-
       <!-- <td data-label="N °">{{ curso.id_curso }}</td> -->
       <td data-label="N °">{{ loop.index }}</td>
       <td data-label="Nombres">{{ curso.nombre }}</td>

@@ -1,167 +1,336 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="lang-es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Curso Postgrado UMSA</title>
-   <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/styleinicio.css') }}">
+
+  <!-- Fuente + Iconos -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+
+  <!-- Bootstrap (local) -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+
+  <!-- CSS al final para poder sobrescribir -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styleinicio.css') }}">
 </head>
 <body>
-  <!-- HEADER -->
-  <header class="header">
-  <a href="https://twas.org/"><img src="{{ url_for('static', filename='images/Unesco-TWAS.jpg') }}" alt="UNESCO" class="logo" /></a>
-   <nav class="nav">
-  <a href="#inicioid" class="active">Inicio/Home</a>
-  <a href="#informacionid" class="active">Información/Information</a>
-  <a href="#ubicacionid" class="active">Ubicación/Location</a>
-  <a href="#nosotrosid" class="active">Sobre Nosotros/About Us</a>
-  <a href="#footerid" class="active">Contacto/Contact</a>
-    </nav>
 
-    <div class="login-container">
-      <a href="{{ url_for('auth.login') }}"><button class="btn-login">Iniciar Sesion/Login</button></a>
-      <a href="https://www.fcpn.edu.bo/"><img src="/static/images/umsalogo.webp" alt="UMSA" class="logo-umsa" /></a>
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg bg-white border-bottom fixed-top py-2">
+  <div class="container">
+    <a class="navbar-brand d-flex align-items-center gap-2" href="https://twas.org/">
+      <img src="{{ url_for('static', filename='images/Unesco-TWAS.jpg') }}" alt="UNESCO" class="logo me-2" style="height:48px;">
+      <img src="{{ url_for('static', filename='images/TYAN.webp') }}" alt="UNESCO" class="logo me-2" style="height:48px;">
+    </a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain" aria-controls="navMain" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navMain">
+      <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
+        <li class="nav-item"><a class="nav-link fw-semibold" href="#inicioid">
+          <span class="i18n i18n-es">Inicio</span><span class="i18n i18n-en">Home</span>
+        </a></li>
+        <li class="nav-item"><a class="nav-link fw-semibold" href="#informacionid">
+          <span class="i18n i18n-es">Información</span><span class="i18n i18n-en">Information</span>
+        </a></li>
+        <li class="nav-item"><a class="nav-link fw-semibold" href="#ubicacionid">
+          <span class="i18n i18n-es">Ubicación</span><span class="i18n i18n-en">Location</span>
+        </a></li>
+        <li class="nav-item"><a class="nav-link fw-semibold" href="#nosotrosid">
+          <span class="i18n i18n-es">Sobre Nosotros</span><span class="i18n i18n-en">About Us</span>
+        </a></li>
+        <li class="nav-item"><a class="nav-link fw-semibold" href="#footerid">
+          <span class="i18n i18n-es">Contacto</span><span class="i18n i18n-en">Contact</span>
+        </a></li>
+      </ul>
+
+      <div class="d-flex align-items-center gap-2">
+        <!-- Botón Traductor -->
+        <button id="btnLang" class="btn btn-outline-secondary btn-sm" type="button" aria-label="Change language">
+          <i class="fa-solid fa-globe"></i>
+          <span class="i18n i18n-es">ENGLISH</span><span class="i18n i18n-en">ESPAÑOL</span>
+        </button>
+
+        <!-- Botón Login -->
+        <a href="{{ url_for('auth.login') }}" class="btn btn-outline-primary btn-sm">
+          <span class="i18n i18n-es">Iniciar Sesión</span><span class="i18n i18n-en">Login</span>
+        </a>
+
+        <!-- Logo UMSA -->
+        <a href="https://www.fcpn.edu.bo/" class="ms-1">
+          <img src="/static/images/umsalogo.webp" alt="UMSA" class="logo-umsa">
+        </a>
+      </div>
     </div>
-  </header>
+  </div>
+</nav>
 
-  <!-- INICIO -->
-  <section class="inicio" id="inicioid">
-    <div class="overlay">
-      <h1 class="titulo">CURSO POSTGRADO / POSTGRADUATE COURSE <br>3RA VERSIÓN / 3RD VERSION</h1>
-      <h3 class="subtitulo">UNIVERSIDAD MAYOR DE SAN ANDRES</h3>
-      <p class="texto">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Dolorum voluptas Lorem, ipsum dolor sit amet consectetur adipisicing elit. Optio fuga amet cum deserunt asperiores. Laboriosam, provident maxime consectetur qui corporis ducimus, cumque dolores illo officia id at, odit incidunt ipsa.</p>
-    </div>
-  </section>
-
-  <!-- INFORMACIÓN -->
-  <section id="informacionid" class="informacion" >
-    <h2 class="subtitulo">INFORMACIÓN / INFORMATION</h2>
-    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin ac ligula vitae nunc aliquet tincidunt. Lorem ipsum dolor sit amet consectetur adipisicing elit. Ullam necessitatibus minus soluta provident aliquid tempore exercitationem, doloremque repellat sint repudiandae reiciendis dolorum doloribus reprehenderit illum accusamus, sed quasi! Voluptatum, ex!</p>
-    <br>
-    <h2>Calendario de Eventos</h2>
-    
-    <div class="tabla-horario">
-      <h3>Cursos -  Turno mañana</h3>
-      <table>
-        <thead>
-          <tr>
-            <th>Horario</th>
-            <th>Lunes</th>
-            <th>Martes</th>
-            <th>Miércoles</th>
-            <th>Jueves</th>
-            <th>Viernes</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>08:00</td><td>Clase</td><td>Clase</td><td>Clase</td><td>Clase</td><td>Clase</td>
-          </tr>
-          <tr>
-            <td>08:00</td><td>Clase</td><td>Clase</td><td>Clase</td><td>Clase</td><td>Clase</td>
-          </tr>
-          <tr>
-            <td>08:00</td><td>Clase</td><td>Clase</td><td>Clase</td><td>Clase</td><td>Clase</td>
-          </tr>
-          <tr>
-            <td>08:00</td><td>Clase</td><td>Clase</td><td>Clase</td><td>Clase</td><td>Clase</td>
-          </tr>
-        </tbody>
-      </table>
-<br>
-      <h3>Cursos - Turno Tarde</h3>
-      <table>
-        <thead>
-          <tr>
-            <th>Horario</th>
-            <th>Lunes</th>
-            <th>Martes</th>
-            <th>Miércoles</th>
-            <th>Jueves</th>
-            <th>Viernes</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>14:00</td><td>Clase</td><td>Clase</td><td>Clase</td><td>Clase</td><td>Clase</td>
-          </tr>
-          <tr>
-            <td>14:00</td><td>Clase</td><td>Clase</td><td>Clase</td><td>Clase</td><td>Clase</td>
-          </tr>
-          <tr>
-            <td>14:00</td><td>Clase</td><td>Clase</td><td>Clase</td><td>Clase</td><td>Clase</td>
-          </tr>
-          <tr>
-            <td>14:00</td><td>Clase</td><td>Clase</td><td>Clase</td><td>Clase</td><td>Clase</td>
-          </tr>
-          <tr>
-            <td>14:00</td><td>Clase</td><td>Clase</td><td>Clase</td><td>Clase</td><td>Clase</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </section>
-
-  <!-- UBICACIÓN -->
-<section class="ubicacion" id="ubicacionid">
-  <h2 class="subtitulo">UBICACIÓN / LOCATION</h2>
-  <div class="mapa-placeholder">
-    <iframe
-      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1987.6002808428773!2d-68.06870843920794!3d-16.53885564579275!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x915f21b1d1b8b953%3A0x13bc56f9a856c85d!2sFacultad%20de%20Ciencias%20Puras%20y%20Naturales%20-%20Cota%20Cota!5e0!3m2!1ses!2sbo!4v1752639557865!5m2!1ses!2sbo"
-      allowfullscreen=""
-      loading="lazy"
-      referrerpolicy="no-referrer-when-downgrade">
-    </iframe>
-    
-</section>
-
-
-  <!-- SOBRE NOSOTROS -->
-  <section class="nosotros" id="nosotrosid">
-  <h2 class="subtitulo">SOBRE NOSOTROS / ABOUT US</h2>
-  <p>El curso está dirigido por el equipo académico de la Carrera de Química. Coordinador general: Dr. Juan Pérez. Equipo técnico y administrativo comprometido con la excelencia académica.</p>
-
-  <div class="organizadores">
-    <div class="organizador">
-      <img src="/static/images/org1.jpg" alt="Organizador 1">
-      <h4>Dr. alan Maldonado</h4>
-      <p>Coordinador General / General Coordinator</p>
-    </div>
-    <div class="organizador">
-      <img src="/static/images/org2.jpg" alt="Organizador 2">
-      <h4>Lic. Diegue Gutierrez</h4>
-      <p>Asistente Técnica / Technical Assistant</p>
-    </div>
-    <div class="organizador">
-      <img src="/static/images/org3.jpg" alt="Organizador 3">
-      <h4>Ing. Michael Quispe</h4>
-      <p>Logística Académica / Academic Logistics</p>
+<!-- HERO / INICIO -->
+<section class="inicio d-flex align-items-center" id="inicioid">
+  <div class="container">
+    <div class="overlay rounded-3 p-4 p-md-5 text-center text-lg-end">
+      <h1 class="titulo fw-bold mb-3">
+        <span class="i18n i18n-es">CURSO POSTGRADO<br>3RA VERSIÓN</span>
+        <span class="i18n i18n-en">POSTGRADUATE COURSE<br>3RD VERSION</span>
+      </h1>
+      <h3 class="subtitulo fw-semibold mb-3">
+        <span class="i18n i18n-es">UNIVERSIDAD MAYOR DE SAN ANDRÉS</span>
+        <span class="i18n i18n-en">UNIVERSIDAD MAYOR DE SAN ANDRÉS</span>
+      </h3>
+      <p class="texto mb-0">
+        <span class="i18n i18n-es">Da la bienvenida a todos los ponentes y participantes al Curso de Postgrado <br> Organizado por La Academia Mundial de Ciencias(TWAS) y Red de jóvenes afiliados/antiguos alumnos de la TWAS (TYAN) <br> al Curso de PostGrado 3ra Version Universidad Mayor de San Andres La Paz - Bolivia</span>
+        <span class="i18n i18n-en">Welcomes all the speakers and participants to the Postgraduate Course <br> Organized by The World Academy of Sciences(TWAS) and TWAS Young affiliates/alumni network (TYAN) <br> to the 3rd Version Postgraduate Course at the Universidad Mayor de San Andres, La Paz, Bolivia</span> 
+      </p>
     </div>
   </div>
 </section>
 
-  <!-- FOOTER --> 
+<!-- INFORMACIÓN -->
+<section id="informacionid" class="informacion py-5">
+  <div class="container">
+    <h2 class="subtitulo text-primary fw-bold mb-3 text-center">
+      <span class="i18n i18n-es">INFORMACIÓN</span>
+      <span class="i18n i18n-en">INFORMATION</span>
+    </h2>
+    <p class="mx-auto mb-4" style="max-width:900px;">
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin ac ligula vitae nunc aliquet tincidunt. Lorem ipsum dolor sit amet consectetur adipisicing elit. Ullam necessitatibus minus soluta provident aliquid tempore exercitationem, doloremque repellat sint repudiandae reiciendis dolorum doloribus reprehenderit illum accusamus, sed quasi! Voluptatum, ex!
+    </p>
+
+    <h2 class="h4 text-center mb-4"> 
+      <span class="i18n i18n-es">Calendario de Eventos</span>
+      <span class="i18n i18n-en">Events Calendar</span>
+      <br>
+      <span class="i18n-es">Escuelas prácticas TYAN-TWAS en Bolivia, 2025</span>
+      <span class="i18n-en">TYAN-TWAS hands-on schools in Bolivia, 2025</span>
+    </h2>
+
+    <div class="tabla-horario">
+      <h3 class="h5 mb-2">
+        <span class="i18n i18n-es">Turno Mañana</span>
+        <span class="i18n i18n-en">Morning</span>
+      </h3>
+      <div class="table-responsive mb-4">
+    <table class="table table-bordered table-striped align-middle">
+                <thead class="table-primary">
+                    <tr>
+                        <th><span class="i18n i18n-es">Horario</span><span class="i18n i18n-en">Time</span></th>
+                        <th><span class="i18n i18n-es">Lunes 6 de Octubre</span><span class="i18n i18n-en">Monday October 6</span></th>
+                        <th><span class="i18n i18n-es">Martes 7 de Octubre</span><span class="i18n i18n-en">Tuesday October 7</span></th>
+                        <th><span class="i18n i18n-es">Miércoles 8 de Octubre</span><span class="i18n i18n-en">Wednesday October 8</span></th>
+                        <th><span class="i18n i18n-es">Jueves 9 de Octubre</span><span class="i18n i18n-en">Thursday October 9</span></th>
+                        <th><span class="i18n i18n-es">Viernes 10 de Octubre</span><span class="i18n i18n-en">Friday October 10</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>8:30-8:45</td>
+                        <td><span class="i18n i18n-es">Registro</span><span class="i18n i18n-en">Registration</span></td>
+                        <td><span class="i18n i18n-es">Registro</span><span class="i18n i18n-en">Registration</span></td>
+                        <td><span class="i18n i18n-es">Registro</span><span class="i18n i18n-en">Registration</span></td>
+                        <td><span class="i18n i18n-es">Registro</span><span class="i18n i18n-en">Registration</span></td>
+                        <td><span class="i18n i18n-es">Registro</span><span class="i18n i18n-en">Registration</span></td>
+                    </tr>
+                    <tr>
+                        <td>9:00-9:45</td>
+                        <td>
+                            <span class="i18n i18n-es">Inauguración del evento:</span>
+                            <span class="i18n i18n-en">Event opening:</span> 
+                            <br>
+                            <ul>
+                                <li><span class="i18n i18n-es">Dra. Maria Eugenia Garcia, <br>Rectora de la Universidad Mayor de San Andrés</span>
+                                    <span class="i18n i18n-en">Dr. Maria Eugenia Garcia, <br>Rector of the Universidad Mayor de San Andrés</span></li>
+                                <li><span class="i18n i18n-es">Dr. Marcelo Knobel,<br> Director Ejecutivo de TWAS</span>
+                                    <span class="i18n i18n-en">Dr. Marcelo Knobel,<br> Executive Director of TWAS</span></li>
+                                <li><span class="i18n i18n-es">Dr. Max Paoli,<br> Coordinador General TYAN-TWAS</span>
+                                    <span class="i18n i18n-en">Dr. Max Paoli,<br> General Coordinator TYAN-TWAS</span></li>
+                                <li><span class="i18n i18n-es">Dr. André João,<br> Jefe del Sector de Cooperación Cultural y Educativa</span>
+                                    <span class="i18n i18n-en">Dr. André João,<br> Head of the Cultural and Educational Cooperation Sector</span></li>
+                                <li><span class="i18n i18n-es">M.Sc. Aldo Valdez,<br> Decano de la Facultad de FCPN</span>
+                                    <span class="i18n i18n-en">M.Sc. Aldo Valdez,<br> Dean of the Faculty of FCPN</span></li>
+                                <li><span class="i18n i18n-es">Ing. Jorge Vásquez, <br>Jefe del Programa de Ingeniería Química</span>
+                                    <span class="i18n i18n-en">Ing. Jorge Vásquez, <br>Head of the Chemical Engineering Program</span></li>
+                            </ul>
+                        </td>
+                        <td>
+                            <ul>
+                                <li><span class="i18n i18n-es">Dr. Franco Cabrerizo (Argentina),<br> presentación oral</span>
+                                    <span class="i18n i18n-en">Dr. Franco Cabrerizo (Argentina),<br> oral presentation</span></li>
+                                <li><span class="i18n i18n-es">Dr. Warshi Dandeniya (Sri Lanka),<br> presentación oral</span>
+                                    <span class="i18n i18n-en">Dr. Warshi Dandeniya (Sri Lanka),<br> oral presentation</span></li>
+                            </ul>
+                        </td>
+                        <td>
+                            <span class="i18n i18n-es">Dra. Mónica Izurieta (Ecuador),<br> presentación oral</span>
+                            <span class="i18n i18n-en">Dr. Mónica Izurieta (Ecuador),<br> oral presentation</span>
+                        </td>
+                        <td>
+                            <span class="i18n i18n-es">Dr. Ranga Ambati (India),<br> presentación oral</span>
+                            <span class="i18n i18n-en">Dr. Ranga Ambati (India),<br> oral presentation</span>
+                        </td>
+                        <td>
+                            <span class="i18n i18n-es">Dr. Pablo Bolaños (Costa Rica),<br> presentación oral</span>
+                            <span class="i18n i18n-en">Dr. Pablo Bolaños (Costa Rica),<br> oral presentation</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>09:45-10:00</td>
+                        <td><span class="i18n i18n-es">Descanso</span><span class="i18n i18n-en">Break</span></td>
+                        <td><span class="i18n i18n-es">Descanso</span><span class="i18n i18n-en">Break</span></td>
+                        <td><span class="i18n i18n-es">Descanso</span><span class="i18n i18n-en">Break</span></td>
+                        <td><span class="i18n i18n-es">Descanso</span><span class="i18n i18n-en">Break</span></td>
+                        <td><span class="i18n i18n-es">Descanso</span><span class="i18n i18n-en">Break</span></td>
+                    </tr>
+                    <tr>
+                        <td>10:00-12:00</td>
+                        <td><span class="i18n i18n-es">Cursos teóricos 1,2,3,4</span><span class="i18n i18n-en">Theoretical courses 1,2,3,4</span></td>
+                        <td><span class="i18n i18n-es">Cursos teóricos 1,2,3,4</span><span class="i18n i18n-en">Theoretical courses 1,2,3,4</span></td>
+                        <td><span class="i18n i18n-es">Cursos teóricos 1,2,3,4</span><span class="i18n i18n-en">Theoretical courses 1,2,3,4</span></td>
+                        <td><span class="i18n i18n-es">Cursos teóricos 1,2,3,4</span><span class="i18n i18n-en">Theoretical courses 1,2,3,4</span></td>
+                        <td>
+                            <span class="i18n i18n-es">Cursos teóricos 1,2,3,4</span>
+                            <span class="i18n i18n-en">Theoretical courses 1,2,3,4</span>
+                            <br>
+                            <span class="i18n i18n-es">Clausura del evento:</span>
+                            <span class="i18n i18n-en">Closing of the event:</span>
+                            <ul>
+                                <li><span class="i18n i18n-es">Dra. Maria Eugenia Garcia, Rectora de la Universidad Mayor de San Andrés</span>
+                                    <span class="i18n i18n-en">Dr. Maria Eugenia Garcia, Rector of the Universidad Mayor de San Andrés</span></li>
+                                <li><span class="i18n i18n-es">M.Sc. Aldo Valdez, Decano de la Facultad de FCPN</span>
+                                    <span class="i18n i18n-en">M.Sc. Aldo Valdez, Dean of the Faculty of FCPN</span></li>
+                                <li><span class="i18n i18n-es">Ing. Jorge Vásquez, Jefe del Programa de Ingeniería Química</span>
+                                    <span class="i18n i18n-en">Ing. Jorge Vásquez, Head of the Chemical Engineering Program</span></li>
+                            </ul>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3 class="h5 mb-2">
+            <span class="i18n i18n-es">Turno Tarde</span>
+            <span class="i18n i18n-en">Afternoon</span>
+        </h3>
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped align-middle">
+                <thead class="table-primary">
+                    <tr>
+                        <th><span class="i18n i18n-es">Horario</span><span class="i18n i18n-en">Time</span></th>
+                        <th><span class="i18n i18n-es">Lunes 6 de Octubre</span><span class="i18n i18n-en">Monday October 6</span></th>
+                        <th><span class="i18n i18n-es">Martes 7 de Octubre</span><span class="i18n i18n-en">Tuesday October 7</span></th>
+                        <th><span class="i18n i18n-es">Miércoles 8 de Octubre</span><span class="i18n i18n-en">Wednesday October 8</span></th>
+                        <th><span class="i18n i18n-es">Jueves 9 de Octubre</span><span class="i18n i18n-en">Thursday October 9</span></th>
+                        <th><span class="i18n i18n-es">Viernes 10 de Octubre</span><span class="i18n i18n-en">Friday October 10</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>14:00-17:00</td>
+                        <td></td>
+                        <td><span class="i18n i18n-es">Cursos prácticos 1,2,3,4</span><span class="i18n i18n-en">Practical courses 1,2,3,4</span></td>
+                        <td><span class="i18n i18n-es">Cursos prácticos 1,2,3,4</span><span class="i18n i18n-en">Practical courses 1,2,3,4</span></td>
+                        <td><span class="i18n i18n-es">Cursos prácticos 1,2,3,4</span><span class="i18n i18n-en">Practical courses 1,2,3,4</span></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- UBICACIÓN -->
+<section class="ubicacion py-5" id="ubicacionid">
+  <div class="container">
+    <h2 class="subtitulo text-primary fw-bold text-center mb-4">
+      <span class="i18n i18n-es">UBICACIÓN</span>
+      <span class="i18n i18n-en">LOCATION</span>
+    </h2>
+    <div class="ratio ratio-16x9 shadow-sm rounded-3">
+      <iframe
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1987.6002808428773!2d-68.06870843920794!3d-16.53885564579275!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x915f21b1d1b8b953%3A0x13bc56f9a856c85d!2sFacultad%20de%20Ciencias%20Puras%20y%20Naturales%20-%20Cota%20Cota!5e0!3m2!1ses!2sbo!4v1752639557865!5m2!1ses!2sbo"
+        allowfullscreen
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"></iframe>
+    </div>
+  </div>
+</section>
+
+<!-- NOSOTROS -->
+<section class="nosotros py-5" id="nosotrosid">
+  <div class="container">
+    <h2 class="subtitulo text-primary fw-bold text-center mb-3">
+      <span class="i18n i18n-es">SOBRE NOSOTROS</span>
+      <span class="i18n i18n-en">ABOUT US</span>
+    </h2>
+    <p class="mx-auto mb-5" style="max-width:900px;">
+      <span class="i18n i18n-es">
+        El curso está dirigido por el equipo académico de la Carrera de Química. Coordinador general: Dr. Juan Pérez. Equipo técnico y administrativo comprometido con la excelencia académica.
+      </span>
+      <span class="i18n i18n-en">
+        The course is led by the academic team of the Chemistry Program. General Coordinator: Dr. Juan Pérez. A technical and administrative team committed to academic excellence.
+      </span>
+    </p>
+
+    <div class="row g-4 organizadores">
+      <div class="col-12 col-sm-6 col-lg-4">
+        <div class="organizador h-100">
+          <img src="/static/images/org1.jpg" alt="Organizador 1">
+          <h4>Dr. Alan Maldonado</h4>
+          <p><span class="i18n i18n-es">Coordinador General</span><span class="i18n i18n-en">General Coordinator</span></p>
+        </div>
+      </div>
+      <div class="col-12 col-sm-6 col-lg-4">
+        <div class="organizador h-100">
+          <img src="/static/images/org2.jpg" alt="Organizador 2">
+          <h4>Lic. Diegue Gutierrez</h4>
+          <p><span class="i18n i18n-es">Asistente Técnica</span><span class="i18n i18n-en">Technical Assistant</span></p>
+        </div>
+      </div>
+      <div class="col-12 col-sm-6 col-lg-4">
+        <div class="organizador h-100">
+          <img src="/static/images/org3.jpg" alt="Organizador 3">
+          <h4>Ing. Michael Quispe</h4>
+          <p><span class="i18n i18n-es">Logística Académica</span><span class="i18n i18n-en">Academic Logistics</span></p>
+        </div>
+      </div>
+       <div class="row g-4 organizadores">
+      <div class="col-12 col-sm-6 col-lg-4">
+        <div class="organizador h-100">
+          <img src="/static/images/org1.jpg" alt="Organizador 1">
+          <h4>Dr. Alan Maldonado</h4>
+          <p><span class="i18n i18n-es">Coordinador General</span><span class="i18n i18n-en">General Coordinator</span></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
 <footer class="footer" id="footerid">
-    <div class="footer-top">
-      <div >
-        <strong>Donde estamos:</strong>
+  <div class="container">
+    <div class="footer-top row gy-4">
+      <div class="col-12 col-md-4">
+        <strong><span class="i18n i18n-es">Dónde estamos:</span><span class="i18n i18n-en">Where we are:</span></strong>
         <p>Av. Villazón N° 1995, Plaza del Bicentenario - La Paz, Bolivia</p>
       </div>
-      <div>
-        <strong>Contáctanos:</strong>
+      <div class="col-12 col-md-4">
+        <strong><span class="i18n i18n-es">Contáctanos:</span><span class="i18n i18n-en">Contact us:</span></strong>
         <p>Tel: (591-2) 2441570 / 2440571</p>
         <p>Fax: 2441092</p>
         <p>Email: decanato@fcpn.edu.bo</p>
       </div>
-      <div>
-        <strong>Diseño Curricular:</strong>
+      <div class="col-12 col-md-4">
+        <strong><span class="i18n i18n-es">Diseño Curricular:</span><span class="i18n i18n-en">Curricular Design:</span></strong>
         <p>Carrera de Ciencias Químicas<br>5to Piso - Aula 21<br>Cota Cota, Calle 27 #1995</p>
       </div>
     </div>
-    <div class="footer-bottom">
-      <p>&copy; 2025 - Todos los derechos reservados - Carrera de Química UMSA</p>
+
+    <div class="footer-bottom mt-4">
+      <p class="mb-1">&copy; 2025 - <span class="i18n i18n-es">Todos los derechos reservados</span><span class="i18n i18n-en">All rights reserved</span> - Carrera de Química UMSA</p>
       <div class="social-icons">
         <a href="#" class="icon facebook"><i class="fab fa-facebook-f"></i></a>
         <a href="#" class="icon twitter"><i class="fab fa-twitter"></i></a>
@@ -169,8 +338,14 @@
         <a href="#" class="icon linkedin"><i class="fab fa-linkedin-in"></i></a>
         <a href="#" class="icon youtube"><i class="fab fa-youtube"></i></a>
       </div>
-      <div class="dev-bba"> Desarrollado por / Developed by | <a href="https://www.instagram.com/thebattle_bread?igsh=ZHl3b29vcDN3OWhk">BattleBread Academy</a></div>
+      <div class="dev-bba">Desarrollado por | <a href="https://www.instagram.com/thebattle_bread?igsh=ZHl3b29vcDN3OWhk">BattleBread Academy</a></div>
     </div>
-  </footer>
+  </div>
+</footer>
+
+<!-- Bootstrap (local) -->
+<script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/botonTraductor.js') }}"></script>
+
 </body>
 </html>

@@ -611,6 +611,99 @@
         inicializarEventosCursos();     
       });
 
+      //buscador cursos
+      (() => {
+        // Normaliza mayúsculas/acentos para búsquedas más “humanas”
+        const norm = s => (s || "")
+            .toString()
+            .normalize('NFD')
+            .replace(/\p{Diacritic}/gu, '')
+            .toLowerCase();
+
+        // Delegación: escucha cualquier input que coincida con #buscador-cursos
+        document.addEventListener('input', (e) => {
+          if (!e.target.matches('#buscador-cursos')) return;
+
+          const input = e.target;
+          const filtro = norm(input.value);
+          const selectorTabla = input.dataset.target || '#tabla-cursos';
+
+          // Busca la tabla cercana; si no, usa el selector global
+          const contenedor = input.closest('section, main, .contenido, body') || document;
+          const tabla = contenedor.querySelector(selectorTabla) || document.querySelector(selectorTabla);
+          if (!tabla || !tabla.tBodies || !tabla.tBodies[0]) return;
+
+          const filas = Array.from(tabla.tBodies[0].rows);
+          for (const tr of filas) {
+            const texto = norm(tr.textContent);
+            tr.style.display = texto.includes(filtro) ? '' : 'none';
+          }
+        });
+      })();
+
+      //Buscardo estudiantes
+
+      (() => {
+        // Normaliza mayúsculas/acentos para búsquedas más “humanas”
+        const norm = s => (s || "")
+            .toString()
+            .normalize('NFD')
+            .replace(/\p{Diacritic}/gu, '')
+            .toLowerCase();
+
+        // Delegación: escucha cualquier input que coincida con #buscador-cursos
+        document.addEventListener('input', (e) => {
+          if (!e.target.matches('#buscador-estudiante')) return;
+
+          const input = e.target;
+          const filtro = norm(input.value);
+          const selectorTabla = input.dataset.target || '#tabla-estudiante';
+
+          // Busca la tabla cercana; si no, usa el selector global
+          const contenedor = input.closest('section, main, .contenido, body') || document;
+          const tabla = contenedor.querySelector(selectorTabla) || document.querySelector(selectorTabla);
+          if (!tabla || !tabla.tBodies || !tabla.tBodies[0]) return;
+
+          const filas = Array.from(tabla.tBodies[0].rows);
+          for (const tr of filas) {
+            const texto = norm(tr.textContent);
+            tr.style.display = texto.includes(filtro) ? '' : 'none';
+          }
+        });
+      })();
+
+      //Buscardo ponente
+      (() => {
+        // Normaliza mayúsculas/acentos para búsquedas más “humanas”
+        const norm = s => (s || "")
+            .toString()
+            .normalize('NFD')
+            .replace(/\p{Diacritic}/gu, '')
+            .toLowerCase();
+
+        // Delegación: escucha cualquier input que coincida con #buscador-cursos
+        document.addEventListener('input', (e) => {
+          if (!e.target.matches('#buscador-ponente')) return;
+
+          const input = e.target;
+          const filtro = norm(input.value);
+          const selectorTabla = input.dataset.target || '#tabla-ponente';
+
+          // Busca la tabla cercana; si no, usa el selector global
+          const contenedor = input.closest('section, main, .contenido, body') || document;
+          const tabla = contenedor.querySelector(selectorTabla) || document.querySelector(selectorTabla);
+          if (!tabla || !tabla.tBodies || !tabla.tBodies[0]) return;
+
+          const filas = Array.from(tabla.tBodies[0].rows);
+          for (const tr of filas) {
+            const texto = norm(tr.textContent);
+            tr.style.display = texto.includes(filtro) ? '' : 'none';
+          }
+        });
+      })();
+
+
     </script>
+
   </body>
 </html>

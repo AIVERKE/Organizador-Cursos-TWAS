@@ -47,6 +47,8 @@ def calificacion():
     rows = obtener_estudiantes_inscritos_nota(id_curso)
     return render_template("Expositor/calificacionExp.html", estudiantes=rows)
 
+#-------------------NOTAS---------------------------
+
 @ponente_bp.route("/actualizar_nota", methods=["POST"])
 def actualizar_nota():
     data = request.get_json()
@@ -58,6 +60,36 @@ def actualizar_nota():
 
     try:
         actualizar_nota_final(id_inscripcion, nota_final)
+        return jsonify({"success": True})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@ponente_bp.route("/nota_asistencia", methods=["POST"])
+def nota_asistencia():
+    data = request.get_json()
+    id_inscripcion = data.get("id_inscripcion")
+    nota_asistencia = data.get("nota_asistencia")
+
+    if not id_inscripcion or nota_asistencia is None:
+        return jsonify({"error": "Datos incompletos"}), 400
+
+    try:
+        actualizar_nota_asistencia(id_inscripcion, nota_asistencia)
+        return jsonify({"success": True})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@ponente_bp.route("/nota_acumulada", methods=["POST"])
+def nota_acumulada():
+    data = request.get_json()
+    id_inscripcion = data.get("id_inscripcion")
+    nota_acumulada = data.get("nota_acumulada")
+
+    if not id_inscripcion or nota_acumulada is None:
+        return jsonify({"error": "Datos incompletos"}), 400
+
+    try:
+        actualizar_nota_acumulada(id_inscripcion, nota_acumulada)
         return jsonify({"success": True})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
