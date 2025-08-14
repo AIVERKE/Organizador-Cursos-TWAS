@@ -54,6 +54,7 @@ def create_app(config_class=DevConfig):
 
     app.register_blueprint(ins_bp, url_prefix="/ins")
 
+
     ## Generador de certificados
     from app.api.certificate import certificate_bp
 
