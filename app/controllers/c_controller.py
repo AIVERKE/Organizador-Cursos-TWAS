@@ -177,3 +177,66 @@ def asignar_ponente(id_curso, id_ponente):
     conn.commit()
 
 #-------------------
+
+#--------Manejo de Pines
+from werkzeug.security import generate_password_hash, check_password_hash
+
+import random
+import string
+
+from datetime import datetime, timedelta
+
+# Generar un PIN visible para el docente
+def generar_pin():
+    # PIN de 6 dígitos
+    import random
+    pin = str(random.randint(100000, 999999))
+    # Hash para guardar en BD
+    pin_hash = generate_password_hash(pin)
+    creacion = datetime.utcnow()
+    # Expiración de 5 minutos
+    expiracion = creacion + timedelta(minutes=30)
+    return pin, pin_hash, creacion, expiracion
+
+def actualizar_pin_curso(id_curso):
+    pin, pin_h, cr, exp = generar_pin()
+    try:
+        with get_connection() as conn:
+            with conn.cursor() as cur:
+                cur.execute("""
+                    UPDATE cursos
+                    SET pin = %s, hora_cr = %s , hora_exp = %s
+                    WHERE id_curso = %s
+                """, (pin_h, cr, exp ,id_curso))
+            conn.commit()   
+        return pin,exp.strftime('%Y-%m-%d %H:%M %S UTC')
+    except psycopg2.Error as e:
+        print(f"[ERROR] actualizar_pin_curso: {e}")
+        return None,None
+
+def verificar_pin(id_curso, pin_ingresado, hora_actual):
+    try:
+        with get_connection() as conn:
+            with conn.cursor() as cur:
+                cur.execute("""
+                    SELECT  id_curso, pin,hora_cr,hora_exp FROM cursos
+                    WHERE id_curso = %s 
+                """, (id_curso,))
+                curs = cur.fetchone() is not None
+                if not curs:
+                    return False, "Curso no encontrado"
+                
+                pin_hash, hora_cr, hora_exp = curso
+                
+                if hora_actual > hora_exp:
+                    return False, "El PIN ha expirado"
+
+                # Validar PIN ingresado
+                if not check_password_hash(pin_hash, pin_ingresado):
+                    return False, "PIN incorrecto"
+
+                return True , "PIN Correcto"
+    except psycopg2.Error as e:
+        print(f"[ERROR] verificar_pin: {e}")
+        return False
+#--------------------

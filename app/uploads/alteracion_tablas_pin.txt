@@ -1,0 +1,4 @@
+Alter table cursos
+ADD COLUMN pin TEXT,
+ADD COLUMN hora_cr TIMESTAMP,
+ADD COLUMN hora_exp TIMESTAMP;
