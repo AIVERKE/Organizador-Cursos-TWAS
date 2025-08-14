@@ -2,6 +2,18 @@ import psycopg2
 import psycopg2.extras
 from app.db_c import get_connection
 
+def crear_nota(id_inscripcion, nota_final, nota_asistencia, nota_acumulada):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute(
+        """
+        INSERT INTO notas (id_inscripcion, nota_final, nota_asistencia, nota_acumulada)
+        VALUES (%s, %s, %s, %s)
+        """,
+        (id_inscripcion, nota_final, nota_asistencia, nota_acumulada),
+    )
+    conn.commit()
+    conn.close()
 
 def obtener_notas():
     conn = get_connection()
@@ -21,20 +33,6 @@ def obtener_nota(id_nota):
     row = cursor.fetchone()
     conn.close()
     return row
-
-
-def crear_nota(id_inscripcion, nota_final, nota_asistencia, nota_acumulada):
-    conn = get_connection()
-    cursor = conn.cursor()
-    cursor.execute(
-        """
-        INSERT INTO notas (id_inscripcion, nota_final, nota_asistencia, nota_acumulada)
-        VALUES (%s, %s, %s, %s)
-        """,
-        (id_inscripcion, nota_final, nota_asistencia, nota_acumulada),
-    )
-    conn.commit()
-    conn.close()
 
 
 def actualizar_nota(id_nota, id_inscripcion, nota_final, nota_asistencia, nota_acumulada):
@@ -69,7 +67,6 @@ def eliminar_nota(id_nota):
         return {"status": "error", "mensaje": "Error al eliminar: " + str(e)}
 
 
-# Ejemplo de obtener notas por inscripción
 def obtener_notas_por_inscripcion(id_inscripcion):
     conn = get_connection()
     cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
