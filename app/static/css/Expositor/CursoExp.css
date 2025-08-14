@@ -127,3 +127,55 @@ th {
     padding: 6px;
   }
 }
+/* ==================== */
+/* MODALES */
+/* ==================== */
+.modal {
+  display: none;
+  position: fixed;
+  top: 20%;
+  left: 50%;
+  transform: translate(-50%, -20%);
+  background-color: white;
+  border: 2px solid #0077c2;
+  padding: 20px;
+  z-index: 999;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.modal.activo {
+  display: block;
+}
+
+.modal-content {
+  background-color: white;
+  padding: 20px;
+  width: 400px;
+  max-width: 90%;
+  border-radius: 8px;
+  position: relative;
+  border: 1px solid #0077c2;
+}
+
+.modal-content label {
+  display: block;
+  margin-top: 10px;
+  color: #0077c2;
+  font-weight: bold;
+}
+
+.modal-content input {
+  width: 100%;
+  padding: 8px;
+  margin-top: 4px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.close {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 20px;
+  cursor: pointer;
+}

@@ -162,3 +162,31 @@ def desasignar_ponente(id_curso):
 """
 TIENE UN PROBLEMA CON EL DELETE POR UNA RESTRICCION EN LA BD, ARREGLAR ESO, TAMBIEN EN EL CRUD DE USUARIOS
 """
+
+#---------- PIN
+
+@curso_bp.route("/pin/<int:id_curso>/nuevo_pin", methods=["POST"])
+@login_required
+def actualizar_pin(id_curso):
+    try:
+        nuevo_pin,exp = crs.actualizar_pin_curso(id_curso)
+        if nuevo_pin:
+            return jsonify({"success": True, "nuevo_pin": nuevo_pin,"expiracion": exp})
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
+
+
+# Verificar PIN ingresado
+@curso_bp.route("/pin/<int:id_curso>/verificar_pin", methods=["POST"])
+@login_required
+def verificar_pin(id_curso):
+    try:
+        data = request.get_json()
+        pin = data.get("pin")
+        ok,msg = crs.verificar_pin(id_curso, pin)
+        if ok:
+            return jsonify({"success": True, "mensaje": msg})
+        else:
+            return jsonify({"success": False, "mensaje": msg})
+    except Exception as e:
+        return jsonify({"success": False, "mensaje": "Error al Verificar"}), 400

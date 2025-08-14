@@ -14,8 +14,8 @@
       <form action="/scan/scanning" method="GET">        
         <button class="btn-qr" type="submit">Escanear QR</button>
       </form>
-      <p>{{descripcion}}</p>
-      <button class="btn-qr">Escanear QR</button>
+      <p>{{descripcion}}</p>      
+        <button class="btn btn-primary" onclick="generarPin({{id_curso}})">Generar PIN Asistencia {{id_curso}}</button>
     </div>
     <div class="tabla-container">
       <table>
@@ -40,7 +40,39 @@
           {% endfor %}
         </tbody>
       </table>
+
+      <!--  Modal / Tabla Emergente PIN -->
+      <div id="modal-pin" class="modal">
+        <div class="modal-content">
+          <span class="close" onclick="cerrarModal()">&times;</span>
+          <h3>Informacón PIN Asistencia</h3>
+          <form id="form-info">
+          </form>
+        </div>
+      </div>
     </div>
   </div>
+
+  <script>
+      function generarPin(id_crs){
+        fetch(`/cursos/pin/${id_crs}/nuevo_pin`, {method:'POST'})
+        .then(response =>response.json())
+        .then(data=>{
+          if(data.success){
+            document.getElementById("form-info").innerHTML= 
+            `<p><strong>PIN: </strong> ${data.nuevo_pin}</p>
+            <p><strong>Expiración: </strong> ${data.expiracion}</p>`
+
+            document.getElementById('modal-pin').classList.add("activo");
+          }
+        })
+        .catch(error => alert("Error: "+error.message));
+      } 
+      function cerrarModal() {
+        const modal = document.getElementById("modal-pin");
+        if (modal) modal.classList.remove("activo");
+      }
+
+  </script>
 </body>
 </html>
