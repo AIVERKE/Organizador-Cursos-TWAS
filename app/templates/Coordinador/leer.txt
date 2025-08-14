@@ -1,6 +1,0 @@
-AQUI PONER TODOS LOS ARCHIVOS DE HTML DE LA VISTA CORDINADOR 
-
-sugerencia primero hacer el FrontEnd solo html y css 
-
-luego adaptarlo para Flask y jinja2 es sencillo solo es modificar sus llamados
- 
