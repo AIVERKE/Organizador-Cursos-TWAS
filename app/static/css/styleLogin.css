@@ -1,253 +1,173 @@
+/* Fuentes exactas como especificaste */
 body {
   font-family: 'Montserrat Alternates', sans-serif;
   margin: 0;
   padding: 0;
   color: #006ab0;
   background: #fff;
+  overflow-x: hidden;
 }
 
-.container {
-  display: flex;
-  height: 100vh;
+/* Tamaños de fuente exactos */
+.titulo {
+  font-size: 33px;
+  font-weight: 400;
+  line-height: 1.2;
 }
-.titulo{
-  font-size: 48px;
+
+.titulo span {
+  font-weight: 600;
+  font-size: 20px;
+  display: block;
+  margin-top: 10px;
 }
-.subtitulo{
-  font-size: 24px;
+
+.subtitulo {
+  font-size: 20px;
+  font-weight: 400;
+  margin-bottom: 30px;
 }
-.texto{
+
+.texto {
   font-size: 14px;
+  line-height: 1.4;
+}
+
+/* Layout principal */
+.login-container {
+  height: 100vh;
+  position: relative;
 }
 
 .left-panel {
-  flex: 1;
   padding: 50px;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  position: relative;
+  z-index: 1;
+  background-color: rgba(255, 255, 255, 0.9);
 }
 
-.right-panel {
-  flex: 1;
-  background-color: #006ab0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.right-panel img {
-  width: 60%;
-}
-
-.back-arrow img {       /*esto para las flechas izqui zurdas hdp*/
-  width: 30px;
-  height: auto;
-}
-
-
-h1 {
-  font-size: 28px;
-  margin-bottom: 10px;
-}
-
-h1 span {
-  font-weight: bold;
-  font-size: 20px;
-}
-
-p {
-  margin-bottom: 30px;
-}
-
+/* Formulario */
 .login-form {
-  display: flex;
-  flex-direction: column;
+  max-width: 400px;
+  width: 100%;
 }
 
-.login-form label {
-  font-size: 14px;
-  margin-bottom: 5px;
-}
-
-.login-form input {
-  padding: 10px;
-  margin-bottom: 20px;
+.form-control {
   border: 1px solid #ccc;
+  padding: 12px;
+  font-family: 'Montserrat Alternates', sans-serif;
+  font-size: 14px;
 }
 
-.options {
-  display: flex;
-  justify-content: space-between;
-  font-size: 14px;
-  margin-bottom: 20px;
+.password-container .input-group {
+  position: relative;
+}
+
+.password-container .toggle-password {
+  position: absolute;
+  right: 5px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  z-index: 2;
 }
 
 .login-btn {
-  font-size: 14px;
-  padding: 10px;
   background-color: #006ab0;
   color: #fff;
   border: none;
+  padding: 12px;
+  font-family: 'Montserrat Alternates', sans-serif;
+  font-size: 14px;
   cursor: pointer;
+  transition: background-color 0.3s;
 }
 
 .login-btn:hover {
   background-color: #004d84;
 }
 
-.top-bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 20px;
-  border-bottom: 2px solid #006ab0;
-}
-
-.logo img, .logo-right img {
-  height: 60px;
-}
-
-.title {
-  font-size: 22px;
-  font-weight: 600;
-  text-align: center;
-  flex-grow: 1;
-}
-
-.buttons button {
-  margin-left: 10px;
-  padding: 8px 14px;
-  border: 1px solid #006ab0;
-  background: white;
-  color: #006ab0;
-  cursor: pointer;
-  border-radius: 2px;
-}
-
-.buttons button:hover {
-  background: #006ab0;
-  color: white;
-}
-
-.content {
-  padding: 40px 60px;
-}
-
-h2 {
-  font-size: 28px;
-  font-weight: 700;
-}
-
-h3 {
-  font-size: 22px;
-  margin-bottom: 30px;
-}
-
-h4 {
-  font-size: 20px;
-  margin: 30px 0 15px;
-}
-
-.funciones {
-  display: flex;
-  flex-direction: column;
-  width: 300px;
-}
-
-.funciones a {
-  padding: 15px;
-  border: 1px solid #ccc;
-  text-decoration: none;
-  color: #333;
-  background: white;
-  transition: background 0.3s, color 0.3s;
-}
-
-.funciones a:hover {
+/* Panel derecho */
+.right-panel {
   background-color: #006ab0;
-  color: white;
-}
-.text-negrita {
-  font-size: 20px;
-  font-weight: bold;
-  color: #004d84;
-}
-.texto {
-    margin: 5px 0;
-    line-height: 1.2;
-}
-.text-rojo {
-  font-size: 20px;
-    font-weight: bold;
-    color: #eb0505;
-    animation: realce 1.5s infinite;
-}
-@keyframes realce {
-    0%, 100% {
-        color: #2a2a2a;
-        text-shadow: none;
-    }
-    50% {
-        color: #ff0000;
-        text-shadow: 0 0 10px #1e1616;
-    }
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-@media (max-width: 768px) {
-  .container {
-    flex-direction: column;
+.unesco-logo {
+  width: 60%;
+  max-width: 400px;
+}
+
+/* Flecha de volver */
+.back-arrow img {
+  width: 30px;
+  height: auto;
+  margin-bottom: 20px;
+}
+
+/* Marca de agua para móvil - ahora ocupa toda la pantalla */
+.unesco-watermark {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 0;
+  opacity: 0.1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  pointer-events: none;
+}
+
+.unesco-watermark img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+  .login-container {
     height: auto;
+    min-height: 100vh;
   }
-
-  .left-panel, .right-panel {
-    flex: none;
-    width: 100%;
-    padding: 20px;
-  }
-
+  
   .left-panel {
-    padding: 20px 15px;
-    align-items: center;
-    text-align: center;
+    padding: 30px;
+    background-color: rgba(255, 255, 255, 0.95);
   }
-
+  
   .titulo {
     font-size: 28px;
   }
+  
+  .titulo span {
+    font-size: 18px;
+  }
+}
 
+@media (max-width: 576px) {
+  .left-panel {
+    padding: 20px;
+  }
+  
+  .titulo {
+    font-size: 24px;
+  }
+  
   .subtitulo {
-    font-size: 16px;
-    margin-bottom: 20px;
+    font-size: 18px;
   }
-
-  .login-form input {
-    width: 100%;
-    box-sizing: border-box;
-  }
-
-  .options {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
-  }
-
-  .right-panel {
-    justify-content: center;
-    padding: 30px 0;
-  }
-
-  .right-panel img {
-    width: 50%;
-    max-width: 160px;
-  }
-
-  .back-arrow {
-    align-self: flex-start;
-    margin-bottom: 10px;
-  }
-
-  .login-btn {
-    width: 100%;
+  
+  .texto {
+    font-size: 13px;
   }
 }
