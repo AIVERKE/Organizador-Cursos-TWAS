@@ -2,126 +2,121 @@ from flask import Flask, request, g
 from dotenv import load_dotenv
 from .extensions import db, mail
 from flask_login import LoginManager
-from app.models.user import Usuario  # Si da problemas, mueve esto dentro de load_user
-from app.config import (
-    DevConfig,
-)  # Puedes cambiar a ProdConfig o TestConfig según tu entorno
+from app.models.user import Usuario
+from app.config import DevConfig
 import time
-import logging 
+import logging
+
+
 def create_app(config_class=DevConfig):
     load_dotenv()
 
     app = Flask(__name__)
-    app.config.from_object(config_class)  # Cargamos toda la configuración centralizada
+    app.config.from_object(config_class)
 
     # Inicializar extensiones
     db.init_app(app)
     mail.init_app(app)
 
+    # Lista para evitar registrar el mismo blueprint dos veces
+    registered_blueprints = set()
+
+    def safe_register(bp, prefix):
+        if bp.name in registered_blueprints:
+            print(
+                f"[ADVERTENCIA] Blueprint '{bp.name}' ya fue registrado, se omite duplicado."
+            )
+        else:
+            app.register_blueprint(bp, url_prefix=prefix)
+            registered_blueprints.add(bp.name)
+            print(f"[OK] Registrado blueprint: {bp.name}")
+
     # Registrar blueprints
-    ## Autenticador (Forgot my password)
     from app.api.auth import auth_bp
 
-    app.register_blueprint(auth_bp, url_prefix="/auth")
+    safe_register(auth_bp, "/auth")
 
-    ## Generador de qr
     from app.api.qrs import qrs_bp
 
-    app.register_blueprint(qrs_bp, url_prefix="/qrs")
+    safe_register(qrs_bp, "/qrs")
 
-    # Página principal index
     from app.api.home import home_bp
 
-    app.register_blueprint(home_bp, url_prefix="/")
+    safe_register(home_bp, "/")
 
-    # CRUD Usuarios
     from app.api.usuarios import usuario_bp
 
-    app.register_blueprint(usuario_bp, url_prefix="/usuarios")
+    safe_register(usuario_bp, "/usuarios")
 
-    # CRUD eventos y version_evento
     from app.api.eventos import evento_bp
 
-    app.register_blueprint(evento_bp, url_prefix="/eventos")
+    safe_register(evento_bp, "/eventos")
 
-    # CRUD Cursos
     from app.api.cursos import curso_bp
 
-    app.register_blueprint(curso_bp, url_prefix="/cursos")
+    safe_register(curso_bp, "/cursos")
 
-    # CRUD Inscripcion
     from app.api.inscripciones import ins_bp
 
-    app.register_blueprint(ins_bp, url_prefix="/ins")
+    safe_register(ins_bp, "/ins")
 
-    # CRUD Notas
     from app.api.notas import notas_bp
 
-    app.register_blueprint(notas_bp, url_prefix="/notas")
+    safe_register(notas_bp, "/notas")
 
-
-    ## Generador de certificados
     from app.api.certificate import certificate_bp
 
-    app.register_blueprint(certificate_bp, url_prefix="/cert")
+    safe_register(certificate_bp, "/cert")
 
-    ## Lectura archivos tipo excel o similares
     from app.api.rxls import rxls_bp
 
-    app.register_blueprint(rxls_bp, url_prefix="/rxls")
+    safe_register(rxls_bp, "/rxls")
 
-    # Escaner QR's
     from app.api.qrscan import qrscan_bp
 
-    app.register_blueprint(qrscan_bp, url_prefix="/scan")
+    safe_register(qrscan_bp, "/scan")
 
-    # Rutas Coordinador
     from app.api.coordinador import coordinador_bp
 
-    app.register_blueprint(coordinador_bp, url_prefix="/coordinador")
+    safe_register(coordinador_bp, "/coordinador")
 
-    # Rutas Ponente
     from app.api.ponente import ponente_bp
 
-    app.register_blueprint(ponente_bp, url_prefix="/ponente")
+    safe_register(ponente_bp, "/ponente")
 
     # Configurar Flask-Login
     login_manager = LoginManager(app)
     login_manager.login_view = "auth.login"
 
-    # Importacion de modelos
     from app import models
 
     @login_manager.user_loader
     def load_user(user_id):
         return Usuario.query.get(int(user_id))
 
-    # Crear las tablas necesarias en la base de datos
     with app.app_context():
         db.create_all()
-    print("\n[RUTAS REGISTRADAS EN FLASK]:")
-    for rule in app.url_map.iter_rules():
-        print(rule)
 
     # --- Medición de tiempos de cada request ---
     @app.before_request
     def before_request():
         g.start_time = time.time()
-    
-    
+
     @app.after_request
     def after_request(response):
         total_time = time.time() - g.start_time
-        if not request.path.startswith('/static'):
+        if not request.path.startswith("/static"):
             app.logger.info(f"{request.method} {request.path} {total_time:.4f}s")
         return response
-    
-    # --- Listar rutas registradas ---
+
+    # --- Listar rutas registradas (solo una vez) ---
     print("\n[RUTAS REGISTRADAS EN FLASK]:")
     for rule in app.url_map.iter_rules():
         print(rule)
 
-    logging.basicConfig(level=logging.INFO, format='[%(asctime)s] %(message)s', datefmt='%H:%M:%S')    
-    logging.getLogger('werkzeug').setLevel(logging.WARNING)
-    return app
+    logging.basicConfig(
+        level=logging.INFO, format="[%(asctime)s] %(message)s", datefmt="%H:%M:%S"
+    )
+    logging.getLogger("werkzeug").setLevel(logging.WARNING)
 
+    return app

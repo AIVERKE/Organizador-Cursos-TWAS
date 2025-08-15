@@ -21,24 +21,40 @@
             <th>Apellidos</th>
             <th>Nombres</th>
             <th>Asistencias</th>
-            <th>Nota Promedio</th>
+            <th>Nota Asistencia</th>
+            <th>Nota Acumulada</th>
+            <th>Nota Final</th>
             <th>Estado</th>
           </tr>
         </thead>
         <tbody>
           {% for estudiante in estudiantes %}
             <tr data-id-inscripcion="{{ estudiante.id_inscripcion }}">            
-              <td>{{estudiante.nro}}</td>
-              <td>{{estudiante.apellido}}</td>
-              <td>{{estudiante.nombre}}</td>
-              <td>{{estudiante.total_asistencias}}</td>
+              <td>{{ estudiante.nro }}</td>
+              <td>{{ estudiante.apellido }}</td>
+              <td>{{ estudiante.nombre }}</td>
+              <td>{{ estudiante.total_asistencias }}</td>
+              <td>
+                <input 
+                  type="number"
+                  min="0" max="100"
+                  value="{{ estudiante.nota_asistencia }}"
+                  readonly>
+              </td>
+              <td>
+                <input 
+                  type="number"
+                  min="0" max="100"
+                  value="{{ estudiante.nota_acumulada }}"
+                  onchange="confirmarCambioCampo(this, 'nota_acumulada')">
+              </td>
               <td>
                 <input 
                   type="number" 
                   min="0" max="100" 
                   value="{{ estudiante.nota_final }}" 
-                  onchange="confirmarCambio(this)">
-              </td>   
+                  readonly>
+              </td>
               <td class="estado"></td>
             </tr>                    
           {% endfor %}
@@ -48,71 +64,103 @@
   </div>
 
   <script>
-    function actualizarEstado(input) {
-      const nota = parseFloat(input.value);
-      const tr = input.closest("tr");
+  function actualizarEstado(tr) {
+    const notaFinalInput = tr.querySelector("td:nth-child(7) input");
+    const notaFinal = parseFloat(notaFinalInput.value);
 
-      const tdAsistencias = tr.querySelector("td:nth-child(3)"); // tercera columna: asistencias
-      const asistencias = parseInt(tdAsistencias.textContent);
+    const tdAsistencias = tr.querySelector("td:nth-child(4)");
+    const asistencias = parseInt(tdAsistencias.textContent);
 
-      const tdEstado = input.parentElement.nextElementSibling;
+    const tdEstado = tr.querySelector("td.estado");
 
-      if (asistencias < 1) {
-        tdEstado.textContent = "Abandono";
-        tdEstado.className = "estado abandono";
-      } else if (nota >= 71) {
-        tdEstado.textContent = "Aprobado";
-        tdEstado.className = "estado aprobado";
-      } else if (nota >= 51) {
-        tdEstado.textContent = "Participacion";
-        tdEstado.className = "estado participacion";
-      } else {
-        tdEstado.textContent = "Abandono";
-        tdEstado.className = "estado abandono";
-      }
+    if (asistencias < 1) {
+      tdEstado.textContent = "Abandono";
+      tdEstado.className = "estado abandono";
+    } else if (notaFinal >= 71) {
+      tdEstado.textContent = "Aprobado";
+      tdEstado.className = "estado aprobado";
+    } else if (notaFinal <= 70) {
+      tdEstado.textContent = "Certificado de participación";
+      tdEstado.className = "estado participacion";
+    } else {
+      tdEstado.textContent = "Abandono";
+      tdEstado.className = "estado abandono";
     }
+  }
 
-    // Ejecutar al cargar para valores ya existentes
-    window.onload = () => {
-      document.querySelectorAll("input[type='number']").forEach(input => actualizarEstado(input));
-    };
-  </script>
-  <script>
-    function confirmarCambio(input) {
-      const nuevaNota = parseFloat(input.value);
+
+  function confirmarCambioCampo(input, campo) {
+      let nuevoValor = parseFloat(input.value);
+
+      // Limitar nota acumulada a 90
+      if (campo === 'nota_acumulada' && nuevoValor > 90) {
+          alert("La nota acumulada no puede ser mayor a 90.");
+          input.value = input.defaultValue;
+          return;
+      }
+
       const tr = input.closest("tr");
       const id_inscripcion = tr.getAttribute("data-id-inscripcion");
 
-      if (confirm(`¿Deseas cambiar la nota a ${nuevaNota}?`)) {
-        fetch("/ponente/actualizar_nota", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            id_inscripcion: id_inscripcion,
-            nota_final: nuevaNota
+      if (confirm(`¿Deseas cambiar ${campo.replace('_', ' ')} a ${nuevoValor}?`)) {
+          fetch("/ponente/actualizar_nota", {
+              method: "POST",
+              headers: {
+                  "Content-Type": "application/json"
+              },
+              body: JSON.stringify({
+                  id_inscripcion: id_inscripcion,
+                  campo: campo,
+                  valor: nuevoValor
+              })
           })
-        })
-        .then(response => {
-          if (!response.ok) throw new Error("Error en la actualización");
-          return response.json();
-        })
-        .then(data => {
-          alert("Nota actualizada");
-          actualizarEstado(input);
-          input.defaultValue = nuevaNota;  // Actualiza el valor base
-        })
-        .catch(error => {
-          alert("Error al actualizar la nota.");
-          input.value = input.defaultValue; // Revierte si hay error
-          console.error(error);
-        });
+          .then(response => {
+              if (!response.ok) throw new Error("Error en la actualización");
+              return response.json();
+          })
+          .then(data => {
+              if(data.error){
+                  alert(data.error);
+                  input.value = input.defaultValue;
+                  return;
+              }
+
+              // Actualizar valor en el input
+              input.defaultValue = nuevoValor;
+              input.value = nuevoValor;
+
+              // Actualizar nota final si se requiere
+              const notaFinalInput = tr.querySelector("td:nth-child(7) input");
+              if (campo === 'nota_acumulada') {
+                  // Supongamos que la nota final = nota acumulada + nota asistencia
+                  const notaAsistencia = parseFloat(tr.querySelector("td:nth-child(5) input").value);
+                  const nuevaNotaFinal = Math.min(notaAsistencia + nuevoValor, 100);
+                  notaFinalInput.value = nuevaNotaFinal;
+              }
+
+              // Actualizar el estado
+              actualizarEstado(tr);
+
+              alert("Nota actualizada correctamente.");
+          })
+          .catch(error => {
+              alert("Error al actualizar la nota.");
+              input.value = input.defaultValue;
+              console.error(error);
+          });
       } else {
-        input.value = input.defaultValue; // Revertir si cancela
+          input.value = input.defaultValue;
       }
-    }
+  }
+
+
+  // Ejecutar al cargar para valores ya existentes
+  window.onload = () => {
+    document.querySelectorAll("#tabla-estudiantes tbody tr")
+      .forEach(tr => actualizarEstado(tr));
+  };
   </script>
+
 
   <script>
     // Script para filtrar estudiantes
