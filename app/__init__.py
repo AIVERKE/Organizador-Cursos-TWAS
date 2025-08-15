@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, request, g
 from dotenv import load_dotenv
 from .extensions import db, mail
 from flask_login import LoginManager
@@ -6,8 +6,8 @@ from app.models.user import Usuario  # Si da problemas, mueve esto dentro de loa
 from app.config import (
     DevConfig,
 )  # Puedes cambiar a ProdConfig o TestConfig según tu entorno
-
-
+import time
+import logging 
 def create_app(config_class=DevConfig):
     load_dotenv()
 
@@ -103,4 +103,25 @@ def create_app(config_class=DevConfig):
     for rule in app.url_map.iter_rules():
         print(rule)
 
+    # --- Medición de tiempos de cada request ---
+    @app.before_request
+    def before_request():
+        g.start_time = time.time()
+    
+    
+    @app.after_request
+    def after_request(response):
+        total_time = time.time() - g.start_time
+        if not request.path.startswith('/static'):
+            app.logger.info(f"{request.method} {request.path} {total_time:.4f}s")
+        return response
+    
+    # --- Listar rutas registradas ---
+    print("\n[RUTAS REGISTRADAS EN FLASK]:")
+    for rule in app.url_map.iter_rules():
+        print(rule)
+
+    logging.basicConfig(level=logging.INFO, format='[%(asctime)s] %(message)s', datefmt='%H:%M:%S')    
+    logging.getLogger('werkzeug').setLevel(logging.WARNING)
     return app
+
