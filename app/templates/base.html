@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es" class="lang-es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{% block title %}Curso Postgrado UMSA{% endblock %}</title>
+
+  <!-- Fuente + Iconos -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+
+  <!-- Bootstrap (local) -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+
+  <!-- CSS al final para poder sobrescribir -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styleinicio.css') }}">
+
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+  {% block navbar %}
+  <!-- NAVBAR -->
+  <nav class="navbar navbar-expand-lg bg-white border-bottom fixed-top py-2">
+    <div class="container">
+      <a class="navbar-brand d-flex align-items-center gap-2" href="https://twas.org/">
+        <img src="{{ url_for('static', filename='images/Unesco-TWAS.jpg') }}" alt="UNESCO" class="logo me-2" style="height:48px;">
+      </a>
+      <a class="navbar-brand d-flex align-items-center gap-2" href="https://twas.org/tyan">
+        <img src="{{ url_for('static', filename='images/TYAN.webp') }}" alt="UNESCO" class="logo me-2" style="height:48px;">
+      </a>
+
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain" aria-controls="navMain" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navMain">
+        <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
+          <li class="nav-item"><a class="nav-link fw-semibold" href="#inicioid">
+            <span class="i18n i18n-es">Inicio</span><span class="i18n i18n-en">Home</span>
+          </a></li>
+          <li class="nav-item"><a class="nav-link fw-semibold" href="#informacionid">
+            <span class="i18n i18n-es">Información</span><span class="i18n i18n-en">Information</span>
+          </a></li>
+          <li class="nav-item"><a class="nav-link fw-semibold" href="#ubicacionid">
+            <span class="i18n i18n-es">Ubicación</span><span class="i18n i18n-en">Location</span>
+          </a></li>
+          <li class="nav-item"><a class="nav-link fw-semibold" href="#nosotrosid">
+            <span class="i18n i18n-es">Sobre Nosotros</span><span class="i18n i18n-en">About Us</span>
+          </a></li>
+          <li class="nav-item"><a class="nav-link fw-semibold" href="#footerid">
+            <span class="i18n i18n-es">Contacto</span><span class="i18n i18n-en">Contact</span>
+          </a></li>
+        </ul>
+
+        <div class="d-flex align-items-center gap-2">
+          <!-- Botón Traductor -->
+          <button id="btnLang" class="btn btn-outline-secondary btn-sm" type="button" aria-label="Change language">
+            <i class="fa-solid fa-globe"></i>
+            <span class="i18n i18n-es">ENGLISH</span><span class="i18n i18n-en">ESPAÑOL</span>
+          </button>
+
+          <!-- Botón Login -->
+          <a href="{{ url_for('auth.login') }}" class="btn btn-outline-primary btn-sm">
+            <span class="i18n i18n-es">Iniciar Sesión</span><span class="i18n i18n-en">Login</span>
+          </a>
+
+          <!-- Logo UMSA -->
+          <a href="https://www.fcpn.edu.bo/" class="ms-1">
+            <img src="/static/images/umsalogo.webp" alt="UMSA" class="logo-umsa">
+          </a>
+        </div>
+      </div>
+    </div>
+  </nav>
+  {% endblock %}
+
+  {% block content %}{% endblock %}
+
+  {% block footer %}
+  <!-- FOOTER -->
+  <footer class="footer" id="footerid">
+    <div class="container">
+      <div class="footer-top row gy-4">
+        <div class="col-12 col-md-4">
+          <strong><span class="i18n i18n-es">Dónde estamos:</span><span class="i18n i18n-en">Where we are:</span></strong>
+          <p>Av. Villazón N° 1995, Plaza del Bicentenario - La Paz, Bolivia</p>
+        </div>
+        <div class="col-12 col-md-4">
+          <strong><span class="i18n i18n-es">Contáctanos:</span><span class="i18n i18n-en">Contact us:</span></strong>
+          <p>Tel: (591-2) 2441570 / 2440571</p>
+          <p>Fax: 2441092</p>
+          <p>Email: decanato@fcpn.edu.bo</p>
+        </div>
+        <div class="col-12 col-md-4">
+          <strong><span class="i18n i18n-es">Diseño Curricular:</span><span class="i18n i18n-en">Curricular Design:</span></strong>
+          <p>Carrera de Ciencias Químicas<br>5to Piso - Aula 21<br>Cota Cota, Calle 27 #1995</p>
+        </div>
+      </div>
+
+      <div class="footer-bottom mt-4">
+        <p class="mb-1">&copy; 2025 - <span class="i18n i18n-es">Todos los derechos reservados</span><span class="i18n i18n-en">All rights reserved</span> - Carrera de Química UMSA</p>
+        <div class="social-icons">
+          <a href="#" class="icon facebook"><i class="fab fa-facebook-f"></i></a>
+          <a href="#" class="icon twitter"><i class="fab fa-twitter"></i></a>
+          <a href="#" class="icon instagram"><i class="fab fa-instagram"></i></a>
+          <a href="#" class="icon linkedin"><i class="fab fa-linkedin-in"></i></a>
+          <a href="#" class="icon youtube"><i class="fab fa-youtube"></i></a>
+        </div>
+        <div class="dev-bba">Desarrollado por | <a href="https://www.instagram.com/thebattle_bread?igsh=ZHl3b29vcDN3OWhk">BattleBread Academy</a></div>
+      </div>
+    </div>
+  </footer>
+  {% endblock %}
+
+  <!-- Bootstrap (local) -->
+  <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/botonTraductor.js') }}"></script>
+
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

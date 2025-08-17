@@ -1,35 +1,130 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login Química</title>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/styleLogin.css') }}">
-</head>
-<body>
-  <div class="container">
-    <div class="left-panel">  <!--Ver el href eso para index-->
-      <div class="back-arrow"><a href="{{ url_for('home.index') }}"><img  src="{{ url_for('static', filename='images/Flecha-izq.png') }}"></a></div>
-      <h1 class="titulo">Cursos Postgrado<br />Carrera de Química<br /><span>3ra Versión</span></h1>
-      <p class="subtitulo">¡Bienvenido! Por favor ingrese su cuenta.</p>
+{% extends "base.html" %}
+
+{% block title %}Login Química{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/styleLogin.css') }}">
+<style>
+  .navbar, .footer {
+    display: none !important;
+  }
+  body {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
+</style>
+{% endblock %}
+
+{% block navbar %}{% endblock %}
+{% block footer %}{% endblock %}
+
+{% block content %}
+<div class="container-fluid login-container">
+  <div class="row g-0 h-100">
+    <!-- Panel izquierdo -->
+    <div class="col-lg-6 left-panel">
+      <div class="back-arrow">
+        <a href="{{ url_for('home.index') }}">
+          <img src="{{ url_for('static', filename='images/Flecha-izq.png') }}" alt="Volver">
+        </a>
+      </div>
+      
+      <!-- Botón traductor -->
+      <div class="text-end mb-4">
+        <button id="btnLang" class="btn btn-outline-secondary btn-sm" type="button" aria-label="Change language">
+          <i class="fa-solid fa-globe"></i>
+          <span class="i18n i18n-es">ENGLISH</span><span class="i18n i18n-en">ESPAÑOL</span>
+        </button>
+      </div>
+
+      <h1 class="titulo">
+        <span class="i18n i18n-es">Cursos Postgrado<br>Carrera de Química<br><span>3ra Versión</span></span>
+        <span class="i18n i18n-en">Postgraduate Courses<br>Chemistry Program<br><span>3rd Version</span></span>
+      </h1>
+      
+      <p class="subtitulo">
+        <span class="i18n i18n-es">¡Bienvenido! Por favor ingrese su cuenta.</span>
+        <span class="i18n i18n-en">Welcome! Please log in to your account.</span>
+      </p>
+
       <form class="login-form" action="{{ url_for('auth.login') }}" method="POST">
-        <label for="email" class="texto">Dirección de Correo Electrónico</label>
-        <input type="email" id="email" name="email" required />
-        <label for="password" class="texto">Contraseña</label>
-        <input type="password" id="contrasena" name="contrasena" required />
-
-        <div class="options">
-          <label class="texto"><input type="checkbox" name="recuerdame"> Recuérdame</label>
-          <a class="texto" href="{{ url_for('auth.forgot_password') }}">¿Olvidé mi contraseña?</a>
+        <div class="mb-3">
+          <label for="email" class="form-label texto">
+            <span class="i18n i18n-es">Dirección de Correo Electrónico</span>
+            <span class="i18n i18n-en">Email Address</span>
+          </label>
+          <input type="email" class="form-control" id="email" name="email" required>
         </div>
-        <button type="submit" class="login-btn">Iniciar Sesión</button>
-      </form>
+        
+        <div class="mb-3 password-container">
+          <label for="contrasena" class="form-label texto">
+            <span class="i18n i18n-es">Contraseña</span>
+            <span class="i18n i18n-en">Password</span>
+          </label>
+          <div class="input-group">
+            <input type="password" class="form-control" id="contrasena" name="contrasena" required>
+            <button class="btn btn-outline-secondary toggle-password" type="button">
+              <i class="fas fa-eye"></i>
+            </button>
+          </div>
+        </div>
 
+        <div class="mb-3 d-flex justify-content-between align-items-center">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="recuerdame" name="recuerdame">
+            <label class="form-check-label texto" for="recuerdame">
+              <span class="i18n i18n-es">Recuérdame</span>
+              <span class="i18n i18n-en">Remember me</span>
+            </label>
+          </div>
+          <a class="texto" href="{{ url_for('auth.forgot_password') }}">
+            <span class="i18n i18n-es">¿Olvidé mi contraseña?</span>
+            <span class="i18n i18n-en">Forgot password?</span>
+          </a>
+        </div>
+        
+        <button type="submit" class="btn login-btn w-100">
+          <span class="i18n i18n-es">Iniciar Sesión</span>
+          <span class="i18n i18n-en">Login</span>
+        </button>
+      </form>
     </div>
-    <div class="right-panel">
-     <img src="{{ url_for('static', filename='images/Flag_of_UNESCO.png') }}" alt="UNESCO Logo">
+
+    <!-- Panel derecho -->
+    <div class="col-lg-6 right-panel d-none d-lg-flex align-items-center justify-content-center">
+      <img src="{{ url_for('static', filename='images/Flag_of_UNESCO.png') }}" alt="UNESCO Logo" class="unesco-logo">
     </div>
   </div>
-</body>
-</html>
+</div>
+
+<!-- Marca de agua para móvil - ahora cubre toda la pantalla -->
+<div class="d-lg-none unesco-watermark">
+  <img src="{{ url_for('static', filename='images/Flag_of_UNESCO.png') }}" alt="UNESCO Logo">
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Incluir FontAwesome para el icono de ojo -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+
+<script src="{{ url_for('static', filename='js/botonTraductor.js') }}"></script>
+<script>
+  // Toggle para mostrar/ocultar contraseña
+  document.querySelectorAll('.toggle-password').forEach(button => {
+    button.addEventListener('click', function() {
+      const passwordInput = this.previousElementSibling;
+      const icon = this.querySelector('i');
+      
+      if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+      } else {
+        passwordInput.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+      }
+    });
+  });
+</script>
+{% endblock %}
