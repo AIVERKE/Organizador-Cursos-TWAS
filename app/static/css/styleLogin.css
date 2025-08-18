@@ -1,173 +1,81 @@
-/* Fuentes exactas como especificaste */
-body {
-  font-family: 'Montserrat Alternates', sans-serif;
+/* Estilos base */
+body, html {
+  height: 100%;
   margin: 0;
   padding: 0;
-  color: #006ab0;
-  background: #fff;
-  overflow-x: hidden;
+  overflow: hidden;
 }
 
-/* Tamaños de fuente exactos */
-.titulo {
-  font-size: 33px;
-  font-weight: 400;
-  line-height: 1.2;
-}
-
-.titulo span {
-  font-weight: 600;
-  font-size: 20px;
-  display: block;
-  margin-top: 10px;
-}
-
-.subtitulo {
-  font-size: 20px;
-  font-weight: 400;
-  margin-bottom: 30px;
-}
-
-.texto {
-  font-size: 14px;
-  line-height: 1.4;
-}
-
-/* Layout principal */
+/* Contenedor principal */
 .login-container {
   height: 100vh;
-  position: relative;
+  display: flex;
+  flex-direction: column;
 }
 
+/* Panel izquierdo */
 .left-panel {
-  padding: 50px;
+  background-color: white;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  position: relative;
-  z-index: 1;
-  background-color: rgba(255, 255, 255, 0.9);
 }
 
-/* Formulario */
-.login-form {
-  max-width: 400px;
-  width: 100%;
+/* Ajustes del formulario */
+.form-container {
+  padding-top: 3rem;
+  padding-bottom: 3rem;
 }
 
-.form-control {
-  border: 1px solid #ccc;
-  padding: 12px;
-  font-family: 'Montserrat Alternates', sans-serif;
-  font-size: 14px;
+.display-5 {
+  font-size: 2.5rem;
+  margin-bottom: 1.5rem !important;
 }
 
-.password-container .input-group {
-  position: relative;
+.display-5 small {
+  font-size: 1.25rem;
+  display: block;
+  margin-top: 0.5rem;
 }
 
-.password-container .toggle-password {
-  position: absolute;
-  right: 5px;
-  top: 50%;
-  transform: translateY(-50%);
-  background: none;
-  border: none;
-  cursor: pointer;
-  z-index: 2;
-}
-
-.login-btn {
-  background-color: #006ab0;
-  color: #fff;
-  border: none;
-  padding: 12px;
-  font-family: 'Montserrat Alternates', sans-serif;
-  font-size: 14px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.login-btn:hover {
-  background-color: #004d84;
+.lead {
+  font-size: 1.25rem;
+  margin-bottom: 2rem !important;
 }
 
 /* Panel derecho */
-.right-panel {
-  background-color: #006ab0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.bg-primary {
+  background-color: #006ab0 !important;
 }
 
-.unesco-logo {
-  width: 60%;
-  max-width: 400px;
+/* Botón mostrar contraseña */
+.toggle-password {
+  border-left: none;
+  background-color: #f8f9fa;
 }
 
-/* Flecha de volver */
-.back-arrow img {
-  width: 30px;
-  height: auto;
-  margin-bottom: 20px;
-}
-
-/* Marca de agua para móvil - ahora ocupa toda la pantalla */
-.unesco-watermark {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 0;
-  opacity: 0.1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  pointer-events: none;
-}
-
-.unesco-watermark img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-/* Responsive */
+/* Responsividad */
 @media (max-width: 992px) {
-  .login-container {
-    height: auto;
-    min-height: 100vh;
+  .display-5 {
+    font-size: 2rem;
+  }
+  
+  .lead {
+    font-size: 1.1rem;
   }
   
   .left-panel {
-    padding: 30px;
-    background-color: rgba(255, 255, 255, 0.95);
-  }
-  
-  .titulo {
-    font-size: 28px;
-  }
-  
-  .titulo span {
-    font-size: 18px;
+    padding: 2rem !important;
   }
 }
 
 @media (max-width: 576px) {
-  .left-panel {
-    padding: 20px;
+  .display-5 {
+    font-size: 1.75rem;
   }
   
-  .titulo {
-    font-size: 24px;
-  }
-  
-  .subtitulo {
-    font-size: 18px;
-  }
-  
-  .texto {
-    font-size: 13px;
+  .form-container {
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
   }
 }
