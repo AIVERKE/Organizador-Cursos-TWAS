@@ -17,14 +17,7 @@
     <div class="col-lg-6 d-flex flex-column justify-content-center p-4 p-md-5">
        <br>
       <br>
-      <!-- Botón traductor en esquina superior derecha 
-      <div class="position-absolute top-0 end-0 m-3">
-        <button id="btnLang" class="btn btn-sm btn-outline-secondary" type="button" aria-label="Change language">
-          <i class="fas fa-globe me-1"></i>
-          <span class="i18n i18n-es">ENGLISH</span>
-          <span class="i18n i18n-en">ESPAÑOL</span>
-        </button>
-      </div>-->
+      
       
       <div class="mx-auto" style="max-width: 400px; width: 100%; margin-top: 2rem; margin-bottom: 2rem;">
         <h1 class="display-5 fw-bold mb-3">
@@ -33,8 +26,8 @@
         </h1>
         
         <p class="lead mb-4">
-          <span class="i18n i18n-es">¡Bienvenido! Por favor ingrese su cuenta.</span>
-          <span class="i18n i18n-en">Welcome! Please log in to your account.</span>
+          <span class="i18n i18n-es">¡Bienvenido! Al control de Asistencia de la Escuelas Prácticas TYAN en Bolivia 2025. <br> Por favor insertar el Correo Electrónico con el que se registro en el sistema <br>y el codigo proporsionado para registrar su asistencia </span>
+          <span class="i18n i18n-en">To the Attendance Control of the TYAN Hands-on Schools in Bolivia 2025. <br> Please enter the email address you used to register in the system <br>and the code provided to register your attendance. </span>
         </p>
 
         <form class="needs-validation" action="{{ url_for('auth.login') }}" method="POST" novalidate>
@@ -48,8 +41,8 @@
           
           <div class="mb-3 position-relative">
             <label for="password" class="form-label">
-              <span class="i18n i18n-es">Contraseña</span>
-              <span class="i18n i18n-en">Password</span>
+              <span class="i18n i18n-es">Codigo de Asistencia</span>
+              <span class="i18n i18n-en">Assistance Code</span>
             </label>
             <div class="input-group">
               <input type="password" class="form-control py-2" id="password" name="contrasena" required>
@@ -58,24 +51,10 @@
               </button>
             </div>
           </div>
-
-          <div class="d-flex justify-content-between align-items-center mb-4">
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" id="remember" name="recuerdame">
-              <label class="form-check-label" for="remember">
-                <span class="i18n i18n-es">Recuérdame</span>
-                <span class="i18n i18n-en">Remember me</span>
-              </label>
-            </div>
-            <a href="{{ url_for('auth.forgot_password') }}" class="text-decoration-none">
-              <span class="i18n i18n-es">¿Olvidó su contraseña?</span>
-              <span class="i18n i18n-en">Forgot password?</span>
-            </a>
-          </div>
           
           <button type="submit" class="btn btn-primary w-100 py-2">
-            <span class="i18n i18n-es">Iniciar Sesión</span>
-            <span class="i18n i18n-en">Login</span>
+            <span class="i18n i18n-es">Registrar Asistencia</span>
+            <span class="i18n i18n-en">Register Attendance</span>
           </button>
         </form>
       </div>
@@ -90,17 +69,5 @@
 {% endblock %}
 
 {% block extra_js %}
-<script>
-// Mostrar/ocultar contraseña
-document.querySelectorAll('.toggle-password').forEach(button => {
-  button.addEventListener('click', function() {
-    const passwordInput = this.parentElement.querySelector('input');
-    const icon = this.querySelector('i');
-    const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-    passwordInput.setAttribute('type', type);
-    icon.classList.toggle('fa-eye');
-    icon.classList.toggle('fa-eye-slash');
-  });
-});
-</script>
+
 {% endblock %}
