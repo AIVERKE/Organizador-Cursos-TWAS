@@ -201,6 +201,13 @@ body {
   justify-items: center;
   align-items: center;
 }
+.logo-grid2 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  justify-items: center;
+  align-items: center;
+}
 
 /* Social buttons */
 .social-btn-minimal {
