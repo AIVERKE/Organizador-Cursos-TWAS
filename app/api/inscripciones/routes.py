@@ -91,7 +91,7 @@ def get_inscripciones_por_usuario(id_usuario):
 
 import psycopg2
 from app.db_c import get_connection
-from datetime import datetime
+from datetime import datetime,time
 
 @ins_bp.route("/registrar_asistencia/")
 def index():
@@ -130,7 +130,7 @@ def validar():
 
     # Validar inscripción en curso y pin
     cur.execute("""
-        SELECT i.id_inscripcion FROM inscripciones i
+        SELECT i.id_inscripcion,modalidad FROM inscripciones i
         WHERE i.id_usuario = %s AND i.id_curso = %s;
     """, (usuario_id, curso_id))
     inscripcion = cur.fetchone()
@@ -141,21 +141,67 @@ def validar():
         return jsonify({"mensaje": "El usuario no está inscrito en este curso",
             "message": "The user is not registered in this course"}), 400
     inscripcion_id = inscripcion[0]
+    modalidad = inscripcion[1]
 
-    # Verificar si ya existe asistencia
-    cur.execute("""
-        SELECT id_inscripcion 
-        FROM asistencias 
-        WHERE id_inscripcion = %s AND fecha = %s
-    """, (inscripcion_id, hoy.date()))
 
-    existente = cur.fetchone()
+    if modalidad == "catedra":
+        if not time(9,30) <= datetime.now().time() <= time(10,15):
+            return jsonify({"mensaje": "No se encuentra en horario de asistencia",
+                "message": "You are out of attendance schedule"}), 400
+        # Verificar si ya existe asistencia con modalidad "catedra" (solo una asistencia)
+        cur.execute("""
+            SELECT id_inscripcion
+            FROM asistencias 
+            WHERE id_inscripcion = %s AND fecha = %s
+        """, (inscripcion_id, hoy.date()))
 
-    if existente:
-        cur.close()
-        conn.close()
-        return jsonify({"mensaje": "Asistencia ya registrada en este curso",
-            "message": "Attendance already registered in this course"}), 400
+        existente = cur.fetchone()
+
+        if existente:
+            cur.close()
+            conn.close()
+            return jsonify({"mensaje": "Asistencia ya registrada en este curso",
+                "message": "Attendance already registered in this course"}), 400
+    elif modalidad == "catedra-laboratorio":
+        sw_h = 0
+        if time(9,30) <= datetime.now().time() <= time(10,15):
+            sw_h = 0
+        elif time(13,45) <= datetime.now().time() <= time(17,15):
+            sw_h = 1
+        else:
+            return jsonify({"mensaje": "No se encuentra en horario de asistencia",
+                "message": "You are out of attendance schedule"}), 400
+
+        if sw_h==0:
+            cur.execute("""
+                SELECT id_inscripcion
+                FROM asistencias 
+                WHERE id_inscripcion = %s AND fecha::DATE = %s
+                AND ((fecha::TIME BETWEEN '09:30:00' AND '10:15:00'))
+            """, (inscripcion_id, hoy.date()))
+
+            existente = cur.fetchone()
+
+            if existente:
+                cur.close()
+                conn.close()
+                return jsonify({"mensaje": "Asistencia ya registrada en este curso",
+                    "message": "Attendance already registered in this course"}), 400
+        elif sw_h==1:
+            cur.execute("""
+                SELECT id_inscripcion
+                FROM asistencias 
+                WHERE id_inscripcion = %s AND fecha::DATE = %s
+                AND ((fecha::TIME BETWEEN '13:45:00' AND '17:15:00'))
+            """, (inscripcion_id, hoy.date()))
+
+            existente = cur.fetchone()
+
+            if existente:
+                cur.close()
+                conn.close()
+                return jsonify({"mensaje": "Asistencia ya registrada en este curso",
+                    "message": "Attendance already registered in this course"}), 400
 
     ok, msg_es, msg_en ,= crs.verificar_pin(curso_id, pin, datetime.now())
     
@@ -165,7 +211,7 @@ def validar():
             INSERT INTO asistencias (id_inscripcion, fecha, presente)
             VALUES (%s, %s, %s)
         """,
-            (inscripcion[0],hoy.date(),True)
+            (inscripcion[0],datetime.now(),True)
         )
         conn.commit()
         cur.close()
