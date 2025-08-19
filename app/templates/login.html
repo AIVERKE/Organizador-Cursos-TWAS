@@ -9,26 +9,18 @@
 {% block footer %}{% endblock %}
 
 {% block content %}
-<div class="container-fluid vh-100 d-flex flex-column">
+<div class="container-fluid min-vh-100 d-flex flex-column">
   <!-- Navbar heredado de base.html -->
+  
+  <!-- Espacio para evitar solapamiento con navbar en móviles -->
+  <div class="d-block d-lg-none" style="height: 80px;"></div>
   
   <div class="row flex-grow-1 g-0">
     <!-- Panel izquierdo - Formulario -->
     <div class="col-lg-6 d-flex flex-column justify-content-center p-4 p-md-5">
-       <br>
-      <br>
-      <!-- Botón traductor en esquina superior derecha 
-      <div class="position-absolute top-0 end-0 m-3">
-        <button id="btnLang" class="btn btn-sm btn-outline-secondary" type="button" aria-label="Change language">
-          <i class="fas fa-globe me-1"></i>
-          <span class="i18n i18n-es">ENGLISH</span>
-          <span class="i18n i18n-en">ESPAÑOL</span>
-        </button>
-      </div>-->
-      
-      <div class="mx-auto" style="max-width: 400px; width: 100%; margin-top: 2rem; margin-bottom: 2rem;">
+      <div class="mx-auto form-content" style="max-width: 400px; width: 100%;">
         <h1 class="display-5 fw-bold mb-3">
-          <span class="i18n i18n-es">Escuelas Prácticas TYAN en Bolivia 2025<br><small class="fs-4">3ra Versión</small></span>
+          <span class="i18n i18n-es">TYAN Hands-on Schools en Bolivia 2025<br><small class="fs-4">3ra Versión</small></span>
           <span class="i18n i18n-en">TYAN Hands-on Schools en Bolivia 2025<br><small class="fs-4">3rd Version</small></span>
         </h1>
         
@@ -73,7 +65,7 @@
             </a>
           </div>
           
-          <button type="submit" class="btn btn-primary w-100 py-2">
+          <button type="submit" class="btn btn-primary w-100 py-2 mb-3">
             <span class="i18n i18n-es">Iniciar Sesión</span>
             <span class="i18n i18n-en">Login</span>
           </button>
@@ -83,7 +75,9 @@
 
     <!-- Panel derecho - Imagen UNESCO (solo desktop) -->
     <div class="col-lg-6 d-none d-lg-flex bg-primary align-items-center justify-content-center p-5">
-      <img src="{{ url_for('static', filename='images/Flag_of_UNESCO.png') }}" alt="UNESCO" class="img-fluid" style="max-height: 70vh; opacity: 0.9;">
+      <div class="unesco-container">
+        <img src="{{ url_for('static', filename='images/Flag_of_UNESCO.png') }}" alt="UNESCO" class="unesco-img">
+      </div>
     </div>
   </div>
 </div>
