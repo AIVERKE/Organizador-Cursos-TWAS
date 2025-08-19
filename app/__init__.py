@@ -117,6 +117,6 @@ def create_app(config_class=DevConfig):
     logging.basicConfig(
         level=logging.INFO, format="[%(asctime)s] %(message)s", datefmt="%H:%M:%S"
     )
-    logging.getLogger("werkzeug").setLevel(logging.WARNING)
+    # logging.getLogger("werkzeug").setLevel(logging.WARNING)
 
     return app

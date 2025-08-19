@@ -209,14 +209,12 @@
     </h2>
     <p class="mx-auto mb-5" style="max-width:900px;">
       <span class="i18n i18n-es">
-        El curso está dirigido por el equipo académico de la Carrera de Química.
-        Coordinador general: Dr. Juan Pérez. Equipo técnico y administrativo
-        comprometido con la excelencia académica.
+        Para esta edición de las Escuelas Prácticas TYAN 2025 en Bolivia, tenemos el privilegio de contar con un destacado grupo de expositores internacionales. 
+        <br> Les damos una cálida bienvenida a estos expertos, cuya presencia enriquecerá enormemente nuestro evento y fortalecerá la colaboración científica.
       </span>
       <span class="i18n i18n-en">
-        The course is led by the academic team of the Chemistry Program.
-        General Coordinator: Dr. Juan Pérez. A technical and administrative
-        team committed to academic excellence.
+       For this edition of the TYAN Practical Schools 2025 in Bolivia, we have the privilege of featuring an outstanding group of international speakers.
+       <br> We extend a warm welcome to these experts, whose presence will greatly enrich our event and strengthen scientific collaboration.
       </span>
     </p>
 
@@ -224,7 +222,7 @@
     <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-2 g-4">
       <div class="col">
         <div class="organizador h-100">
-          <img src="{{ url_for('static', filename='images/Foto-perfil-mujer.png') }}" alt="Organizador 1">
+          <img src="/static/images/Dandeniya.webp" alt="Organizador 1">
           <h4>Dr Warshi Dandeniya</h4>
           <b>
             <span class="i18n i18n-es">Sri Lanka</span>
@@ -239,7 +237,7 @@
 
       <div class="col">
         <div class="organizador h-100">
-          <img src="{{ url_for('static', filename='images/Foto-perfil-hombre.png') }}" alt="Organizador 2">
+         <img src="/static/images/AbantiRaga.webp" alt="Organizador">
           <h4> Dr. Ranga Ambati</h4>
          <b>
             <span class="i18n i18n-es">India</span>
@@ -254,7 +252,7 @@
 
       <div class="col">
         <div class="organizador h-100">
-          <img src="{{ url_for('static', filename='images/Foto-perfil-hombre.png') }}" alt="Organizador 3">
+          <img src="/static/images/Pabloalberto.webp" alt="Organizador 3">
           <h4>Dr Pablo Bolaños-Villegas</h4>
           <b>
             <span class="i18n i18n-es">Costa Rica</span>
@@ -268,7 +266,7 @@
       </div>
       <div class="col">
         <div class="organizador h-100">
-          <img src="{{ url_for('static', filename='images/Foto-perfil-mujer.png') }}" alt="Organizador 2">
+          <img src="/static/images/MonicaGuevara.webp" alt="Organizador 4 ">
           <h4>Dr. Mónica Izurieta Guavara</h4>
           <b>
             <span class="i18n i18n-es">Ecuador</span>
@@ -281,25 +279,108 @@
         </div>
       </div>
     </div>
+      <!-- Carrusel para el 5to perfil (3 expositores) -->
+  <div class="row mt-4">
+    <div class="col-12 d-flex justify-content-center">
+      <div class="organizador-carousel" style="max-width: 800px; width: 100%;">
+        <div id="quintoPerfilCarousel" class="carousel slide" data-bs-ride="carousel">
+          <div class="carousel-inner">
+            <!-- Expositor 1 -->
+            <div class="carousel-item active">
+              <div class="organizador h-100">
+                <img src="/static/images/Foto-perfil-mujer.png" alt="Dr. Gloria Rodrigo">
+                <h4>Dr. Gloria Rodrigo</h4>
+                <b>
+                  <span class="i18n i18n-es">Costa Rica</span>
+                  <span class="i18n i18n-en">Costa Rica</span>
+                </b>
+                <p>
+                  <span class="i18n i18n-es">Modelos animales y aplicaciones en agroindustria y medio ambiente</span>
+                  <span class="i18n i18n-en">Animal models and applications in agroindustry and environment</span>
+                </p>
+              </div>
+            </div>
+            
+            <!-- Expositor 2 -->
+            <div class="carousel-item">
+              <div class="organizador h-100">
+                <img src="/static/images/Foto-perfil-mujer.png" alt="Dr. Sdenka Moscoso">
+                <h4>Dr. Sdenka Moscoso</h4>
+                <b>
+                  <span class="i18n i18n-es">Costa Rica</span>
+                  <span class="i18n i18n-en">Costa Rica</span>
+                </b>
+                <p>
+                  <span class="i18n i18n-es">Modelos animales y aplicaciones en agroindustria y medio ambiente</span>
+                  <span class="i18n i18n-en">Animal models and applications in agroindustry and environment</span>
+                </p>
+              </div>
+            </div>
+            
+            <!-- Expositor 3 -->
+            <div class="carousel-item">
+              <div class="organizador h-100">
+                <img src="/static/images/Foto-perfil-hombre.png" alt="Dr. Federico Brown">
+                <h4>Dr. Federico Brown</h4>
+                <b>
+                  <span class="i18n i18n-es">Costa Rica</span>
+                  <span class="i18n i18n-en">Costa Rica</span>
+                </b>
+                <p>
+                  <span class="i18n i18n-es">Modelos animales y aplicaciones en agroindustria y medio ambiente</span>
+                  <span class="i18n i18n-en">Animal models and applications in agroindustry and environment</span>
+                </p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Controles del carrusel -->
+          <button class="carousel-control-prev" type="button" data-bs-target="#quintoPerfilCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon bg-primary rounded-circle p-3" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+          </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#quintoPerfilCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon bg-primary rounded-circle p-3" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 
+<br><br>
+<br>
+<br>
     <!--ORGANIZADORES-->
-    <h2 class="subtitulo text-primary fw-bold text-center mb-3">
+    <h1 class="subtitulo text-primary fw-bold text-center mb-3">
       <span class="i18n i18n-es">COMITE ORGANIZADOR</span>
       <span class="i18n i18n-en">ORGANIZING COMMITTEE</span>
-    </h2>
+    </h1>
 
-    <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-4">
+     <p class="mx-auto mb-5" style="max-width:900px;">
+      <span class="i18n i18n-es">
+        Este evento es posible gracias a la colaboración de la Academia Mundial de Ciencias (TWAS) y la Universidad Mayor de San Andrés (UMSA).
+        Agradecemos especialmente a [Nombre del organizador 1 de la UMSA] y [Nombre del organizador 2 de la UMSA] por su invaluable apoyo en la
+        organización de este evento. </span>
+      <span class="i18n i18n-en">
+        This event is made possible thanks to the collaboration of the World Academy of Sciences (TWAS) and the Universidad Mayor de San Andrés (UMSA). 
+        We would like to extend a special thanks to [Name of UMSA organizer 1] and [Name of UMSA organizer 2] for their invaluable support in organizing
+        this event.      
+        </span>
+    </p>
+
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-5 g-4">
       <div class="col">
         <div class="organizador h-100">
-          <img src="{{ url_for('static', filename='images/Foto-perfil-mujer.png') }}" alt="Organizador 1">
-          <h4>Dr Warshi Dandeniya</h4>
+          <img src="{{ url_for('static', filename='images/Foto-perfil-hombre.png') }}" alt="Organizador 1">
+          <h4>Dr. Marcelo Knobel,</h4>
           <b>
             <span class="i18n i18n-es">Sri Lanka</span>
             <span class="i18n i18n-en">Sri Lanka</span>
           </b>
           <p>
-            <span class="i18n i18n-es">Biofertilizantes para la producción sostenible de cultivos</span>
-            <span class="i18n i18n-en">Biofertilizers for Sustainable Crop Production</span>
+            <span class="i18n i18n-es">Executive Director of TWAS</span>
+            <span class="i18n i18n-en">Executive Director of TWAS</span>
           </p>
         </div>
       </div>
@@ -307,14 +388,14 @@
       <div class="col">
         <div class="organizador h-100">
           <img src="{{ url_for('static', filename='images/Foto-perfil-hombre.png') }}" alt="Organizador 2">
-          <h4> Dr. Ranga Ambati</h4>
+          <h4> Dr. Max Paoli</h4>
          <b>
             <span class="i18n i18n-es">India</span>
             <span class="i18n i18n-en">India</span>
           </b>
           <p>
-            <span class="i18n i18n-es">Algas para la seguridad alimentaria y nutricional</span>
-            <span class="i18n i18n-en">Algae for Food and Nutritional Security</span>
+            <span class="i18n i18n-es">General Coordinator TYAN-TWAS</span>
+            <span class="i18n i18n-en">General Coordinator TYAN-TWAS</span>
           </p>
         </div>
       </div>
@@ -322,14 +403,44 @@
       <div class="col">
         <div class="organizador h-100">
           <img src="{{ url_for('static', filename='images/Foto-perfil-hombre.png') }}" alt="Organizador 3">
-          <h4>Dr Pablo Bolaños-Villegas</h4>
+          <h4>M.Sc. Aldo Valdez</h4>
           <b>
-            <span class="i18n i18n-es">Costa Rica</span>
-            <span class="i18n i18n-en">Costa Rica</span>
+            <span class="i18n i18n-es">Bolivia</span>
+            <span class="i18n i18n-en">Bolivia</span>
           </b>
           <p>
-            <span class="i18n i18n-es">Biología de la reproducción vegetal para fitomejoradores</span>
-            <span class="i18n i18n-en">Plant Reproduction Biology for Breeders</span>
+            <span class="i18n i18n-es">Dean of the Faculty of FCPN</span>
+            <span class="i18n i18n-en">Dean of the Faculty of FCPN</span>
+          </p>
+        </div>
+      </div>
+
+      <div class="col">
+        <div class="organizador h-100">
+          <img src="{{ url_for('static', filename='images/Foto-perfil-hombre.png') }}" alt="Organizador 3">
+          <h4>Ing. Jorge Vásquez</h4>
+          <b>
+            <span class="i18n i18n-es">Bolivia</span>
+            <span class="i18n i18n-en">Bolivia</span>
+          </b>
+          <p>
+            <span class="i18n i18n-es">Head of Chemical Engineering Program</span>
+            <span class="i18n i18n-en">Head of Chemical Engineering Program</span>
+          </p>
+        </div>
+      </div>
+
+      <div class="col">
+        <div class="organizador h-100">
+          <img src="{{ url_for('static', filename='images/Foto-perfil-mujer.png') }}" alt="Organizador 3">
+          <h4>Dr. Leslie Karina Tejeda Pérez</h4>
+          <b>
+            <span class="i18n i18n-es">Bolivia</span>
+            <span class="i18n i18n-en">Bolivia</span>
+          </b>
+          <p>
+            <span class="i18n i18n-es"> Researcher. Ciencias Puras y Naturales Ciencias Químicas</span>
+            <span class="i18n i18n-en"> Researcher. Ciencias Puras y Naturales Ciencias Químicas</span>
           </p>
         </div>
       </div>
