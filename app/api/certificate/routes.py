@@ -99,8 +99,6 @@ def generar_certificados(rol_boton):
     return send_file(zip_path, as_attachment=True)
 
 
-from datetime import date
-
 @certificate_bp.route("/enviar-certificado/<int:user_id>", methods=["GET", "POST"])
 @login_required
 @role_required(1, 4)
