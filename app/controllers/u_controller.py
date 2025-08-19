@@ -44,36 +44,84 @@ def obtener_estudiante(id_usuario):
     conn.close()
     return row
 
-
+#----cambio 1
 def actualizar_estudiante(
-    id_usuario, nombre, apellido, email, contrasena, documento, pais_origen, id_rol
+    id_usuario, nombre, apellido, email, contrasena, documento, pais_origen, id_rol, fecha_nac, genero, pais_residencia, afiliacion_u, tipo_afiliacion, area_tematica, disciplina_cientifica
 ):
     query = """
-        UPDATE Usuarios
-        SET nombre = %s, apellido = %s, email = %s,
-            documento = %s, pais_origen = %s, id_rol = %s
+        UPDATE public.usuarios
+        SET nombre = %s,
+            apellido = %s,
+            email = %s,
+            documento = %s,
+            pais_origen = %s,
+            id_rol = %s,
+            fecha_nac = %s,
+            genero = %s,
+            pais_residencia = %s,
+            afiliacion_u = %s,
+            tipo_afiliacion = %s,
+            area_tematica = %s,
+            disciplina_cientifica = %s
         WHERE id_usuario = %s
     """
-    values = [nombre, apellido, email, documento, pais_origen, id_rol, id_usuario]
+    values = [
+        nombre,
+        apellido,
+        email,
+        documento,
+        pais_origen,
+        id_rol,
+        fecha_nac,
+        genero,                 # 'male' | 'female' | 'other' si usas ENUM/CHECK
+        pais_residencia,
+        afiliacion_u,
+        tipo_afiliacion,        # 'public' | 'private'
+        area_tematica,
+        disciplina_cientifica,
+        id_usuario,
+    ]
+    # ... arriba tienes tu query/values base (sin contraseña) ...
 
-    if contrasena and contrasena.strip() != "":
-        query = """
-            UPDATE Usuarios
-            SET nombre = %s, apellido = %s, email = %s,
-                contrasena = %s, documento = %s, pais_origen = %s, id_rol = %s
-            WHERE id_usuario = %s
-        """
-        hashed = generate_password_hash(contrasena)
-        values = [
-            nombre,
-            apellido,
-            email,
-            hashed,
-            documento,
-            pais_origen,
-            id_rol,
-            id_usuario,
-        ]
+# OJO: exactamente 4 espacios de indent a partir del "if"
+if contrasena and contrasena.strip():
+    query = """
+        UPDATE public.usuarios
+        SET nombre = %s,
+            apellido = %s,
+            email = %s,
+            contrasena = %s,
+            documento = %s,
+            pais_origen = %s,
+            id_rol = %s,
+            fecha_nac = %s,
+            genero = %s,
+            pais_residencia = %s,
+            afiliacion_u = %s,
+            tipo_afiliacion = %s,
+            area_tematica = %s,
+            disciplina_cientifica = %s
+        WHERE id_usuario = %s
+    """
+    hashed = generate_password_hash(contrasena)
+    values = [
+        nombre,
+        apellido,
+        email,
+        hashed,
+        documento,
+        pais_origen,
+        id_rol,
+        fecha_nac,
+        genero,                 # 'male' | 'female' | 'other'
+        pais_residencia,
+        afiliacion_u,
+        tipo_afiliacion,        # 'public' | 'private'
+        area_tematica,
+        disciplina_cientifica,
+        id_usuario,
+    ]
+
     conn = get_connection()
     cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
     cursor.execute(query, values)
@@ -81,19 +129,21 @@ def actualizar_estudiante(
     conn.close()
 
 
-def crear_estudiante(nombre, apellido, email, contrasena, documento, pais_origen):
+#------------------------------Cambio2-----------------------------------------
+
+def crear_estudiante(nombre, apellido, email, contrasena, documento, pais_origen, fecha_nac, genero, pais_residencia, afiliacion_u, tipo_afiliacion, area_tematica, disciplina_cientifica):
     conn = get_connection()
     cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
     id_rol = 3  # Por defecto: estudiante
     hashed = generate_password_hash(contrasena)
     cursor.execute(
-        "INSERT INTO Usuarios (nombre, apellido, email, contrasena, documento, pais_origen, id_rol) VALUES (%s, %s, %s, %s, %s, %s, %s)",
-        (nombre, apellido, email, hashed, documento, pais_origen, id_rol),
+        "INSERT INTO Usuarios (nombre, apellido, email, contrasena, documento, pais_origen, id_rol, fecha_nac, genero, pais_residencia, afiliacion_u, tipo_afiliacion, area_tematica, disciplina_cientifica) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
+        (nombre, apellido, email, hashed, documento, pais_origen, id_rol, fecha_nac, genero, pais_residencia, afiliacion_u, tipo_afiliacion, area_tematica, disciplina_cientifica),
     )
     conn.commit()
     conn.close()
 
-
+#--------------------Cambio 3------------------------------
 def crear_estudiantes_bulk(lista_estudiantes):
     conn = None
     try:
@@ -103,8 +153,8 @@ def crear_estudiantes_bulk(lista_estudiantes):
         for estudiante in lista_estudiantes:
             cursor.execute(
                 """
-                INSERT INTO Usuarios (nombre, apellido, email, contrasena, documento, pais_origen, id_rol)
-                VALUES (%s, %s, %s, %s, %s, %s)
+                INSERT INTO Usuarios (nombre, apellido, email, contrasena, documento, pais_origen, id_rol, fecha_nac, genero, pais_residencia, afiliacion_u, tipo_afiliacion, area_tematica, disciplina_cientifica)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
             """,
                 (
                     estudiante["nombre"],
@@ -114,6 +164,13 @@ def crear_estudiantes_bulk(lista_estudiantes):
                     estudiante["documento"],
                     estudiante["pais_origen"],
                     id_rol,
+                    estudiante["fecha_nac"],
+                    estudiante["genero"],
+                    estudiante["pais_residencia"],
+                    estudiante["afiliacion_u"],
+                    estudiante["tipo_afiliacion"],
+                    estudiante["area_tematica"],
+                    estudiante["disciplina_cientifica"]
                 ),
             )
         conn.commit()
@@ -126,7 +183,7 @@ def crear_estudiantes_bulk(lista_estudiantes):
         if conn:
             conn.close()
 
-#----------------
+#---------------- cambiado hasta aqui por hoy ------------------
 import unicodedata
 import re
 
@@ -163,14 +220,20 @@ def crear_estudiantes_con_inscripcion(lista_estudiantes):
             # 2) Insertar usuario y obtener id_usuario
             cursor.execute(
                 """
-                INSERT INTO usuarios (nombre, apellido, email, contrasena, documento, pais_origen, id_rol)
-                VALUES (%s,%s,%s,%s,%s,%s,%s)
+                INSERT INTO Usuarios (nombre, apellido, email, contrasena, documento, pais_origen, id_rol, fecha_nac, genero, pais_residencia, afiliacion_u, tipo_afiliacion, area_tematica, disciplina_cientifica)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                 RETURNING id_usuario
                 """,
                 (
                     est["nombre"], est["apellido"], est["email"],
                     hashed, est["documento"],
-                    est["pais_origen"], id_rol
+                    est["pais_origen"], id_rol,   estudiante["fecha_nac"],
+                    estudiante["genero"],
+                    estudiante["pais_residencia"],
+                    estudiante["afiliacion_u"],
+                    estudiante["tipo_afiliacion"],
+                    estudiante["area_tematica"],
+                    estudiante["disciplina_cientifica"]
                 )
             )
             id_usuario = cursor.fetchone()[0]
@@ -184,8 +247,8 @@ def crear_estudiantes_con_inscripcion(lista_estudiantes):
 
             # 4) Crear nota inicial
             cursor.execute(
-                "INSERT INTO notas (id_inscripcion, nota_final) VALUES (%s, %s)",
-                (id_insc, 0.00)
+                "INSERT INTO notas (id_inscripcion, nota_final, nota_asistencia, nota_acumulada) VALUES (%s, %s, %s,%s)",
+                (id_insc, 0.00, 0.00, 0.00)
             )
 
         conn.commit()
@@ -303,9 +366,9 @@ def eliminar_inscripcion(id_inscripcion,id_nota):
 #--------------
 # --- Usuarios Expositor
 
-
+'''
 def actualizar_ponente(
-    id_usuario, nombre, apellido, email, contrasena, documento, pais_origen, id_rol
+    id_usuario, nombre, apellido, email, contrasena, documento, pais_origen, id_rol, fecha_nac, genero, pais_residencia, afiliacion_u, tipo_afiliacion, area_tematica, disciplina_cientifica
 ):
     query = """
         UPDATE Usuarios
@@ -313,7 +376,7 @@ def actualizar_ponente(
             documento = %s, pais_origen = %s, id_rol = %s
         WHERE id_usuario = %s
     """
-    values = [nombre, apellido, email, documento, pais_origen, id_rol, id_usuario]
+    values = [nombre, apellido, email, documento, pais_origen, id_rol, fecha_nac, genero, pais_residencia, afiliacion_u, tipo_afiliacion, area_tematica, disciplina_cientifica, id_usuario]
 
     if contrasena and contrasena.strip() != "":
         query = """
@@ -331,6 +394,13 @@ def actualizar_ponente(
             documento,
             pais_origen,
             id_rol,
+            fecha_nac, 
+            genero, 
+            pais_residencia, 
+            afiliacion_u, 
+            tipo_afiliacion, 
+            area_tematica, 
+            disciplina_cientifica,
             id_usuario,
         ]
     conn = get_connection()
@@ -338,21 +408,120 @@ def actualizar_ponente(
     cursor.execute(query, values)
     conn.commit()
     conn.close()
+'''
 
+def actualizar_ponente(
+    id_usuario,
+    nombre,
+    apellido,
+    email,
+    contrasena,
+    documento,
+    pais_origen,
+    id_rol,
+    fecha_nac,
+    genero,               # 'male' | 'female' | 'other'
+    pais_residencia,
+    afiliacion_u,
+    tipo_afiliacion,      # 'public' | 'private'
+    area_tematica,
+    disciplina_cientifica,
+):
+    # --- Rama base: sin cambio de contraseña ---
+    query = """
+        UPDATE public.usuarios
+        SET nombre = %s,
+            apellido = %s,
+            email = %s,
+            documento = %s,
+            pais_origen = %s,
+            id_rol = %s,
+            fecha_nac = %s,
+            genero = %s,
+            pais_residencia = %s,
+            afiliacion_u = %s,
+            tipo_afiliacion = %s,
+            area_tematica = %s,
+            disciplina_cientifica = %s
+        WHERE id_usuario = %s
+    """
+    values = [
+        nombre,
+        apellido,
+        email,
+        documento,
+        pais_origen,
+        id_rol,
+        fecha_nac,
+        genero,
+        pais_residencia,
+        afiliacion_u,
+        tipo_afiliacion,
+        area_tematica,
+        disciplina_cientifica,
+        id_usuario,
+    ]
 
-def crear_ponente(nombre, apellido, email, contrasena, documento, pais_origen):
+    # --- Rama con cambio de contraseña ---
+    if contrasena and contrasena.strip():
+        hashed = generate_password_hash(contrasena)
+        query = """
+            UPDATE public.usuarios
+            SET nombre = %s,
+                apellido = %s,
+                email = %s,
+                contrasena = %s,
+                documento = %s,
+                pais_origen = %s,
+                id_rol = %s,
+                fecha_nac = %s,
+                genero = %s,
+                pais_residencia = %s,
+                afiliacion_u = %s,
+                tipo_afiliacion = %s,
+                area_tematica = %s,
+                disciplina_cientifica = %s
+            WHERE id_usuario = %s
+        """
+        values = [
+            nombre,
+            apellido,
+            email,
+            hashed,
+            documento,
+            pais_origen,
+            id_rol,
+            fecha_nac,
+            genero,
+            pais_residencia,
+            afiliacion_u,
+            tipo_afiliacion,
+            area_tematica,
+            disciplina_cientifica,
+            id_usuario,
+        ]
+
+    conn = get_connection()
+    try:
+        with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cursor:
+            cursor.execute(query, values)
+        conn.commit()
+    finally:
+        conn.close()
+
+def crear_ponente(nombre, apellido, email, contrasena, documento, pais_origen, fecha_nac, genero, pais_residencia, afiliacion_u, tipo_afiliacion, area_tematica, disciplina_cientifica):
     conn = get_connection()
     cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
     id_rol = 2  # Por defecto: ponente
     hashed = generate_password_hash(contrasena)
     cursor.execute(
-        "INSERT INTO Usuarios (nombre, apellido, email, contrasena, documento, pais_origen, id_rol) VALUES (%s, %s, %s, %s, %s, %s, %s)",
-        (nombre, apellido, email, hashed, documento, pais_origen, id_rol),
+        "INSERT INTO Usuarios (nombre, apellido, email, contrasena, documento, pais_origen, id_rol, fecha_nac, genero, pais_residencia, afiliacion_u, tipo_afiliacion, area_tematica, disciplina_cientifica) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
+        (nombre, apellido, email, hashed, documento, pais_origen, id_rol, fecha_nac, genero, pais_residencia, afiliacion_u, tipo_afiliacion, area_tematica, disciplina_cientifica),
     )
     conn.commit()
     conn.close()
 
-
+#-----------------------------------
 def crear_ponentes_bulk(lista_expositores):
     conn = None
     try:
@@ -362,8 +531,8 @@ def crear_ponentes_bulk(lista_expositores):
         for expositor in lista_expositores:
             cursor.execute(
                 """
-                INSERT INTO Usuarios (nombre, apellido, email, contrasena, documento, pais_origen, id_rol)
-                VALUES (%s, %s, %s, %s, %s, %s)
+                INSERT INTO Usuarios (nombre, apellido, email, contrasena, documento, pais_origen, id_rol, fecha_nac, genero, pais_residencia, afiliacion_u, tipo_afiliacion, area_tematica, disciplina_cientifica)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
             """,
                 (
                     expositor["nombre"],
@@ -373,6 +542,13 @@ def crear_ponentes_bulk(lista_expositores):
                     expositor["documento"],
                     expositor["pais_origen"],
                     id_rol,
+                    expositor["fecha_nac"],
+                    expositor["genero"],
+                    expositor["pais_residencia"],
+                    expositor["afiliacion_u"],
+                    expositor["tipo_afiliacion"],
+                    expositor["area_tematica"],
+                    expositor["disciplina_cientifica"]
                 ),
             )
         conn.commit()
@@ -400,9 +576,8 @@ def crear_ponentes_con_lote(lista_ponentes):
             # 2) Insertar usuario
             cursor.execute(
                 """
-                INSERT INTO usuarios (
-                  nombre, apellido, email, contrasena, documento, pais_origen, id_rol
-                ) VALUES (%s, %s, %s, %s, %s, %s, %s)
+                INSERT INTO Usuarios (nombre, apellido, email, contrasena, documento, pais_origen, id_rol, fecha_nac, genero, pais_residencia, afiliacion_u, tipo_afiliacion, area_tematica, disciplina_cientifica)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                 RETURNING id_usuario
                 """,
                 (
@@ -412,7 +587,15 @@ def crear_ponentes_con_lote(lista_ponentes):
                     hashed,
                     p["documento"],
                     p["pais_origen"],
-                    id_rol
+                    id_rol,
+                    p["fecha_nac"],
+                    p["genero"],
+                    p["pais_residencia"],
+                    p["afiliacion_u"],
+                    p["tipo_afiliacion"],
+                    p["area_tematica"],
+                    p["disciplina_cientifica"]
+
                 )
             )
             # Opcional: recoger id_usuario si necesitas usarlo
