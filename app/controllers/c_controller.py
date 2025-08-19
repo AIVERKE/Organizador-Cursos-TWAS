@@ -222,21 +222,21 @@ def verificar_pin(id_curso, pin_ingresado, hora_actual):
                     SELECT  id_curso, pin,hora_cr,hora_exp FROM cursos
                     WHERE id_curso = %s 
                 """, (id_curso,))
-                curs = cur.fetchone() is not None
+                curs = cur.fetchone() 
                 if not curs:
-                    return False, "Curso no encontrado"
-                
-                pin_hash, hora_cr, hora_exp = curso
-                
+                    return False, "Curso no encontrado", "Course not founded"
+                id_curso = curs[0]
+                pin_hash = curs[1]
+                hora_cr = curs[2] 
+                hora_exp = curs[3]
                 if hora_actual > hora_exp:
-                    return False, "El PIN ha expirado"
+                    return False, "El Código de Asistencia ha expirado", "The Attendance Code has expired"
 
                 # Validar PIN ingresado
-                if not check_password_hash(pin_hash, pin_ingresado):
-                    return False, "PIN incorrecto"
+                if not check_password_hash(pin_hash, str(pin_ingresado)):
+                    return False, "Código de Asistencia incorrecto" , " Attendance Code Incorrect"
 
-                return True , "PIN Correcto"
+                return True , "Su asistencia ha sido registrada Correctamente" ,"Your attendance has been recorded correctly"
     except psycopg2.Error as e:
-        print(f"[ERROR] verificar_pin: {e}")
-        return False
+        return False , "Error" , "Error"
 #--------------------
