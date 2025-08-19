@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify, render_template
 from . import ins_bp
 from app.controllers import i_controller as ins
+from app.controllers import c_controller as crs
 from app.api.auth.utils import role_required
 
 
@@ -88,3 +89,89 @@ def get_inscripciones_por_usuario(id_usuario):
         print("Error al obtener inscripciones por usuario:", e)
         return jsonify({"error": str(e)}), 500
 
+import psycopg2
+from app.db_c import get_connection
+from datetime import datetime
+
+@ins_bp.route("/registrar_asistencia/")
+def index():
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute("SELECT id_curso, nombre FROM cursos;")
+    cursos = [{"id": row[0], "nombre": row[1]} for row in cur.fetchall()]
+    cur.close()
+    conn.close()
+    # return render_template("Estudiante/Est.html", cursos=cursos)
+    return render_template("Asistencia/asistencia.html", cursos=cursos)
+
+@ins_bp.route("/registrar_asistencia/validar/", methods=["POST"])
+def validar():
+    data = request.get_json()
+    if not data:
+        return jsonify({"mensaje": "Error: no se recibieron datos",
+            "message":"Error: no data received"}), 400
+
+    correo = data.get("correo")
+    curso_id = data.get("curso")
+    pin = data.get("pin")
+
+    conn = get_connection()
+    cur = conn.cursor()
+
+    # Validar correo existe
+    cur.execute("SELECT id_usuario FROM usuarios WHERE email = %s;", (correo,))
+    usuario = cur.fetchone()
+    if not usuario:
+        return jsonify({"mensaje": "Correo no registrado o incorrecto",
+            "message": "Email not registered or incorrect"}), 400
+    usuario_id = usuario[0]
+
+    hoy = datetime.now()  # Ej: 2025-08-18 22:17:03
+
+    # Validar inscripción en curso y pin
+    cur.execute("""
+        SELECT i.id_inscripcion FROM inscripciones i
+        WHERE i.id_usuario = %s AND i.id_curso = %s;
+    """, (usuario_id, curso_id))
+    inscripcion = cur.fetchone()
+
+    if not inscripcion:
+        cur.close()
+        conn.close()
+        return jsonify({"mensaje": "El usuario no está inscrito en este curso",
+            "message": "The user is not registered in this course"}), 400
+    inscripcion_id = inscripcion[0]
+
+    # Verificar si ya existe asistencia
+    cur.execute("""
+        SELECT id_inscripcion 
+        FROM asistencias 
+        WHERE id_inscripcion = %s AND fecha = %s
+    """, (inscripcion_id, hoy.date()))
+
+    existente = cur.fetchone()
+
+    if existente:
+        cur.close()
+        conn.close()
+        return jsonify({"mensaje": "Asistencia ya registrada en este curso",
+            "message": "Attendance already registered in this course"}), 400
+
+    ok, msg_es, msg_en ,= crs.verificar_pin(curso_id, pin, datetime.now())
+    
+    if ok: 
+        cur.execute(
+            """
+            INSERT INTO asistencias (id_inscripcion, fecha, presente)
+            VALUES (%s, %s, %s)
+        """,
+            (inscripcion[0],hoy.date(),True)
+        )
+        conn.commit()
+        cur.close()
+        conn.close()
+        return jsonify({"mensaje": msg_es,"message": msg_en})
+
+    cur.close()
+    conn.close()
+    return jsonify({"mensaje": msg_es,"message": msg_en})

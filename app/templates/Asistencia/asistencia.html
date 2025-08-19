@@ -30,22 +30,34 @@
           <span class="i18n i18n-en">To the Attendance Control of the TYAN Hands-on Schools in Bolivia 2025. <br> Please enter the email address you used to register in the system <br>and the code provided to register your attendance. </span>
         </p>
 
-        <form class="needs-validation" action="{{ url_for('auth.login') }}" method="POST" novalidate>
+        <form class="needs-validation" id="formValidacion" action="{{ url_for('auth.login') }}" method="POST" novalidate>
           <div class="mb-3">
-            <label for="email" class="form-label">
+            <label for="correo" class="form-label">
               <span class="i18n i18n-es">Correo Electrónico</span>
               <span class="i18n i18n-en">Email Address</span>
             </label>
-            <input type="email" class="form-control py-2" id="email" name="email" required>
+            <input type="email" class="form-control py-2" id="correo" name="correo" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="curso" class="form-label">Curso:
+              <span class="i18n i18n-es">Seleccion un curso:</span>
+              <span class="i18n i18n-en">Select a course:</span>
+            </label>
+            <select name="curso" id="curso" required>
+              {% for curso in cursos %}
+                <option value="{{ curso.id }}">{{ curso.nombre }}</option>
+              {% endfor %}
+            </select>  
           </div>
           
           <div class="mb-3 position-relative">
-            <label for="password" class="form-label">
+            <label for="pin" class="form-label">
               <span class="i18n i18n-es">Codigo de Asistencia</span>
               <span class="i18n i18n-en">Assistance Code</span>
             </label>
             <div class="input-group">
-              <input type="password" class="form-control py-2" id="password" name="contrasena" required>
+              <input type="password" class="form-control py-2" id="pin" name="pin" required>
               <button class="btn btn-outline-secondary toggle-password" type="button">
                 <i class="fas fa-eye"></i>
               </button>
@@ -66,8 +78,40 @@
     </div>
   </div>
 </div>
+
+<h1 class="display-5 fw-bold mb-3">
+<span class="i18n i18n-es" id="resultado_es"><br>
+  <!-- <small class="fs-4">Puede verificarlo Iniciando Sesion en el Sistema</small> -->
+</span>
+<span class="i18n i18n-en" id="resultado_en"><br>
+  <!-- <small class="fs-4">You can verify this by logging into the system.</small> -->
+</span>
+</h1>
+
 {% endblock %}
 
 {% block extra_js %}
 
+<script>
+  document.getElementById("formValidacion").addEventListener("submit", async function(e) {
+    e.preventDefault();
+
+    const correo = document.getElementById("correo").value;
+    const curso = document.getElementById("curso").value;
+    const pin = document.getElementById("pin").value;
+
+    const response = await fetch("/ins/registrar_asistencia/validar/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        correo: correo,
+        curso: curso,
+        pin: pin
+      })
+    });
+    const data = await response.json();
+    document.getElementById("resultado_es").innerText = data.mensaje;
+    document.getElementById("resultado_en").innerText = data.message;
+  });
+</script>
 {% endblock %}
