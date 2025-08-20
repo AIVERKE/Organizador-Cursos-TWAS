@@ -33,6 +33,7 @@ def generar_certificados(rol_boton):
     with db.engine.connect() as conn:
         query = """
             SELECT 
+                p.nombre as docente,
                 u.nombre as nombre, 
                 u.apellido as apellido, 
                 u.documento as documento,
@@ -44,8 +45,8 @@ def generar_certificados(rol_boton):
             JOIN inscripciones i ON i.id_usuario = u.id_usuario
             JOIN cursos c ON c.id_curso = i.id_curso
             LEFT JOIN notas n ON n.id_inscripcion = i.id_inscripcion
-            WHERE u.id_rol = :rol_boton
-            AND (n.nota_final > 51 OR n.nota_final IS NULL);
+            JOIN usuarios p ON p.id_usuario = c.id_ponente
+            WHERE u.id_rol = :rol_boton AND (n.nota_final >= 51 OR n.nota_final IS NULL);
         """
         result = conn.execute(text(query), {"rol_boton": rol_boton})
         participants = pd.DataFrame(result.fetchall(), columns=result.keys())
@@ -56,31 +57,53 @@ def generar_certificados(rol_boton):
     for _, row in participants.iterrows():
         participante = row["nombre"] +" "+ row["apellido"]
         documento = row["documento"]
+        docente = row["docente"]
+        mensaje = ''
         curso=''
+        titulo="CERTIFICADO\n DE APROBACION" if row["modalidad"] == 'catedra-laboratorio' and int(row["nota"]) > 71 else "CERTIFICADO"
         if (rol_boton) == 3:
-            curso = row["curso_nombre"] + " " +"aprobado" if row["modalidad"] == 'catedra-laboratorio' and int(row["nota"]) > 51 else "participado"
+            curso = row["curso_nombre"]
+            if row["modalidad"] == 'catedra-laboratorio' and int(row["nota"]) > 71 :
+                mensaje=f"""
+                    Ha completado exitosamente el curso de "{curso}" dictado por {docente}, inaugurado dentro del postgrado de Ciencias Químicas\n de la Facultad de Ciencias Puras y Naturales, de la Universidad Mayor de San Andrés.
+                    Realizado en la ciudad La Paz del '11 al 15 de Marzo del 2024', con una duración de 30 hrs. académicas equivalente a 1 CLAR (Crédito Latinoamericano de Referencia).
+                """
+            else:
+                mensaje=f"""
+                    Ha participado del curso de "{curso}" dictado por {docente}, inaugurado dentro del postgrado de Ciencias Químicas\n de la Facultad de Ciencias Puras y Naturales, de la Universidad Mayor de San Andrés.
+                    Realizado en la ciudad La Paz del '11 al 15 de Marzo del 2024'.
+                """    
         elif (rol_boton) == 2:
-            curso = row["curso_nombre"]+' (Expositor)'    
-        fecha = date.today()        
+            curso = row["curso_nombre"]
+            mensaje = f"""
+                Por su colaboración como ponente en el tema  “{curso}”.\n
+                Realizado en la ciudad La Paz del 11 al 15 de Marzo del 2024, auspiciado y organizado por la red internacional TYAN-TWAS y la Universidad Mayor de San Andrés.
+            """    
+        # fecha = date.today()        
         
         pdf = FPDF(orientation="L", unit="pt", format="A4")
         pdf.add_page()
         template_path = os.path.join(base_dir, "input", "certificate_template.jpg")
         pdf.image(template_path, 0, 0, w=842, h=595)
+        
+        font_path = os.path.join(base_dir, "input", "Oi-Regular.ttf")
+        pdf.add_font("Oi", "", font_path, uni=True)
 
-        pdf.set_font("Helvetica", "B", 50)
-        pdf.set_text_color(139, 119, 40)
-        pdf.set_xy(0, 230)
+        pdf.set_font("Oi", "", 50)
+        pdf.set_text_color(1, 1, 1)
+        pdf.set_xy(0, 20)
+        pdf.cell(w=842, h=60, txt=titulo, align="C")
+
+        pdf.set_font("Helvetica", "I", 30)
+        pdf.set_text_color(60, 60, 60)
+        pdf.set_xy(0, 210)
         pdf.cell(w=842, h=60, txt=participante, align="C")
 
-        pdf.set_font("Helvetica", "", 25)
-        pdf.set_xy(0, 360)
-        pdf.cell(w=842, h=30, txt=curso, align="C")
-
-        pdf.set_font("Helvetica", "I", 16)
-        pdf.set_text_color(1, 1, 1)
-        pdf.set_xy(155, 500)
-        pdf.cell(w=842, h=20, txt=str(fecha), align="C")
+        pdf.set_font("Arial", "", 12)
+        pdf.set_text_color(250, 250, 250)
+        pdf.set_xy(0, 250)
+        pdf.multi_cell(842, 15, mensaje, 0,"C")
+        
 
         file_name = f"{documento.replace(' ', '_')} {participante.replace(' ', '_')} {curso.replace(' ', '_')}"        
         pdf.output(os.path.join(folder, f"{file_name}_certificate.pdf"))
@@ -116,6 +139,7 @@ def enviar_certificado(user_id):
             LEFT JOIN inscripciones i ON i.id_usuario = u.id_usuario
             LEFT JOIN cursos c ON c.id_curso = i.id_curso
             LEFT JOIN notas n ON n.id_inscripcion = i.id_inscripcion
+            JOIN usuarios p ON p.id_usuario = c.id_ponente
             WHERE u.id_usuario = :user_id
             LIMIT 1
         """)
