@@ -30,7 +30,9 @@ def obtener_usuarios_id(rol, id):
 def obtener_estudiantes():
     conn = get_connection()  # conecta a la base de datos
     cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-    cursor.execute("SELECT * FROM Usuarios WHERE id_rol = 3 ORDER BY id_usuario ASC;")  # consulta SQL directa
+    cursor.execute(
+        "SELECT * FROM Usuarios WHERE id_rol = 3 ORDER BY id_usuario ASC;"
+    )  # consulta SQL directa
     rows = cursor.fetchall()  # obtiene todos los resultados en una lista
     conn.close()  # cierra la conexión
     return rows  # devuelve los datos a quien haya llamado esta función
@@ -39,14 +41,32 @@ def obtener_estudiantes():
 def obtener_estudiante(id_usuario):
     conn = get_connection()
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM Usuarios WHERE id_usuario = %s ORDER BY id_usuario ASC;", (id_usuario,))
+    cursor.execute(
+        "SELECT * FROM Usuarios WHERE id_usuario = %s ORDER BY id_usuario ASC;",
+        (id_usuario,),
+    )
     row = cursor.fetchone()
     conn.close()
     return row
 
-#----cambio 1
+
+# ----cambio 1
 def actualizar_estudiante(
-    id_usuario, nombre, apellido, email, contrasena, documento, pais_origen, id_rol, fecha_nac, genero, pais_residencia, afiliacion_u, tipo_afiliacion, area_tematica, disciplina_cientifica
+    id_usuario,
+    nombre,
+    apellido,
+    email,
+    contrasena,
+    documento,
+    pais_origen,
+    id_rol,
+    fecha_nac,
+    genero,
+    pais_residencia,
+    afiliacion_u,
+    tipo_afiliacion,
+    area_tematica,
+    disciplina_cientifica,
 ):
     query = """
         UPDATE public.usuarios
@@ -73,77 +93,109 @@ def actualizar_estudiante(
         pais_origen,
         id_rol,
         fecha_nac,
-        genero,                 # 'male' | 'female' | 'other' si usas ENUM/CHECK
+        genero,
         pais_residencia,
         afiliacion_u,
-        tipo_afiliacion,        # 'public' | 'private'
+        tipo_afiliacion,
         area_tematica,
         disciplina_cientifica,
         id_usuario,
     ]
-    # ... arriba tienes tu query/values base (sin contraseña) ...
 
-# OJO: exactamente 4 espacios de indent a partir del "if"
-if contrasena and contrasena.strip():
-    query = """
-        UPDATE public.usuarios
-        SET nombre = %s,
-            apellido = %s,
-            email = %s,
-            contrasena = %s,
-            documento = %s,
-            pais_origen = %s,
-            id_rol = %s,
-            fecha_nac = %s,
-            genero = %s,
-            pais_residencia = %s,
-            afiliacion_u = %s,
-            tipo_afiliacion = %s,
-            area_tematica = %s,
-            disciplina_cientifica = %s
-        WHERE id_usuario = %s
-    """
-    hashed = generate_password_hash(contrasena)
-    values = [
-        nombre,
-        apellido,
-        email,
-        hashed,
-        documento,
-        pais_origen,
-        id_rol,
-        fecha_nac,
-        genero,                 # 'male' | 'female' | 'other'
-        pais_residencia,
-        afiliacion_u,
-        tipo_afiliacion,        # 'public' | 'private'
-        area_tematica,
-        disciplina_cientifica,
-        id_usuario,
-    ]
+    # --- Rama con cambio de contraseña ---
+    if contrasena and contrasena.strip():
+        query = """
+            UPDATE public.usuarios
+            SET nombre = %s,
+                apellido = %s,
+                email = %s,
+                contrasena = %s,
+                documento = %s,
+                pais_origen = %s,
+                id_rol = %s,
+                fecha_nac = %s,
+                genero = %s,
+                pais_residencia = %s,
+                afiliacion_u = %s,
+                tipo_afiliacion = %s,
+                area_tematica = %s,
+                disciplina_cientifica = %s
+            WHERE id_usuario = %s
+        """
+        hashed = generate_password_hash(contrasena)
+        values = [
+            nombre,
+            apellido,
+            email,
+            hashed,
+            documento,
+            pais_origen,
+            id_rol,
+            fecha_nac,
+            genero,
+            pais_residencia,
+            afiliacion_u,
+            tipo_afiliacion,
+            area_tematica,
+            disciplina_cientifica,
+            id_usuario,
+        ]
 
     conn = get_connection()
-    cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-    cursor.execute(query, values)
-    conn.commit()
-    conn.close()
+    try:
+        with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cursor:
+            cursor.execute(query, values)
+        conn.commit()
+    finally:
+        conn.close()
 
 
-#------------------------------Cambio2-----------------------------------------
+# ------------------------------Cambio2-----------------------------------------
 
-def crear_estudiante(nombre, apellido, email, contrasena, documento, pais_origen, fecha_nac, genero, pais_residencia, afiliacion_u, tipo_afiliacion, area_tematica, disciplina_cientifica):
+
+def crear_estudiante(
+    nombre,
+    apellido,
+    email,
+    contrasena,
+    documento,
+    pais_origen,
+    fecha_nac,
+    genero,
+    pais_residencia,
+    afiliacion_u,
+    tipo_afiliacion,
+    area_tematica,
+    disciplina_cientifica,
+):
     conn = get_connection()
     cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
     id_rol = 3  # Por defecto: estudiante
     hashed = generate_password_hash(contrasena)
     cursor.execute(
         "INSERT INTO Usuarios (nombre, apellido, email, contrasena, documento, pais_origen, id_rol, fecha_nac, genero, pais_residencia, afiliacion_u, tipo_afiliacion, area_tematica, disciplina_cientifica) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
-        (nombre, apellido, email, hashed, documento, pais_origen, id_rol, fecha_nac, genero, pais_residencia, afiliacion_u, tipo_afiliacion, area_tematica, disciplina_cientifica),
+        (
+            nombre,
+            apellido,
+            email,
+            hashed,
+            documento,
+            pais_origen,
+            id_rol,
+            fecha_nac,
+            genero,
+            pais_residencia,
+            afiliacion_u,
+            tipo_afiliacion,
+            area_tematica,
+            disciplina_cientifica,
+        ),
     )
     conn.commit()
     conn.close()
 
-#--------------------Cambio 3------------------------------
+
+# --------------------Cambio 3------------------------------
 def crear_estudiantes_bulk(lista_estudiantes):
     conn = None
     try:
@@ -170,7 +222,7 @@ def crear_estudiantes_bulk(lista_estudiantes):
                     estudiante["afiliacion_u"],
                     estudiante["tipo_afiliacion"],
                     estudiante["area_tematica"],
-                    estudiante["disciplina_cientifica"]
+                    estudiante["disciplina_cientifica"],
                 ),
             )
         conn.commit()
@@ -183,18 +235,25 @@ def crear_estudiantes_bulk(lista_estudiantes):
         if conn:
             conn.close()
 
-#---------------- cambiado hasta aqui por hoy ------------------
+
+# ---------------- cambiado hasta aqui por hoy ------------------
 import unicodedata
 import re
 
+
 def generar_contrasena(apellido, documento):
     # Elimina acentos y caracteres especiales
-    apellido_normalizado = unicodedata.normalize('NFKD', apellido)
-    apellido_sin_tildes = ''.join([c for c in apellido_normalizado if not unicodedata.combining(c)])
-    apellido_limpio = re.sub(r'[^A-Za-z]', '', apellido_sin_tildes).lower()  # solo letras// ñ -> n
+    apellido_normalizado = unicodedata.normalize("NFKD", apellido)
+    apellido_sin_tildes = "".join(
+        [c for c in apellido_normalizado if not unicodedata.combining(c)]
+    )
+    apellido_limpio = re.sub(
+        r"[^A-Za-z]", "", apellido_sin_tildes
+    ).lower()  # solo letras// ñ -> n
     primeros_digitos = str(documento)
     # return apellido_limpio + primeros_digitos[:3] #primeros 3 digidtos
     return apellido_limpio + primeros_digitos
+
 
 def crear_estudiantes_con_inscripcion(lista_estudiantes):
     conn = None
@@ -207,7 +266,7 @@ def crear_estudiantes_con_inscripcion(lista_estudiantes):
             # 1) Buscar id_curso por nombre (case‐insensitive)
             cursor.execute(
                 "SELECT id_curso FROM cursos WHERE LOWER(nombre) = LOWER(%s)",
-                (est.get("nombre_curso","").strip(),)
+                (est.get("nombre_curso", "").strip(),),
             )
             row = cursor.fetchone()
             if not row:
@@ -225,30 +284,35 @@ def crear_estudiantes_con_inscripcion(lista_estudiantes):
                 RETURNING id_usuario
                 """,
                 (
-                    est["nombre"], est["apellido"], est["email"],
-                    hashed, est["documento"],
-                    est["pais_origen"], id_rol,   estudiante["fecha_nac"],
+                    est["nombre"],
+                    est["apellido"],
+                    est["email"],
+                    hashed,
+                    est["documento"],
+                    est["pais_origen"],
+                    id_rol,
+                    estudiante["fecha_nac"],
                     estudiante["genero"],
                     estudiante["pais_residencia"],
                     estudiante["afiliacion_u"],
                     estudiante["tipo_afiliacion"],
                     estudiante["area_tematica"],
-                    estudiante["disciplina_cientifica"]
-                )
+                    estudiante["disciplina_cientifica"],
+                ),
             )
             id_usuario = cursor.fetchone()[0]
 
             # 3) Crear inscripción
             cursor.execute(
                 "INSERT INTO inscripciones (id_usuario, id_curso, fecha_inscripcion) VALUES (%s,%s,CURRENT_DATE) RETURNING id_inscripcion",
-                (id_usuario, id_curso)
+                (id_usuario, id_curso),
             )
             id_insc = cursor.fetchone()[0]
 
             # 4) Crear nota inicial
             cursor.execute(
                 "INSERT INTO notas (id_inscripcion, nota_final, nota_asistencia, nota_acumulada) VALUES (%s, %s, %s,%s)",
-                (id_insc, 0.00, 0.00, 0.00)
+                (id_insc, 0.00, 0.00, 0.00),
             )
 
         conn.commit()
@@ -262,7 +326,6 @@ def crear_estudiantes_con_inscripcion(lista_estudiantes):
             conn.close()
 
 
-
 def eliminar_estudiante(id_usuario):
     try:
         conn = get_connection()
@@ -273,6 +336,7 @@ def eliminar_estudiante(id_usuario):
     except psycopg2.Error as e:
         conn.rollback()
         return {"status": "error", "mensaje": "Error al eliminar: " + str(e)}
+
 
 # ------------------------
 # def obtener_materias_estudiante(id_usuario):
@@ -294,8 +358,9 @@ def eliminar_estudiante(id_usuario):
 #     return rows
 
 
-def obtener_materias_estudiante(id_usuario,cursor):
-    cursor.execute("""
+def obtener_materias_estudiante(id_usuario, cursor):
+    cursor.execute(
+        """
         SELECT i.id_inscripcion,
                c.id_curso,
                c.nombre AS nombre_curso,
@@ -305,10 +370,10 @@ def obtener_materias_estudiante(id_usuario,cursor):
         JOIN cursos c USING(id_curso)
         LEFT JOIN notas n USING(id_inscripcion)
         WHERE i.id_usuario = %s;
-    """, (id_usuario,))
+    """,
+        (id_usuario,),
+    )
     return cursor.fetchall()
-
- 
 
 
 # def obtener_cursos_disponibles(id_usuario):
@@ -327,43 +392,53 @@ def obtener_materias_estudiante(id_usuario,cursor):
 #     return rows
 
 
-def obtener_cursos_disponibles(id_usuario,cursor):
-    cursor.execute("""
+def obtener_cursos_disponibles(id_usuario, cursor):
+    cursor.execute(
+        """
         SELECT id_curso, nombre
         FROM cursos
         WHERE id_curso NOT IN (
             SELECT id_curso FROM inscripciones WHERE id_usuario = %s
         )
         ORDER BY nombre;
-    """, (id_usuario,))
+    """,
+        (id_usuario,),
+    )
     return cursor.fetchall()
-    
+
+
 def crear_inscripcion(id_usuario, id_curso):
     conn = get_connection()
     cursor = conn.cursor()
     cursor.execute(
         "INSERT INTO inscripciones (id_usuario, id_curso, fecha_inscripcion) VALUES (%s,%s,CURRENT_DATE) RETURNING id_inscripcion",
-        (id_usuario, id_curso)
+        (id_usuario, id_curso),
     )
     id_insc = cursor.fetchone()[0]
 
     cursor.execute(
         "INSERT INTO notas (id_inscripcion, nota_final) VALUES (%s, %s)",
-        (id_insc, 0.00)
+        (id_insc, 0.00),
     )
     conn.commit()
     conn.close()
 
-def eliminar_inscripcion(id_inscripcion,id_nota):
+
+def eliminar_inscripcion(id_inscripcion, id_nota):
     conn = get_connection()
     cursor = conn.cursor()
-    cursor.execute("DELETE FROM notas WHERE id_inscripcion = %s AND id_nota = %s", (id_inscripcion,id_nota))
-    cursor.execute("DELETE FROM inscripciones WHERE id_inscripcion = %s", (id_inscripcion,))
+    cursor.execute(
+        "DELETE FROM notas WHERE id_inscripcion = %s AND id_nota = %s",
+        (id_inscripcion, id_nota),
+    )
+    cursor.execute(
+        "DELETE FROM inscripciones WHERE id_inscripcion = %s", (id_inscripcion,)
+    )
     conn.commit()
     conn.close()
 
 
-#--------------
+# --------------
 # --- Usuarios Expositor
 
 '''
@@ -410,6 +485,7 @@ def actualizar_ponente(
     conn.close()
 '''
 
+
 def actualizar_ponente(
     id_usuario,
     nombre,
@@ -420,10 +496,10 @@ def actualizar_ponente(
     pais_origen,
     id_rol,
     fecha_nac,
-    genero,               # 'male' | 'female' | 'other'
+    genero,  # 'male' | 'female' | 'other'
     pais_residencia,
     afiliacion_u,
-    tipo_afiliacion,      # 'public' | 'private'
+    tipo_afiliacion,  # 'public' | 'private'
     area_tematica,
     disciplina_cientifica,
 ):
@@ -509,19 +585,50 @@ def actualizar_ponente(
     finally:
         conn.close()
 
-def crear_ponente(nombre, apellido, email, contrasena, documento, pais_origen, fecha_nac, genero, pais_residencia, afiliacion_u, tipo_afiliacion, area_tematica, disciplina_cientifica):
+
+def crear_ponente(
+    nombre,
+    apellido,
+    email,
+    contrasena,
+    documento,
+    pais_origen,
+    fecha_nac,
+    genero,
+    pais_residencia,
+    afiliacion_u,
+    tipo_afiliacion,
+    area_tematica,
+    disciplina_cientifica,
+):
     conn = get_connection()
     cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
     id_rol = 2  # Por defecto: ponente
     hashed = generate_password_hash(contrasena)
     cursor.execute(
         "INSERT INTO Usuarios (nombre, apellido, email, contrasena, documento, pais_origen, id_rol, fecha_nac, genero, pais_residencia, afiliacion_u, tipo_afiliacion, area_tematica, disciplina_cientifica) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
-        (nombre, apellido, email, hashed, documento, pais_origen, id_rol, fecha_nac, genero, pais_residencia, afiliacion_u, tipo_afiliacion, area_tematica, disciplina_cientifica),
+        (
+            nombre,
+            apellido,
+            email,
+            hashed,
+            documento,
+            pais_origen,
+            id_rol,
+            fecha_nac,
+            genero,
+            pais_residencia,
+            afiliacion_u,
+            tipo_afiliacion,
+            area_tematica,
+            disciplina_cientifica,
+        ),
     )
     conn.commit()
     conn.close()
 
-#-----------------------------------
+
+# -----------------------------------
 def crear_ponentes_bulk(lista_expositores):
     conn = None
     try:
@@ -548,7 +655,7 @@ def crear_ponentes_bulk(lista_expositores):
                     expositor["afiliacion_u"],
                     expositor["tipo_afiliacion"],
                     expositor["area_tematica"],
-                    expositor["disciplina_cientifica"]
+                    expositor["disciplina_cientifica"],
                 ),
             )
         conn.commit()
@@ -560,6 +667,7 @@ def crear_ponentes_bulk(lista_expositores):
     finally:
         if conn:
             conn.close()
+
 
 def crear_ponentes_con_lote(lista_ponentes):
     conn = None
@@ -594,9 +702,8 @@ def crear_ponentes_con_lote(lista_ponentes):
                     p["afiliacion_u"],
                     p["tipo_afiliacion"],
                     p["area_tematica"],
-                    p["disciplina_cientifica"]
-
-                )
+                    p["disciplina_cientifica"],
+                ),
             )
             # Opcional: recoger id_usuario si necesitas usarlo
             _ = cursor.fetchone()[0]
@@ -612,6 +719,7 @@ def crear_ponentes_con_lote(lista_ponentes):
         if conn:
             conn.close()
 
+
 def eliminar_ponente(id_usuario):
     try:
         conn = get_connection()
@@ -626,56 +734,72 @@ def eliminar_ponente(id_usuario):
 
 # ------------------------
 
+
 # Cursos dictados por el ponente
 def get_cursos_ponente(id_usuario):
     conn = get_connection()
     cursor = conn.cursor()
-    cursor.execute("""
+    cursor.execute(
+        """
         SELECT c.id_curso, c.nombre, c.descripcion
         FROM cursos c
         WHERE c.id_ponente = %s
-    """, (id_usuario,))
+    """,
+        (id_usuario,),
+    )
     cursos = cursor.fetchall()
-    result = [{'id_curso': c[0], 'nombre': c[1], 'descripcion': c[2]} for c in cursos]
+    result = [{"id_curso": c[0], "nombre": c[1], "descripcion": c[2]} for c in cursos]
     cursor.close()
     conn.close()
-    return (result)
+    return result
+
 
 # Cursos disponibles (sin ponente)
 def get_cursos_disponibles_para_ponente():
     conn = get_connection()
     cursor = conn.cursor()
-    cursor.execute("""
+    cursor.execute(
+        """
         SELECT id_curso, nombre, descripcion
         FROM cursos
         WHERE id_ponente = 1
-    """)
+    """
+    )
     cursos = cursor.fetchall()
-    result = [{'id_curso': c[0], 'nombre': c[1], 'descripcion': c[2]} for c in cursos]
+    result = [{"id_curso": c[0], "nombre": c[1], "descripcion": c[2]} for c in cursos]
     cursor.close()
     conn.close()
-    return (result)
+    return result
+
 
 # Asignar curso a ponente
 def asignar_curso_a_ponente(id_usuario, id_curso):
     conn = get_connection()
     cursor = conn.cursor()
-    cursor.execute("""
+    cursor.execute(
+        """
         UPDATE cursos SET id_ponente = %s WHERE id_curso = %s
-    """, (id_usuario, id_curso))
+    """,
+        (id_usuario, id_curso),
+    )
     conn.commit()
     cursor.close()
     conn.close()
+
 
 # Quitar curso al ponente
 def quitar_curso_a_ponente(id_curso):
     conn = get_connection()
     cursor = conn.cursor()
-    cursor.execute("""
+    cursor.execute(
+        """
         UPDATE cursos SET id_ponente = 1 WHERE id_curso = %s
-    """, (id_curso,))
+    """,
+        (id_curso,),
+    )
     conn.commit()
     cursor.close()
     conn.close()
+
 
 # ------------------------
