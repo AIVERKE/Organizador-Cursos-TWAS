@@ -21,15 +21,21 @@
   </thead>
   <tbody>
     {% for curso in cursos %}        
-    <tr>
+    <tr data-id="{{curso.id_curso}}">
       <!-- <td data-label="N °">{{ curso.id_curso }}</td> -->
       <td data-label="N °">{{ loop.index }}</td>
       <td data-label="Nombres">
         <a href="javascript:void(0)" onclick="verEstudiantes({{ curso.id_ponente }})" class="btn-bonito">
           {{ curso.nombre }}
         </a>
+          <br>
+          <br>
+          <span id="pin-{{ curso.id_curso }}" class="text-warning small">
+            {% if curso.pin_hoy %}
+              Código: {{ curso.pin_hoy }}
+            {% endif %}
+          </span>
       </td>
-
       <td data-label="Descripcion">{{ curso.descripcion }}</td>
       <td data-label="Modalidad">{{ curso.modalidad }}</td>
       <!-- <td data-label="Version">{{ curso.id_version }}</td> -->
@@ -57,11 +63,12 @@
         data-id-ponente="{{curso.id_ponente}}">
             Eliminar
         </button>    
-
-        <button class="btn btn-primary" 
-        onclick="generarPin({{curso.id_curso}})">
-        Generar Codigo de Asistencia
-        </button>
+        {% if not curso.pin_hoy %}
+          <button class="btn btn-primary" 
+          onclick="generarPin({{curso.id_curso}})">
+          Generar Codigo de Asistencia
+          </button>
+        {% endif %}
 
       </td>
     </tr>
