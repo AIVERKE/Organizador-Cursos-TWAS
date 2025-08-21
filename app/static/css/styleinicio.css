@@ -125,6 +125,60 @@ body {
   box-shadow: 0 10px 20px rgba(0,0,0,.15);
 }
 
+/* Estilos para el carrusel del 5to perfil */
+.organizador-carousel {
+  background: #f9f9f9;
+  padding: 1rem;
+  border-radius: 12px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.organizador-carousel:hover {
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 10px 20px rgba(0,0,0,.15);
+}
+
+.carousel-control-prev, 
+.carousel-control-next {
+  width: auto;
+}
+
+.carousel-control-prev-icon, 
+.carousel-control-next-icon {
+  background-size: 60%;
+}
+
+.carousel-indicators {
+  bottom: -40px;
+}
+
+.carousel-indicators [data-bs-target] {
+  background-color: #0077c2;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin: 0 5px;
+  border: none;
+}
+
+/* Asegurar que el carrusel tenga el mismo tamaño que los otros organizadores */
+.organizador-carousel .organizador {
+  padding: 1rem;
+  text-align: center;
+}
+
+/* Responsividad */
+@media (max-width: 768px) {
+  .organizador-carousel {
+    max-width: 100%;
+  }
+  
+  .carousel-control-prev, 
+  .carousel-control-next {
+    width: 15%;
+  }
+}
+
 /* FOOTER */
 .footer {
   background: #314163;
@@ -142,7 +196,14 @@ body {
 
 .logo-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  justify-items: center;
+  align-items: center;
+}
+.logo-grid2 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   gap: 10px;
   justify-items: center;
   align-items: center;
@@ -222,7 +283,7 @@ body {
   font-size: 0.875rem;
   line-height: 1.5;
   border-radius: 0.25rem;
-  min-width: 100px; /* Ancho mínimo consistente */
+  min-width: 100px;
   text-align: center;
   display: inline-flex;
   align-items: center;
@@ -232,7 +293,7 @@ body {
 
 /* Específico para botón de globo (traductor) */
 #btnLang {
-  min-width: 110px; /* Un poco más ancho por el icono */
+  min-width: 110px;
 }
 
 /* Asegurar que los botones outline tengan el mismo estilo */

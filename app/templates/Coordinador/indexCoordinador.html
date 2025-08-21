@@ -25,7 +25,7 @@
         </form>
       </div>
       <div class="logou">
-        <img class="logo-umsa" src="{{ url_for('static', filename='images/umsalogo.webp') }}" alt="Logo UMSA" />
+        <img class="logo-umsa" src="{{ url_for('static', filename='images/EscudoUMSA.png') }}" alt="Logo UMSA" />
       </div>
     </div>
   </div>
@@ -68,7 +68,23 @@
             inicializarEventosCursos();
           });
       }
+      function generarPin(id_crs){
+          fetch(`/cursos/pin/${id_crs}/nuevo_pin`, {method:'POST'})
+          .then(response =>response.json())
+          .then(data=>{
+            if(data.success){
+              document.getElementById("form-info").innerHTML= 
+              `<p><strong>PIN: </strong> ${data.nuevo_pin}</p>
+              <p><strong>Expiración: </strong> ${data.expiracion}</p>`
+
+              document.getElementById('modal-pin').classList.add("activo");
+            }
+          })
+          .catch(error => alert("Error: "+error.message));
+        } 
       window.showSection = showSection;
+      window.generarPin = generarPin;
+
       function inicializarEventos(tipo) {
         const endpointBase = `/usuarios/coor/${tipo}`;
         const idRol = tipo === 'estudiantes' ? 3 : 2;
@@ -370,7 +386,6 @@
       }
 
       function inicializarEventosCursos(){
-
         // boton editar Curso
         document.querySelectorAll('.edit-curso-btn').forEach(btn => {
           btn.addEventListener('click', function () {
@@ -582,6 +597,21 @@
           });
         });
 
+        // Script para filtrar estudiantes
+        const buscador = document.getElementById("buscador");
+        if (buscador){
+          buscador.addEventListener("keyup", function() {
+            let filtro = this.value.toLowerCase();
+            let filas = document.querySelectorAll("#tabla-estudiantes tbody tr");
+
+            filas.forEach(function(fila) {
+              let textoFila = fila.textContent.toLowerCase();
+              fila.style.display = textoFila.includes(filtro) ? "" : "none";
+            });
+          });
+        }
+        
+
       }
       // Cerrar modales
       const btnClose = document.querySelector(".close");
@@ -605,10 +635,15 @@
         const modal = document.getElementById("modal-info-curso");
         if (modal) modal.classList.remove("activo");
       }
+      function cerrarModalPin() {
+        const modal = document.getElementById("modal-pin");
+        if (modal) modal.classList.remove("activo");
+      }
 
       document.addEventListener("DOMContentLoaded", () => { 
         inicializarEventos();
-        inicializarEventosCursos();     
+        inicializarEventosCursos();    
+
       });
 
       //buscador cursos
@@ -701,39 +736,7 @@
           }
         });
       })();
-
-
     </script>
-    <script>
-      function generarPin(id_crs){
-        fetch(`/cursos/pin/${id_crs}/nuevo_pin`, {method:'POST'})
-        .then(response =>response.json())
-        .then(data=>{
-          if(data.success){
-            document.getElementById("form-info").innerHTML= 
-            `<p><strong>PIN: </strong> ${data.nuevo_pin}</p>
-            <p><strong>Expiración: </strong> ${data.expiracion}</p>`
 
-            document.getElementById('modal-pin').classList.add("activo");
-          }
-        })
-        .catch(error => alert("Error: "+error.message));
-      } 
-      function cerrarModalPin() {
-        const modal = document.getElementById("modal-pin");
-        if (modal) modal.classList.remove("activo");
-      }
-
-    // Script para filtrar estudiantes
-    document.getElementById("buscador").addEventListener("keyup", function() {
-      let filtro = this.value.toLowerCase();
-      let filas = document.querySelectorAll("#tabla-estudiantes tbody tr");
-
-      filas.forEach(function(fila) {
-        let textoFila = fila.textContent.toLowerCase();
-        fila.style.display = textoFila.includes(filtro) ? "" : "none";
-      });
-    });
-  </script>
   </body>
 </html>
