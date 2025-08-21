@@ -405,3 +405,30 @@ button:hover,
     text-align: left;
   }
 }
+
+.btn-bonito {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #0077c2; /* azul sólido */
+  color: white;
+  font-weight: bold;
+  font-size: 16px;
+  text-decoration: none;
+  border-radius: 8px; /* flat design con bordes suaves */
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: none; /* sin sombras exageradas, flat */
+}
+
+/* Hover simple y elegante */
+.btn-bonito:hover {
+  background-color: #005fa3; /* azul más oscuro al pasar mouse */
+  transform: translateY(-2px);
+}
+
+/* Efecto presionado */
+.btn-bonito:active {
+  background-color: #004f84;
+  transform: translateY(0);
+}
