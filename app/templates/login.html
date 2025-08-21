@@ -16,9 +16,24 @@
   <div class="d-block d-lg-none" style="height: 80px;"></div>
   
   <div class="row flex-grow-1 g-0">
-    <!-- Panel izquierdo - Formulario -->
-    <div class="col-lg-6 d-flex flex-column justify-content-center p-4 p-md-5">
+
+<!-- Boton volver al index -->
+
+
+ <div class="col-lg-6 d-flex flex-column justify-content-center p-4 p-md-5">
       <div class="mx-auto form-content" style="max-width: 400px; width: 100%;">
+        <div class="d-flex justify-content-start mb-3">
+  <a href="{{ url_for('home.index') }}" class="btn btn-outline-primary">
+    <i class="fas fa-arrow-left me-1"></i>
+    <span class="i18n i18n-es">Volver al inicio</span>
+    <span class="i18n i18n-en">Back to home</span>
+  </a>
+</div>
+
+
+
+
+    <!-- Panel izquierdo - Formulario -->
         <h1 class="display-5 fw-bold mb-3">
           <span class="i18n i18n-es">TYAN Hands-on Schools en Bolivia 2025<br><small class="fs-4">3ra Versión</small></span>
           <span class="i18n i18n-en">TYAN Hands-on Schools en Bolivia 2025<br><small class="fs-4">3rd Version</small></span>
