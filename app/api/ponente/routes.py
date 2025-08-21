@@ -58,6 +58,31 @@ def curso():
     )
 
 
+@ponente_bp.route("/estudiantes_curso/<int:id_ponente>", methods=["GET"])
+@login_required
+def estudiantes_curso(id_ponente):
+    id_curso = obtener_id_curso(id_ponente)
+    if not id_curso:
+        return jsonify({"error": "No se encontró un curso para este usuario"}), 404
+
+    rows = obtener_estudiantes_inscritos(id_curso)
+
+    curso_data = obtener_nombre_curso(id_ponente)
+    if not curso_data:
+        return jsonify({"error": "No se encontró información del curso"}), 404
+
+    nombre_curso, descripcion = curso_data
+
+    return jsonify(
+        {
+            "estudiantes": rows,
+            "nombre_curso": nombre_curso,
+            "descripcion": descripcion,
+            "id_curso": id_curso,
+        }
+    )
+
+
 @ponente_bp.route("/calificacion")
 @login_required
 def calificacion():

@@ -20,9 +20,9 @@
     <div class="acciones-derecha">
       <div class="top-actions">
         <form action="/auth/logout" method="POST">
-          <button onclick="location.href='/estudiante'">Coordinador</button>
           <button type="submit">Cerrar Sesión</button>
         </form>
+          <button onclick="location.href='/auth/dashboard'">Coordinador</button>
       </div>
       <div class="logou">
         <img class="logo-umsa" src="{{ url_for('static', filename='images/EscudoUMSA.png') }}" alt="Logo UMSA" />
@@ -56,7 +56,50 @@
       </div>
     </main>
 
+
+  <script>
+  function verEstudiantes(idPonente) {
+      fetch(`/ponente/estudiantes_curso/${idPonente}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.error) {
+            alert(data.error);
+            return;
+          }
+
+          // Llenar título y descripción
+          document.getElementById("titulo-curso").innerText = data.nombre_curso;
+          document.getElementById("descripcion-curso").innerText = data.descripcion;
+
+          // Llenar tabla de estudiantes
+          const tbody = document.querySelector("#tabla-estudiantes tbody");
+          tbody.innerHTML = ""; // limpiar
+
+          data.estudiantes.forEach((est, i) => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+              <td>${i+1}</td>
+              <td>${est.nombre}</td>
+              <td>${est.email}</td>
+            `;
+            tbody.appendChild(tr);
+          });
+
+          // Mostrar modal
+          document.getElementById("modal-estudiantes").style.display = "block";
+        })
+        .catch(err => console.error(err));
+  }
+
+  function cerrarModalEstudiantes() {
+    document.getElementById("modal-estudiantes").style.display = "none";
+  }
+  </script>
+
+
     <script>
+
+
       function showSection(section) {
         fetch(`/${section}`)
           .then((response) => response.text())
