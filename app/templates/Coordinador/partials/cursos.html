@@ -3,6 +3,9 @@
 <!-- 🔍 Buscador -->
 <input type="text" id="buscador-cursos" placeholder="Buscar curso..." style="margin-bottom: 10px; padding: 5px; width: 250px;">
 
+<!-- Funcionalidades -->
+<button onclick="" class="menu-btn-h create-btn">Agregar Curso</button>
+<button onclick="window.location.href='{{ url_for('rxls.index', tipo='cursos') }}'" class="menu-btn-h rxls-btn"> Agregar Cursos Excel </button>
 <table border="1" cellpadding="10" cellspacing="0" id="tabla-cursos">
 
   <thead>
@@ -43,7 +46,7 @@
             Mas Información
         </button>
 
-        <button class="btn btn-primary del-curso-btn" 
+        <button class="btn btn-danger del-curso-btn" 
         data-id="{{curso.id_curso}}" 
         data-id-version="{{curso.id_version}}" 
         data-id-ponente="{{curso.id_ponente}}">
@@ -139,6 +142,4 @@
 
 <br>
 
-<button onclick="" class="menu-btn-h create-btn">Agregar Curso</button>
-<button onclick="window.location.href='{{ url_for('rxls.index', tipo='cursos') }}'"
-        class="menu-btn-h rxls-btn"> Agregar Cursos Excel </button>
+

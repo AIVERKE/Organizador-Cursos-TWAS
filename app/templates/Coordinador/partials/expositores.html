@@ -47,7 +47,7 @@
                 <button class="btn btn-danger del-btn" data-id="{{ expositor.id_usuario }}">
                     Eliminar
                 </button>
-                <button onclick="window.location.href='{{ url_for('certificate.descargar_certificado', user_id=expositor.id_usuario) }}'">Descargar Certificado</button>
+                <button onclick="window.location.href='{{ url_for('certificate.descargar_certificado', user_id=expositor.id_usuario) }}'" class="btn btn-success">Descargar Certificado</button>
             </td>
         </tr>
         {% endfor %}

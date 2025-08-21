@@ -33,19 +33,23 @@ def generar_certificados(rol_boton):
     with db.engine.connect() as conn:
         query = """
             SELECT 
+                i.id_inscripcion,
                 p.nombre as docente,
+                p.apellido as doc_ape,
                 u.nombre as nombre, 
                 u.apellido as apellido, 
                 u.documento as documento,
                 i.modalidad as modalidad, 
                 i.fecha_inscripcion as fecha_inscripcion,
                 c.nombre as curso_nombre,
-                n.nota_final as nota
+                n.nota_final as nota,
+                cur.nombre as materia_dada
             FROM usuarios u
-            JOIN inscripciones i ON i.id_usuario = u.id_usuario
-            JOIN cursos c ON c.id_curso = i.id_curso
+            LEFT JOIN inscripciones i ON i.id_usuario = u.id_usuario
+            LEFT JOIN cursos c ON c.id_curso = i.id_curso
             LEFT JOIN notas n ON n.id_inscripcion = i.id_inscripcion
-            JOIN usuarios p ON p.id_usuario = c.id_ponente
+            LEFT JOIN usuarios p ON p.id_usuario = c.id_ponente
+            LEFT JOIN cursos cur ON cur.id_ponente = u.id_usuario
             WHERE u.id_rol = :rol_boton;
         """
         result = conn.execute(text(query), {"rol_boton": rol_boton})
@@ -57,10 +61,10 @@ def generar_certificados(rol_boton):
     for _, row in participants.iterrows():
         participante = row["nombre"] +" "+ row["apellido"]
         documento = row["documento"]
-        docente = row["docente"]
+        docente = row["docente"] + " "+row["doc_ape"]
         mensaje = ''
         curso=''        
-        titulo="CERTIFICADO DE APROBACION\nIII VERSIÓN DE LA ESCUELA DE VERANO TYAN EN BOLIVIA" if row["modalidad"] == 'catedra-laboratorio' and int(row["nota"]) > 64 else "CERTIFICADO\nIII VERSIÓN DE LA ESCUELA DE VERANO TYAN EN BOLIVIA"
+        titulo="CERTIFICADO DE APROBACION\nIII TYAN Hands-on Schools en Bolivia 2025" if row["modalidad"] == 'catedra-laboratorio' and int(row["nota"]) > 64 else "CERTIFICADO\nIII TYAN Hands-on Schools en Bolivia 2025"
         if (rol_boton) == 3:
             curso = row["curso_nombre"]
             if row["modalidad"] == 'catedra-laboratorio' and int(row["nota"]) > 64 :
@@ -68,8 +72,8 @@ def generar_certificados(rol_boton):
             else:
                 mensaje=f"""Ha participado del curso de "{curso}" dictado por {docente}, inaugurado dentro del postgrado de Ciencias Químicas\n de la Facultad de Ciencias Puras y Naturales, de la Universidad Mayor de San Andrés. Realizado en la ciudad La Paz del '11 al 15 de Marzo del 2024'."""    
         elif (rol_boton) == 2:
-            curso = row["curso_nombre"]
-            mensaje = f"""Por su colaboración como ponente en el tema  “{curso}”.\nRealizado en la ciudad La Paz del 11 al 15 de Marzo del 2024, auspiciado y organizado por la red internacional TYAN-TWAS y la Universidad Mayor de San Andrés."""    
+            curso = row["materia_dada"] or ''
+            mensaje = f"""Por su colaboración como ponente en el tema  "{curso}".\nRealizado en la ciudad La Paz del 11 al 15 de Marzo del 2024, auspiciado y organizado por la red internacional TYAN-TWAS y la Universidad Mayor de San Andrés."""    
         # fecha = date.today()        
         
         pdf = FPDF(orientation="L", unit="pt", format="A4")
@@ -94,9 +98,22 @@ def generar_certificados(rol_boton):
         pdf.set_text_color(250, 250, 250)
         pdf.set_xy(150, 260)
         pdf.multi_cell(600, 15, mensaje, 0, "C")        
+        if rol_boton == 3:
+            pdf.set_font("Arial", "I", 14)
+            pdf.set_text_color(0, 0, 0)
+            pdf.set_xy(0, 510)
+            pdf.multi_cell(600, 14, docente+" \nDocente de Materia", 0, "C")
 
         file_name = f"{documento.replace(' ', '_')} {participante.replace(' ', '_')} {curso.replace(' ', '_')}"        
         pdf.output(os.path.join(folder, f"{file_name}_certificate.pdf"))
+
+        if rol_boton == 3:
+            with db.engine.begin() as conn:
+                conn.execute(
+                    text("UPDATE inscripciones SET certificado_generado = TRUE WHERE id_inscripcion = :id"),
+                    {"id": row["id_inscripcion"]}
+                )
+
 
     zip_name = f"certificados_{datetime.now().strftime('%Y%m%d_%H%M%S')}.zip"
     if rol_boton == 3:
@@ -127,7 +144,9 @@ def descargar_certificado(user_id):
     with db.engine.connect() as conn:
         query = text("""
             SELECT 
+                i.id_inscripcion,
                 p.nombre as docente,
+                p.apellido as doc_ape,
                 u.nombre as nombre, 
                 u.apellido as apellido, 
                 u.documento as documento,
@@ -135,12 +154,14 @@ def descargar_certificado(user_id):
                 i.fecha_inscripcion as fecha_inscripcion,
                 c.nombre as curso_nombre,
                 n.nota_final as nota,
-                u.id_rol as rol
+                u.id_rol as rol,
+                cur.nombre as materia_dada
             FROM usuarios u
-            JOIN inscripciones i ON i.id_usuario = u.id_usuario
-            JOIN cursos c ON c.id_curso = i.id_curso
+            LEFT JOIN inscripciones i ON i.id_usuario = u.id_usuario
+            LEFT JOIN cursos c ON c.id_curso = i.id_curso
             LEFT JOIN notas n ON n.id_inscripcion = i.id_inscripcion
-            JOIN usuarios p ON p.id_usuario = c.id_ponente
+            LEFT JOIN usuarios p ON p.id_usuario = c.id_ponente
+            LEFT JOIN cursos cur ON cur.id_ponente = u.id_usuario
             WHERE u.id_usuario = :user_id
             LIMIT 1;
         """)
@@ -152,20 +173,21 @@ def descargar_certificado(user_id):
     # Datos
     participante = result.nombre + " " + result.apellido
     documento = result.documento
-    docente = result.docente
-    curso = result.curso_nombre
+    docente = 'Dr(a). '+result.docente + " " + result.doc_ape
+    curso = result.curso_nombre or ''
     rol = result.rol
 
     # Definir título y mensaje    
-    titulo = "CERTIFICADO\nIII VERSIÓN DE LA ESCUELA DE VERANO TYAN EN BOLIVIA"    
+    titulo = "CERTIFICADO\nIII TYAN Hands-on Schools en Bolivia 2025"    
     if rol == 3:  # Estudiante
         if result.modalidad == "catedra-laboratorio" and result.nota and int(result.nota) > 64:
-            titulo = "CERTIFICADO DE APROBACION\nIII VERSIÓN DE LA ESCUELA DE VERANO TYAN EN BOLIVIA"
+            titulo = "CERTIFICADO DE APROBACION\nIII TYAN Hands-on Schools en Bolivia 2025"
             mensaje = f"""Ha completado exitosamente el curso de "{curso}" dictado por {docente}, inaugurado dentro del postgrado de Ciencias Químicas de la Facultad de Ciencias Puras y Naturales, de la Universidad Mayor de San Andrés. Realizado en la ciudad La Paz del '11 al 15 de Marzo del 2024', con una duración de 30 hrs. académicas equivalente a 1 CLAR (Crédito Latinoamericano de Referencia)."""
         else:
             mensaje = f"""Ha participado del curso de "{curso}" dictado por {docente}, inaugurado dentro del postgrado de Ciencias Químicas de la Facultad de Ciencias Puras y Naturales, de la Universidad Mayor de San Andrés. Realizado en la ciudad La Paz del '11 al 15 de Marzo del 2024'."""
     elif rol == 2:  # Expositor
-        mensaje = f"""Por su colaboración como ponente en el tema “{curso}”. Realizado en la ciudad La Paz del 11 al 15 de Marzo del 2024, auspiciado y organizado por la red internacional TYAN-TWAS y la Universidad Mayor de San Andrés."""
+        curso = result.materia_dada or ''
+        mensaje = f"""Por su colaboración como ponente en el tema "{curso}". Realizado en la ciudad La Paz del 11 al 15 de Marzo del 2024, auspiciado y organizado por la red internacional TYAN-TWAS y la Universidad Mayor de San Andrés."""
 
     # Crear PDF
     pdf = FPDF(orientation="L", unit="pt", format="A4")
@@ -187,13 +209,24 @@ def descargar_certificado(user_id):
     pdf.set_text_color(250, 250, 250)
     pdf.set_xy(150, 260)
     pdf.multi_cell(600, 15, mensaje, 0, "C")
-
+    if rol == 3:
+        pdf.set_font("Arial", "I", 14)
+        pdf.set_text_color(0, 0, 0)
+        pdf.set_xy(0, 510)
+        pdf.multi_cell(600, 14, docente+" \nDocente de Materia", 0, "C")
+            
     file_name = f"{documento.replace(' ', '_')}_{participante.replace(' ', '_')}_{curso.replace(' ', '_')}_certificate.pdf"
     file_path = os.path.join(folder, file_name)
     pdf.output(file_path)
 
     # Descargar y borrar
     response = send_file(file_path, as_attachment=True, download_name=file_name)
+    if rol == 3:
+        with db.engine.begin() as conn:
+            conn.execute(
+                text("UPDATE inscripciones SET certificado_generado = TRUE WHERE id_inscripcion = :id"),
+                {"id": result.id_inscripcion}
+            )
     try:
         os.remove(file_path)
         shutil.rmtree(folder)
