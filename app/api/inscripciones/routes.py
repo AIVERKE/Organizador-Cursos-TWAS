@@ -145,7 +145,8 @@ def validar():
 
 
     if modalidad == "catedra":
-        if not time(9,30) <= datetime.now().time() <= time(10,15):
+        # if not time(9,30) <= datetime.now().time() <= time(10,15):
+        if not time.min <= datetime.now().time() <= time.max:
             return jsonify({"mensaje": "No se encuentra en horario de asistencia",
                 "message": "You are out of attendance schedule"}), 400
         # Verificar si ya existe asistencia con modalidad "catedra" (solo una asistencia)
@@ -164,9 +165,11 @@ def validar():
                 "message": "Attendance already registered in this course"}), 400
     elif modalidad == "catedra-laboratorio":
         sw_h = 0
-        if time(9,30) <= datetime.now().time() <= time(10,15):
+        # if time(9,30) <= datetime.now().time() <= time(10,15):
+        if time.min <= datetime.now().time() <= time(11,59,59):
             sw_h = 0
-        elif time(13,45) <= datetime.now().time() <= time(17,15):
+        # elif time(13,45) <= datetime.now().time() <= time(17,15):
+        elif time(12,00) <= datetime.now().time() <= time.max:
             sw_h = 1
         else:
             return jsonify({"mensaje": "No se encuentra en horario de asistencia",
@@ -177,7 +180,8 @@ def validar():
                 SELECT id_inscripcion
                 FROM asistencias 
                 WHERE id_inscripcion = %s AND fecha::DATE = %s
-                AND ((fecha::TIME BETWEEN '09:30:00' AND '10:15:00'))
+                -- AND ((fecha::TIME BETWEEN '09:30:00' AND '10:15:00'))
+                AND ((fecha::TIME BETWEEN '00:00:00' AND '11:59:59'))
             """, (inscripcion_id, hoy.date()))
 
             existente = cur.fetchone()
@@ -192,7 +196,8 @@ def validar():
                 SELECT id_inscripcion
                 FROM asistencias 
                 WHERE id_inscripcion = %s AND fecha::DATE = %s
-                AND ((fecha::TIME BETWEEN '13:45:00' AND '17:15:00'))
+                -- AND ((fecha::TIME BETWEEN '13:45:00' AND '17:15:00'))
+                AND ((fecha::TIME BETWEEN '12:00:00' AND '23:59:59'))
             """, (inscripcion_id, hoy.date()))
 
             existente = cur.fetchone()

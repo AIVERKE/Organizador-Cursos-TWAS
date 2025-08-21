@@ -51,7 +51,13 @@
         data-id-version="{{curso.id_version}}" 
         data-id-ponente="{{curso.id_ponente}}">
             Eliminar
-        </button>                    
+        </button>    
+
+        <button class="btn btn-primary" 
+        onclick="generarPin({{curso.id_curso}})">
+        Generar Codigo de Asistencia
+        </button>
+
       </td>
     </tr>
     {% endfor %}
@@ -136,6 +142,16 @@
           <option value="">Selecciona un ponente...</option>
       </select>
       <button type="submit">Agregar</button>
+    </form>
+  </div>
+</div>
+
+<!--  Modal / Tabla Emergente PIN -->
+<div id="modal-pin" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="cerrarModalPin()">&times;</span>
+    <h3>Información Código Asistencia</h3>
+    <form id="form-info">
     </form>
   </div>
 </div>
