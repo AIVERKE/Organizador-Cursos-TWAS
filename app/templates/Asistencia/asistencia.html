@@ -13,8 +13,23 @@
   <!-- Navbar heredado de base.html -->
   
   <div class="row flex-grow-1 g-0">
+
+
+
     <!-- Panel izquierdo - Formulario -->
     <div class="col-lg-6 d-flex flex-column justify-content-center p-4 p-md-5">
+      
+
+    
+      <!-- Boton de regreso al index -->
+        <div class="d-flex justify-content-start mb-3">
+  <a href="{{ url_for('home.index') }}" class="btn btn-outline-primary">
+    <i class="fas fa-arrow-left me-1"></i>
+    <span class="i18n i18n-es">Volver al inicio</span>
+    <span class="i18n i18n-en">Back to home</span>
+  </a>
+</div>
+      
       <div class="mx-auto" style="max-width: 420px; width: 100%; margin-top: 2rem; margin-bottom: 2rem;">
         
         <h1 class="display-5 fw-bold mb-3 text-center">
