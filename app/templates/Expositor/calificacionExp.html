@@ -73,19 +73,13 @@
 
     const tdEstado = tr.querySelector("td.estado");
 
-    if (asistencias < 1) {
-      tdEstado.textContent = "Abandono";
-      tdEstado.className = "estado abandono";
-    } else if (notaFinal >= 71) {
+    if (notaFinal >= 65) {
       tdEstado.textContent = "Aprobado";
       tdEstado.className = "estado aprobado";
-    } else if (notaFinal <= 70) {
-      tdEstado.textContent = "Certificado de participación";
-      tdEstado.className = "estado participacion";
     } else {
-      tdEstado.textContent = "Abandono";
-      tdEstado.className = "estado abandono";
-    }
+      tdEstado.textContent = "Participacion";
+      tdEstado.className = "estado participacion";
+    }    
   }
 
 
