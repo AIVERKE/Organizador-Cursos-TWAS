@@ -153,7 +153,7 @@ def validar():
         cur.execute("""
             SELECT id_inscripcion
             FROM asistencias 
-            WHERE id_inscripcion = %s AND fecha = %s
+            WHERE id_inscripcion = %s AND fecha::DATE = %s
         """, (inscripcion_id, hoy.date()))
 
         existente = cur.fetchone()

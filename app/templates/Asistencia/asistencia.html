@@ -115,22 +115,18 @@
     const curso = document.getElementById("curso").value;
     const pin = document.getElementById("pin").value.trim();
 
-    try {
-      const response = await fetch("/ins/registrar_asistencia/validar/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ correo, curso, pin })
-      });
-
-      if (!response.ok) throw new Error("Error en la solicitud");
-
-      const data = await response.json();
-      document.getElementById("resultado_es").textContent = data.mensaje || "";
-      document.getElementById("resultado_en").textContent = data.message || "";
-    } catch (error) {
-      document.getElementById("resultado_es").textContent = "Ocurrió un error al registrar la asistencia.";
-      document.getElementById("resultado_en").textContent = "An error occurred while registering attendance.";
-    }
+    const response = await fetch("/ins/registrar_asistencia/validar/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        correo: correo,
+        curso: curso,
+        pin: pin
+      })
+    });
+    const data = await response.json();
+    document.getElementById("resultado_es").innerText = data.mensaje || "";
+    document.getElementById("resultado_en").innerText = data.message || "";
   });
 </script>
 {% endblock %}
