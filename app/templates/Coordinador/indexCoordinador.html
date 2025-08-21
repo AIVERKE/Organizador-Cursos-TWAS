@@ -69,19 +69,38 @@
           });
       }
       function generarPin(id_crs){
-          fetch(`/cursos/pin/${id_crs}/nuevo_pin`, {method:'POST'})
-          .then(response =>response.json())
-          .then(data=>{
-            if(data.success){
-              document.getElementById("form-info").innerHTML= 
-              `<p><strong>PIN: </strong> ${data.nuevo_pin}</p>
-              <p><strong>Expiración: </strong> ${data.expiracion}</p>`
+        fetch(`/cursos/pin/${id_crs}/nuevo_pin`, {method:'POST'})
+        .then(response =>response.json())
+        .then(data=>{
+          if(data.success){
+            document.getElementById("form-info").innerHTML= 
+            `<p><strong>PIN: </strong> ${data.nuevo_pin}</p>
+            <p><strong>Expiración: </strong> ${data.expiracion}</p>`
 
-              document.getElementById('modal-pin').classList.add("activo");
+            document.getElementById('modal-pin').classList.add("activo");
+            //Mostrar PIN debajo del nombre en la tabla
+            const fila = document.querySelector(`#tabla-cursos tbody tr td[data-label='N °']:nth-child(${id_crs})`)?.parentNode;
+            // Mejor buscar por data-id si agregamos data-id al tr
+            const filaCurso = document.querySelector(`#tabla-cursos tbody tr[data-id="${id_crs}"]`);
+            if (filaCurso) {
+              const tdNombre = filaCurso.querySelector("td[data-label='Nombres']");
+              if (tdNombre) {
+                  const spanPin = document.createElement("span");
+                  spanPin.classList.add("text-warning", "small");
+                  spanPin.innerHTML = `<br>Código: ${data.nuevo_pin}`;
+                  tdNombre.appendChild(spanPin);
+              }
+
+              // 3️⃣ Ocultar el botón “Generar Código de Asistencia”
+              const btnGenerar = filaCurso.querySelector(".btn-primary[onclick^='generarPin']");
+              if (btnGenerar) btnGenerar.style.display = "none";
             }
-          })
-          .catch(error => alert("Error: "+error.message));
-        } 
+          } else {
+              alert("Error: " + data.error);
+          }
+        })
+        .catch(error => alert("Error: "+error.message));
+      } 
       window.showSection = showSection;
       window.generarPin = generarPin;
 

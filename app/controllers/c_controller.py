@@ -1,18 +1,35 @@
 import psycopg2
 from app.db_c import get_connection
-
+from datetime import date
 
 def obtener_cursos_full():
-    conn = get_connection()  # conecta a la base de datos
+    conn = get_connection() 
     cursor = conn.cursor(
         cursor_factory=psycopg2.extras.RealDictCursor
-    )  # crea un cursor (como el "puente" para hacer consultas)
-    cursor.execute(
-        """SELECT c.*,v.*,u.nombre as NombreU, u.apellido as ApellidoU 
-        FROM cursos c JOIN usuarios u ON c.id_ponente = u.id_usuario
+
+    )
+    # cursor.execute(
+    #     """SELECT c.*,v.*,u.nombre as NombreU, u.apellido as ApellidoU 
+    #     FROM cursos c JOIN usuarios u ON c.id_ponente = u.id_usuario
+    #     JOIN version_evento v ON c.id_version = v.id_version
+    #     """
+    # )  
+    cursor.execute("""
+        SELECT 
+            c.*, 
+            v.*, 
+            u.nombre as NombreU, 
+            u.apellido as ApellidoU,
+            ca.codigo AS pin_hoy
+        FROM cursos c
+        JOIN usuarios u ON c.id_ponente = u.id_usuario
         JOIN version_evento v ON c.id_version = v.id_version
-        """
-    )  # consulta SQL directa
+        LEFT JOIN codigos_asistencia ca 
+            ON ca.id_curso = c.id_curso AND ca.fecha_cr::date = %s
+        ORDER BY c.id_curso
+    """, (date.today(),))
+
+
     rows = cursor.fetchall()  # obtiene todos los resultados en una lista
     conn.close()  # cierra la conexión
     return rows  # devuelve los datos a quien haya llamado esta función
@@ -316,6 +333,11 @@ def actualizar_pin_curso(id_curso):
                 """,
                     (pin_h, cr, exp, id_curso),
                 )
+                cur.execute("""
+                    INSERT INTO codigos_asistencia (id_curso, codigo, fecha_cr)
+                    VALUES (%s, %s, %s)
+                """, (id_curso, pin, cr))
+
             conn.commit()
         return pin, exp.strftime("%Y-%m-%d %H:%M %S UTC")
     except psycopg2.Error as e:

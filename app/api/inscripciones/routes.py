@@ -225,4 +225,4 @@ def validar():
 
     cur.close()
     conn.close()
-    return jsonify({"mensaje": msg_es,"message": msg_en})
+    return jsonify({"mensaje": msg_es,"message": msg_en}),400

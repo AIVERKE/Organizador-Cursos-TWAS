@@ -74,12 +74,10 @@
             <span class="i18n i18n-en">Register Attendance</span>
           </button>
         </form>
+        <br>
 
-        <!-- Resultado -->
-        <div class="mt-4 text-center">
-          <h2 class="fs-5 fw-bold text-success i18n i18n-es" id="resultado_es"></h2>
-          <h2 class="fs-5 fw-bold text-success i18n i18n-en" id="resultado_en"></h2>
-        </div>
+        <div id="alertContainer" class="mt-4 text-center"></div>
+
 
       </div>
     </div>
@@ -124,9 +122,39 @@
         pin: pin
       })
     });
+
     const data = await response.json();
-    document.getElementById("resultado_es").innerText = data.mensaje || "";
-    document.getElementById("resultado_en").innerText = data.message || "";
+    const container = document.getElementById("alertContainer");
+
+    // Limpiar alertas previas
+    container.innerHTML = "";
+
+    // Definir color por defecto
+    let alertClass = "alert-danger"; // rojo
+
+    if (response.ok) {
+      alertClass = "alert-success"; // verde
+    } else if (data.mensaje && data.mensaje.toLowerCase().includes("ya registrada")) {
+      alertClass = "alert-warning"; // amarillo
+    }
+
+    // Crear alerta Bootstrap con ES y EN separados
+    container.innerHTML = `
+      <div class="alert ${alertClass} alert-dismissible fade show d-inline-block text-start" role="alert">
+        <h2 class="fs-6 fw-bold mb-1 i18n i18n-es">${data.mensaje || ""}</h2>
+        <h2 class="fs-6 fw-bold mb-0 i18n i18n-en">${data.message || ""}</h2>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    `;
+
+    setTimeout(() => {
+      const alertEl = document.querySelector("#alertContainer .alert");
+      if (alertEl) {
+        alertEl.classList.remove("show");
+        alertEl.classList.add("fade");
+        setTimeout(() => alertEl.remove(), 300);
+      }
+    }, 7500);
   });
 </script>
 {% endblock %}
