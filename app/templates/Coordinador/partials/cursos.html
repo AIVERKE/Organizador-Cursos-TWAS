@@ -25,7 +25,9 @@
       <!-- <td data-label="N °">{{ curso.id_curso }}</td> -->
       <td data-label="N °">{{ loop.index }}</td>
       <td data-label="Nombres">
-        {{ curso.nombre }}
+        <a href="javascript:void(0)" onclick="verEstudiantes({{ curso.id_ponente }})" class="btn-bonito">
+          {{ curso.nombre }}
+        </a>
           <br>
           <br>
           <span id="pin-{{ curso.id_curso }}" class="text-warning small">
@@ -169,3 +171,26 @@
 <br>
 
 
+<!-- Modal Estudiantes -->
+<div id="modal-estudiantes" class="modal">
+  <div class="modal-content" style="width: 80%; max-width: 800px; margin: 5% auto; padding: 20px; border-radius: 8px; background-color: #fefefe;">
+    <span class="close" onclick="cerrarModalEstudiantes()">&times;</span>
+    <h3>Estudiantes del Curso</h3>
+    <h4 id="titulo-curso"></h4>
+    <p id="descripcion-curso"></p>
+
+    <!-- Contenedor scroll vertical -->
+    <div style="max-height: 300px; overflow-y: auto; border: 1px solid #ccc;">
+      <table border="1" cellpadding="10" cellspacing="0" id="tabla-estudiantes" style="width:100%; border-collapse: collapse;">
+        <thead style="position: sticky; top: 0; background-color: #eee;">
+          <tr>
+            <th>#</th>
+            <th>Nombre</th>
+            <th>Email</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+</div>
