@@ -406,6 +406,37 @@ button:hover,
   }
 }
 
+/* Estilo de grafico de barras */
+#dashboard {
+  text-align: center;
+  margin: 20px;
+}
+
+.charts-container {
+  display: flex;
+  justify-content: center; /* centra horizontalmente */
+  align-items: flex-start; /* alinea por arriba */
+  gap: 40px; /* espacio entre gráficos */
+  flex-wrap: wrap; /* se ajusta en pantallas pequeñas */
+  max-width: 700px;  /* límite total del contenedor */
+  margin: 0 auto;    /* centrar en la página */
+}
+
+.charts-container canvas {
+  flex: 1 1 300px;  /* mínimo 300px, crecer según espacio */
+  width: 300px;   /* ancho fijo de cada gráfico */
+  height: 300px;  /* alto fijo */
+}
+
+#chartInscritos {
+  width: 500px;
+  height: 300px;
+}
+
+#chartPorcentaje {
+  width: 250px;
+  height: 250px;
+}
 .btn-bonito {
   display: inline-block;
   padding: 10px 20px;

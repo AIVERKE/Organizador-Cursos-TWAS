@@ -388,3 +388,21 @@ def verificar_pin(id_curso, pin_ingresado, hora_actual):
 
 
 # --------------------
+
+# grafica
+def generar_graf_barra():
+    try:
+        with get_connection() as conn:
+            with conn.cursor() as cur:
+                cur.execute("""
+                    SELECT split_part(c.nombre, ' ', 1) as nombre, COUNT(i.id_inscripcion) AS inscritos
+                    FROM cursos c
+                    LEFT JOIN inscripciones i ON c.id_curso = i.id_curso
+                    GROUP BY c.id_curso
+                    ORDER BY inscritos DESC
+                """)
+                rows = cur.fetchall()
+        data = [{"nombre": r[0], "inscritos": r[1]} for r in rows]
+        return True,data
+    except psycopg2.Error as e:
+        return  False, str(e)
