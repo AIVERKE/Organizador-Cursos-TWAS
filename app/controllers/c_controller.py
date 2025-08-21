@@ -195,7 +195,8 @@ def generar_pin():
     pin_hash = generate_password_hash(pin)
     creacion = datetime.utcnow()
     # Expiración de 5 minutos
-    expiracion = creacion + timedelta(minutes=30)
+    # expiracion = creacion + timedelta(minutes=30) # cooldown de 30 minutos
+    expiracion = creacion.replace(hour=23, minute=59, second=59, microsecond=999999)
     return pin, pin_hash, creacion, expiracion
 
 def actualizar_pin_curso(id_curso):

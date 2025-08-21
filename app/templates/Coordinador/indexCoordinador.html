@@ -704,6 +704,36 @@
 
 
     </script>
+    <script>
+      function generarPin(id_crs){
+        fetch(`/cursos/pin/${id_crs}/nuevo_pin`, {method:'POST'})
+        .then(response =>response.json())
+        .then(data=>{
+          if(data.success){
+            document.getElementById("form-info").innerHTML= 
+            `<p><strong>PIN: </strong> ${data.nuevo_pin}</p>
+            <p><strong>Expiración: </strong> ${data.expiracion}</p>`
 
+            document.getElementById('modal-pin').classList.add("activo");
+          }
+        })
+        .catch(error => alert("Error: "+error.message));
+      } 
+      function cerrarModalPin() {
+        const modal = document.getElementById("modal-pin");
+        if (modal) modal.classList.remove("activo");
+      }
+
+    // Script para filtrar estudiantes
+    document.getElementById("buscador").addEventListener("keyup", function() {
+      let filtro = this.value.toLowerCase();
+      let filas = document.querySelectorAll("#tabla-estudiantes tbody tr");
+
+      filas.forEach(function(fila) {
+        let textoFila = fila.textContent.toLowerCase();
+        fila.style.display = textoFila.includes(filtro) ? "" : "none";
+      });
+    });
+  </script>
   </body>
 </html>
