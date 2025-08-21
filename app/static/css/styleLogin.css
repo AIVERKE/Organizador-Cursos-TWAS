@@ -2,7 +2,8 @@
 body, html {
   height: 100%;
   margin: 0;
-  padding: 0;
+  /* padding: 0; */
+  padding-top: 80px;  
 }
 
 /* Contenedor principal */
@@ -75,6 +76,7 @@ body, html {
   .display-5 {
     font-size: 2rem;
   }
+
 }
 
 @media (max-width: 992px) {
@@ -93,6 +95,10 @@ body, html {
   .form-content {
     margin-top: 0.5rem;
   }
+
+  body { padding-top: 72px; } 
+
+
 }
 
 @media (max-width: 768px) {
