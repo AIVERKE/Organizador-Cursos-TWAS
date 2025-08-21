@@ -405,3 +405,19 @@ button:hover,
     text-align: left;
   }
 }
+
+/* Estilo de grafico de barras */
+#dashboard {
+  display: flex;
+  flex-direction: column;  /* título arriba, gráfico abajo */
+  align-items: center;     /* centra horizontalmente */
+  justify-content: center; /* opcional: centra vertical */
+  margin: 20px 0;
+}
+
+/* canvas con tamaño responsivo */
+#chartInscritos {
+  width: 80%;   /* ocupa hasta 80% del contenedor */
+  max-width: 800px; /* no más grande que 800px */
+  height: 400px;    /* altura fija decente */
+}
