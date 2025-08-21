@@ -3,6 +3,11 @@
 <!-- 🔍 Buscador -->
 <input type="text" id="buscador-ponente" placeholder="Buscar curso..." style="margin-bottom: 10px; padding: 5px; width: 250px;">
 
+<!-- Funcionalidades -->
+<button onclick="" class="menu-btn-h create-btn">Agregar Expositor</button>
+<button onclick="window.location.href='{{ url_for('rxls.index', tipo='ponentes') }}'" class="menu-btn-h rxls-btn"> Agregar Ponentes Excel </button>
+<button onclick="window.location.href='{{ url_for('certificate.generar_certificados', rol_boton=2) }}'" class="menu-btn-h">Descargar Certificados</button>
+<!-- <button onclick="window.location.href='{{ url_for('certificate.enviar_certificados_todos', rol_boton=2) }}'" class="menu-btn-h">Enviar Certificados</button> -->
 <table border="1" cellpadding="10" cellspacing="0" id="tabla-ponente">
     <thead>
         <tr>
@@ -42,7 +47,7 @@
                 <button class="btn btn-danger del-btn" data-id="{{ expositor.id_usuario }}">
                     Eliminar
                 </button>
-                <button onclick="window.location.href='{{ url_for('certificate.enviar_certificado', user_id=expositor.id_usuario) }}'">Enviar Certificado</button>
+                <button onclick="window.location.href='{{ url_for('certificate.descargar_certificado', user_id=expositor.id_usuario) }}'">Descargar Certificado</button>
             </td>
         </tr>
         {% endfor %}
@@ -134,10 +139,6 @@
 
 <br>
 
-<button onclick="" class="menu-btn-h create-btn">Agregar Expositor</button>
-<button onclick="window.location.href='{{ url_for('rxls.index', tipo='ponentes') }}'"
-        class="menu-btn-h rxls-btn"> Agregar Ponentes Excel </button>
-<button onclick="window.location.href='{{ url_for('certificate.generar_certificados', rol_boton=2) }}'" class="menu-btn-h">Descargar Certificados</button>
-<button onclick="window.location.href='{{ url_for('certificate.enviar_certificados_todos', rol_boton=2) }}'" class="menu-btn-h">Enviar Certificados</button>
+
 
 

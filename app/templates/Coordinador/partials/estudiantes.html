@@ -4,6 +4,12 @@
 <!-- 🔍 Buscador -->
 <input type="text" id="buscador-estudiante" placeholder="Buscar curso..." style="margin-bottom: 10px; padding: 5px; width: 250px;">
 
+<!-- Funcionalidades -->
+<button onclick="" class="menu-btn-h create-btn">Agregar Usuarios</button>
+<button onclick="window.location.href='{{ url_for('rxls.index', tipo='estudiantes') }}'" class="menu-btn-h rxls-btn"> Agregar Estudiantes Excel </button>
+<button onclick="window.location.href='{{ url_for('certificate.generar_certificados', rol_boton=3) }}'" class="menu-btn-h">Descargar Certificados</button>
+<!-- <button onclick="window.location.href='{{ url_for('certificate.enviar_certificados_todos', rol_boton=3) }}'" class="menu-btn-h">Enviar Certificados</button> -->
+
 <table border="1" cellpadding="10" cellspacing="0" class="table table-bordered table-striped" id="tabla-estudiante">
   <thead>
     <tr>
@@ -38,7 +44,7 @@
         <button class="btn btn-danger del-btn" data-id="{{ estudiante.id_usuario }}">
             Eliminar
         </button>
-        <button onclick="window.location.href='{{ url_for('certificate.enviar_certificado', user_id=estudiante.id_usuario) }}'" class="btn btn-success cert-btn">Enviar Certificado</button>
+        <button onclick="window.location.href='{{ url_for('certificate.descargar_certificado', user_id=estudiante.id_usuario) }}'" class="btn btn-success cert-btn">Descargar Certificado</button>
       </td>
     </tr>
     {% endfor %}
@@ -128,14 +134,10 @@
 
 <br>
 
-<button onclick="" class="menu-btn-h create-btn">Agregar Usuarios</button>
+
 <!-- <a href="{{ url_for('rxls.index') }}" class="menu-btn-h rxls-btn">
   Agregar Estudiantes Excel
 </a>
 
  -->
-<button onclick="window.location.href='{{ url_for('rxls.index', tipo='estudiantes') }}'"
-        class="menu-btn-h rxls-btn"> Agregar Estudiantes Excel </button>
 
-<button onclick="window.location.href='{{ url_for('certificate.generar_certificados', rol_boton=3) }}'" class="menu-btn-h">Descargar Certificados</button>
-<button onclick="window.location.href='{{ url_for('certificate.enviar_certificados_todos', rol_boton=3) }}'" class="menu-btn-h">Enviar Certificados</button>
