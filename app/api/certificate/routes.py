@@ -46,7 +46,7 @@ def generar_certificados(rol_boton):
             JOIN cursos c ON c.id_curso = i.id_curso
             LEFT JOIN notas n ON n.id_inscripcion = i.id_inscripcion
             JOIN usuarios p ON p.id_usuario = c.id_ponente
-            WHERE u.id_rol = :rol_boton AND (n.nota_final >= 51 OR n.nota_final IS NULL);
+            WHERE u.id_rol = :rol_boton;
         """
         result = conn.execute(text(query), {"rol_boton": rol_boton})
         participants = pd.DataFrame(result.fetchall(), columns=result.keys())
@@ -59,26 +59,17 @@ def generar_certificados(rol_boton):
         documento = row["documento"]
         docente = row["docente"]
         mensaje = ''
-        curso=''
-        titulo="CERTIFICADO\n DE APROBACION" if row["modalidad"] == 'catedra-laboratorio' and int(row["nota"]) > 71 else "CERTIFICADO"
+        curso=''        
+        titulo="CERTIFICADO DE APROBACION\nIII VERSIÓN DE LA ESCUELA DE VERANO TYAN EN BOLIVIA" if row["modalidad"] == 'catedra-laboratorio' and int(row["nota"]) > 64 else "CERTIFICADO\nIII VERSIÓN DE LA ESCUELA DE VERANO TYAN EN BOLIVIA"
         if (rol_boton) == 3:
             curso = row["curso_nombre"]
-            if row["modalidad"] == 'catedra-laboratorio' and int(row["nota"]) > 71 :
-                mensaje=f"""
-                    Ha completado exitosamente el curso de "{curso}" dictado por {docente}, inaugurado dentro del postgrado de Ciencias Químicas\n de la Facultad de Ciencias Puras y Naturales, de la Universidad Mayor de San Andrés.
-                    Realizado en la ciudad La Paz del '11 al 15 de Marzo del 2024', con una duración de 30 hrs. académicas equivalente a 1 CLAR (Crédito Latinoamericano de Referencia).
-                """
+            if row["modalidad"] == 'catedra-laboratorio' and int(row["nota"]) > 64 :
+                mensaje=f"""Ha completado exitosamente el curso de "{curso}" dictado por {docente}, inaugurado dentro del postgrado de Ciencias Químicas\n de la Facultad de Ciencias Puras y Naturales, de la Universidad Mayor de San Andrés. Realizado en la ciudad La Paz del '11 al 15 de Marzo del 2024', con una duración de 30 hrs. académicas equivalente a 1 CLAR (Crédito Latinoamericano de Referencia)."""
             else:
-                mensaje=f"""
-                    Ha participado del curso de "{curso}" dictado por {docente}, inaugurado dentro del postgrado de Ciencias Químicas\n de la Facultad de Ciencias Puras y Naturales, de la Universidad Mayor de San Andrés.
-                    Realizado en la ciudad La Paz del '11 al 15 de Marzo del 2024'.
-                """    
+                mensaje=f"""Ha participado del curso de "{curso}" dictado por {docente}, inaugurado dentro del postgrado de Ciencias Químicas\n de la Facultad de Ciencias Puras y Naturales, de la Universidad Mayor de San Andrés. Realizado en la ciudad La Paz del '11 al 15 de Marzo del 2024'."""    
         elif (rol_boton) == 2:
             curso = row["curso_nombre"]
-            mensaje = f"""
-                Por su colaboración como ponente en el tema  “{curso}”.\n
-                Realizado en la ciudad La Paz del 11 al 15 de Marzo del 2024, auspiciado y organizado por la red internacional TYAN-TWAS y la Universidad Mayor de San Andrés.
-            """    
+            mensaje = f"""Por su colaboración como ponente en el tema  “{curso}”.\nRealizado en la ciudad La Paz del 11 al 15 de Marzo del 2024, auspiciado y organizado por la red internacional TYAN-TWAS y la Universidad Mayor de San Andrés."""    
         # fecha = date.today()        
         
         pdf = FPDF(orientation="L", unit="pt", format="A4")
@@ -89,10 +80,10 @@ def generar_certificados(rol_boton):
         font_path = os.path.join(base_dir, "input", "Oi-Regular.ttf")
         pdf.add_font("Oi", "", font_path, uni=True)
 
-        pdf.set_font("Oi", "", 50)
-        pdf.set_text_color(1, 1, 1)
+        pdf.set_font("Arial", "B", 50)
+        pdf.set_text_color(0, 20, 60)
         pdf.set_xy(0, 20)
-        pdf.cell(w=842, h=60, txt=titulo, align="C")
+        pdf.multi_cell(842, 60, titulo, 0, "C")
 
         pdf.set_font("Helvetica", "I", 30)
         pdf.set_text_color(60, 60, 60)
@@ -101,9 +92,8 @@ def generar_certificados(rol_boton):
 
         pdf.set_font("Arial", "", 12)
         pdf.set_text_color(250, 250, 250)
-        pdf.set_xy(0, 250)
-        pdf.multi_cell(842, 15, mensaje, 0,"C")
-        
+        pdf.set_xy(150, 260)
+        pdf.multi_cell(600, 15, mensaje, 0, "C")        
 
         file_name = f"{documento.replace(' ', '_')} {participante.replace(' ', '_')} {curso.replace(' ', '_')}"        
         pdf.output(os.path.join(folder, f"{file_name}_certificate.pdf"))
@@ -120,6 +110,97 @@ def generar_certificados(rol_boton):
                 zipf.write(os.path.join(folder, file), arcname=file)
 
     return send_file(zip_path, as_attachment=True)
+
+@certificate_bp.route("/descargar-certificado/<int:user_id>")
+@login_required
+@role_required(1, 4)
+def descargar_certificado(user_id):
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    folder = os.path.join(base_dir, "temp_certificates")
+
+    # Asegurarse de que la carpeta temp exista
+    if os.path.exists(folder):
+        shutil.rmtree(folder)
+    os.makedirs(folder)
+
+    # Buscar datos del usuario
+    with db.engine.connect() as conn:
+        query = text("""
+            SELECT 
+                p.nombre as docente,
+                u.nombre as nombre, 
+                u.apellido as apellido, 
+                u.documento as documento,
+                i.modalidad as modalidad, 
+                i.fecha_inscripcion as fecha_inscripcion,
+                c.nombre as curso_nombre,
+                n.nota_final as nota,
+                u.id_rol as rol
+            FROM usuarios u
+            JOIN inscripciones i ON i.id_usuario = u.id_usuario
+            JOIN cursos c ON c.id_curso = i.id_curso
+            LEFT JOIN notas n ON n.id_inscripcion = i.id_inscripcion
+            JOIN usuarios p ON p.id_usuario = c.id_ponente
+            WHERE u.id_usuario = :user_id
+            LIMIT 1;
+        """)
+        result = conn.execute(query, {"user_id": user_id}).fetchone()
+
+    if not result:
+        return "Usuario no encontrado", 404
+
+    # Datos
+    participante = result.nombre + " " + result.apellido
+    documento = result.documento
+    docente = result.docente
+    curso = result.curso_nombre
+    rol = result.rol
+
+    # Definir título y mensaje    
+    titulo = "CERTIFICADO\nIII VERSIÓN DE LA ESCUELA DE VERANO TYAN EN BOLIVIA"    
+    if rol == 3:  # Estudiante
+        if result.modalidad == "catedra-laboratorio" and result.nota and int(result.nota) > 64:
+            titulo = "CERTIFICADO DE APROBACION\nIII VERSIÓN DE LA ESCUELA DE VERANO TYAN EN BOLIVIA"
+            mensaje = f"""Ha completado exitosamente el curso de "{curso}" dictado por {docente}, inaugurado dentro del postgrado de Ciencias Químicas de la Facultad de Ciencias Puras y Naturales, de la Universidad Mayor de San Andrés. Realizado en la ciudad La Paz del '11 al 15 de Marzo del 2024', con una duración de 30 hrs. académicas equivalente a 1 CLAR (Crédito Latinoamericano de Referencia)."""
+        else:
+            mensaje = f"""Ha participado del curso de "{curso}" dictado por {docente}, inaugurado dentro del postgrado de Ciencias Químicas de la Facultad de Ciencias Puras y Naturales, de la Universidad Mayor de San Andrés. Realizado en la ciudad La Paz del '11 al 15 de Marzo del 2024'."""
+    elif rol == 2:  # Expositor
+        mensaje = f"""Por su colaboración como ponente en el tema “{curso}”. Realizado en la ciudad La Paz del 11 al 15 de Marzo del 2024, auspiciado y organizado por la red internacional TYAN-TWAS y la Universidad Mayor de San Andrés."""
+
+    # Crear PDF
+    pdf = FPDF(orientation="L", unit="pt", format="A4")
+    pdf.add_page()
+    template_path = os.path.join(base_dir, "input", "certificate_template.jpg")
+    pdf.image(template_path, 0, 0, w=842, h=595)    
+
+    pdf.set_font("Arial", "B", 50)
+    pdf.set_text_color(0, 20, 60)
+    pdf.set_xy(0, 20)
+    pdf.multi_cell(842, 60, titulo, 0, "C")
+
+    pdf.set_font("Helvetica", "I", 30)
+    pdf.set_text_color(60, 60, 60)
+    pdf.set_xy(0, 210)
+    pdf.cell(w=842, h=60, txt=participante, align="C")
+
+    pdf.set_font("Arial", "", 12)
+    pdf.set_text_color(250, 250, 250)
+    pdf.set_xy(150, 260)
+    pdf.multi_cell(600, 15, mensaje, 0, "C")
+
+    file_name = f"{documento.replace(' ', '_')}_{participante.replace(' ', '_')}_{curso.replace(' ', '_')}_certificate.pdf"
+    file_path = os.path.join(folder, file_name)
+    pdf.output(file_path)
+
+    # Descargar y borrar
+    response = send_file(file_path, as_attachment=True, download_name=file_name)
+    try:
+        os.remove(file_path)
+        shutil.rmtree(folder)
+    except Exception:
+        pass
+
+    return response
 
 
 @certificate_bp.route("/enviar-certificado/<int:user_id>", methods=["GET", "POST"])
