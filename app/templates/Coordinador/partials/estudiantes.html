@@ -19,7 +19,6 @@
       <th>Email</th>
       <th>Documento</th>
       <th>País Origen</th>
-      <th>Rol</th>
       <th>Acciones</th>
     </tr>
   </thead>
@@ -33,19 +32,46 @@
       <td data-label="Email">{{ estudiante.email }}</td>
       <td data-label="Documento">{{ estudiante.documento }}</td>
       <td data-label="País Origen">{{ estudiante.pais_origen }}</td>
-      <td data-label="Rol">{{ estudiante.id_rol }}</td>
+
+
+<!-- Nuevos campos agregados 
+      <td data-label="Fecha de Nacimiento">{{ estudiante.fecha_nac }}</td>
+      <td data-label="Género">{{ estudiante.genero }}</td>
+      <td data-label="Pais en el que reside actualmente">{{ estudiante.pais_residencia }}</td>
+      <td data-label="Afiliacion con una Universidad">{{ estudiante.afiliacion_u }}</td>
+      <td data-label="Tipo_de_Afiliacion">{{ estudiante.tipo_afiliacion }}</td>
+      <td data-label="Área tematica">{{ estudiante.area_tematica }}</td>
+      <td data-label="Disciplina cientifica">{{ estudiante.disciplina_cientifica }}</td>
+
+      -->
       <td data-label="Acciones">
-        <button class="btn btn-primary edit-btn" data-id="{{ estudiante.id_usuario }}">
-            Editar
+        <button class="btn btn-primary edit-btn" data-id="{{ estudiante.id_usuario }}" title="Editar">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-fill" viewBox="0 0 16 16">
+                  <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.5.5 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11z"/>
+                </svg>
         </button>
-        <button class="btn btn-primary more-btn" data-id="{{ estudiante.id_usuario }}">
-            Mas Información
+        <button class="btn btn-primary more-btn" data-id="{{ estudiante.id_usuario }}" title="Mas Información">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
+                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
+              </svg>
         </button>
-        <button class="btn btn-danger del-btn" data-id="{{ estudiante.id_usuario }}">
-            Eliminar
+        <button class="btn btn-danger del-btn" data-id="{{ estudiante.id_usuario }}" title="Eliminar">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
+                <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
+              </svg>
         </button>
-        <button onclick="window.location.href='{{ url_for('certificate.descargar_certificado', user_id=estudiante.id_usuario) }}'" class="btn btn-success cert-btn">Descargar Certificado</button>
-        <button onclick="window.location.href='{{ url_for('certificate.enviar_certificado', user_id=estudiante.id_usuario) }}'" class="btn btn-success cert-btn">Enviar Certificado</button>
+        <button onclick="window.location.href='{{ url_for('certificate.descargar_certificado', user_id=estudiante.id_usuario) }}'" class="btn btn-success cert-btn" title="Descargar Certificados">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-circle" viewBox="0 0 16 16">
+                  <path fill-rule="evenodd" d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8m15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v5.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293z"/>
+                </svg>
+        </button>
+        <button onclick="window.location.href='{{ url_for('certificate.enviar_certificado', user_id=estudiante.id_usuario) }}'" class="btn btn-success cert-btn" title="Enviar Certificados">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-send" viewBox="0 0 16 16">
+                  <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576zm6.787-8.201L1.591 6.602l4.339 2.76z"/>
+                </svg>
+        </button>
       </td>
     </tr>
     {% endfor %}
@@ -73,6 +99,21 @@
       <label>País de Origen:</label>
       <input type="text" id="pais_origen" name="pais_origen"><br>
       <input type="hidden" id="id_rol" name="id_rol" value="3">
+      <label>Fecha de nacimiento:</label>
+      <input type="date" id="fecha_nac" name="fecha_nac"><br>
+      <label>Género:</label>
+      <input type="text" id="genero" name="genero"><br>
+      <label>País de residencia:</label>
+      <input type="text" id="pais_residencia" name="pais_residencia"><br>
+      <label>Afiliacion con una universidad:</label>
+      <input type="text" id="afiliacion_u" name="afiliacion_u"><br>
+      <label>Tipo de afiliacion:</label>
+      <input type="text" id="tipo_afiliacion" name="tipo_afiliacion"><br>
+      <label>Área tematica:</label>
+      <input type="text" id="area_tematica" name="area_tematica"><br>
+      <label>Disciplina cientifica:</label>
+      <input type="text" id="disciplina_cientifica" name="disciplina_cientifica"><br>
+
       <button type="submit">Guardar</button>
     </form>
   </div>
@@ -97,6 +138,21 @@
       <label>País de Origen:</label>
       <input type="text" id="pais_origen_crear" name="pais_origen" required><br>
       <input type="hidden" name="id_rol" value="3">
+      <label>Fecha de nacimiento:</label>
+      <input type="date" id="fecha_nac_crear" name="fecha_nac" required><br>
+      <label>Género:</label>
+      <input type="text" id="genero_crear" name="genero" required><br>
+      <label>País de residencia:</label>
+      <input type="text" id="pais_residencia_crear" name="pais_residencia" required><br>
+      <label>Afiliacion con una universidad:</label>
+      <input type="text" id="afiliacion_u_crear" name="afiliacion_u" required><br>
+      <label>Tipo de afiliacion:</label>
+      <input type="text" id="tipo_afiliacion_crear" name="tipo_afiliacion" required><br>
+      <label>Área tematica:</label>
+      <input type="text" id="area_tematica_crear" name="area_tematica" required><br>
+      <label>Disciplina cientifica:</label>
+      <input type="text" id="disciplina_cientifica_crear" name="disciplina_cientifica" required><br>
+
       <button type="submit">Crear</button>
     </form>
   </div>

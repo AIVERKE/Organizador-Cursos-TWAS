@@ -51,23 +51,7 @@ def obtener_estudiante(id_usuario):
 
 
 # ----cambio 1
-def actualizar_estudiante(
-    id_usuario,
-    nombre,
-    apellido,
-    email,
-    contrasena,
-    documento,
-    pais_origen,
-    id_rol,
-    fecha_nac,
-    genero,
-    pais_residencia,
-    afiliacion_u,
-    tipo_afiliacion,
-    area_tematica,
-    disciplina_cientifica,
-):
+def actualizar_estudiante(id_usuario,nombre,apellido,email,contrasena,documento,pais_origen,id_rol,fecha_nac,genero,pais_residencia,afiliacion_u,tipo_afiliacion,area_tematica,disciplina_cientifica):
     query = """
         UPDATE public.usuarios
         SET nombre = %s,
@@ -188,7 +172,7 @@ def crear_estudiante(
             afiliacion_u,
             tipo_afiliacion,
             area_tematica,
-            disciplina_cientifica,
+            disciplina_cientifica
         ),
     )
     conn.commit()
