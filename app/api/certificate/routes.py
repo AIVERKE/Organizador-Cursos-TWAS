@@ -78,10 +78,10 @@ def generar_certificados(rol_boton):
         
         pdf = FPDF(orientation="L", unit="pt", format="A4")
         pdf.add_page()
-        template_path = os.path.join(base_dir, "input", "certificate_template.jpg")
+        template_path = os.path.join(base_dir, "Input", "certificate_template.jpg")
         pdf.image(template_path, 0, 0, w=842, h=595)
         
-        font_path = os.path.join(base_dir, "input", "Oi-Regular.ttf")
+        font_path = os.path.join(base_dir, "Input", "Oi-Regular.ttf")
         pdf.add_font("Oi", "", font_path, uni=True)
 
         pdf.set_font("Arial", "B", 50)
@@ -192,7 +192,7 @@ def descargar_certificado(user_id):
     # Crear PDF
     pdf = FPDF(orientation="L", unit="pt", format="A4")
     pdf.add_page()
-    template_path = os.path.join(base_dir, "input", "certificate_template.jpg")
+    template_path = os.path.join(base_dir, "Input", "certificate_template.jpg")
     pdf.image(template_path, 0, 0, w=842, h=595)    
 
     pdf.set_font("Arial", "B", 50)
@@ -305,7 +305,7 @@ def enviar_certificado(user_id):
         # Generar PDF
         pdf = FPDF(orientation="L", unit="pt", format="A4")
         pdf.add_page()
-        template_path = os.path.join(base_dir, "input", "certificate_template.jpg")
+        template_path = os.path.join(base_dir, "Input", "certificate_template.jpg")
         pdf.image(template_path, 0, 0, w=842, h=595)
 
         pdf.set_font("Arial", "B", 50)
