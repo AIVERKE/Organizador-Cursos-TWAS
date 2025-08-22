@@ -51,23 +51,7 @@ def obtener_estudiante(id_usuario):
 
 
 # ----cambio 1
-def actualizar_estudiante(
-    id_usuario,
-    nombre,
-    apellido,
-    email,
-    contrasena,
-    documento,
-    pais_origen,
-    id_rol,
-    fecha_nac,
-    genero,
-    pais_residencia,
-    afiliacion_u,
-    tipo_afiliacion,
-    area_tematica,
-    disciplina_cientifica,
-):
+def actualizar_estudiante(id_usuario,nombre,apellido,email,contrasena,documento,pais_origen,id_rol,fecha_nac,genero,pais_residencia,afiliacion_u,tipo_afiliacion,area_tematica,disciplina_cientifica):
     query = """
         UPDATE public.usuarios
         SET nombre = %s,
@@ -188,7 +172,7 @@ def crear_estudiante(
             afiliacion_u,
             tipo_afiliacion,
             area_tematica,
-            disciplina_cientifica,
+            disciplina_cientifica
         ),
     )
     conn.commit()
@@ -291,13 +275,13 @@ def crear_estudiantes_con_inscripcion(lista_estudiantes):
                     est["documento"],
                     est["pais_origen"],
                     id_rol,
-                    estudiante["fecha_nac"],
-                    estudiante["genero"],
-                    estudiante["pais_residencia"],
-                    estudiante["afiliacion_u"],
-                    estudiante["tipo_afiliacion"],
-                    estudiante["area_tematica"],
-                    estudiante["disciplina_cientifica"],
+                    est["fecha_nac"],
+                    est["genero"],
+                    est["pais_residencia"],
+                    est["afiliacion_u"],
+                    est["tipo_afiliacion"],
+                    est["area_tematica"],
+                    est["disciplina_cientifica"],
                 ),
             )
             id_usuario = cursor.fetchone()[0]

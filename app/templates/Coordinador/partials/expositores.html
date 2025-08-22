@@ -30,6 +30,13 @@
             <td data-label="Email">{{ expositor.email }}</td>
             <td data-label="Documento">{{ expositor.documento }}</td>
             <td data-label="País Origen">{{ expositor.pais_origen }}</td>
+           <td data-label="Fecha de Nacimiento">{{ expositor.fecha_nac }}</td>
+      <td data-label="Género">{{ expositor.genero }}</td>
+      <td data-label="Pais en el que reside actualmente">{{ expositor.pais_residencia }}</td>
+      <td data-label="Afiliacion con una Universidad">{{ expositor.afiliacion_u }}</td>
+      <td data-label="Tipo_de_Afiliacion">{{ expositor.tipo_afiliacion }}</td>
+      <td data-label="Área tematica">{{ expositor.area_tematica }}</td>
+      <td data-label="Disciplina cientifica">{{ expositor.disciplina_cientifica }}</td>
             <!-- <td>{{ expositor.cotrasena }}</td> -->
             <!-- <td>{{ expositor.certificado }}</td> -->
             <!-- <td>{{ expositor.curso }}</td> -->
@@ -92,6 +99,21 @@
       <label>País de Origen:</label>
       <input type="text" id="pais_origen" name="pais_origen"><br>
       <input type="hidden" id="id_rol" name="id_rol" value="3">
+<label>Fecha de nacimiento:</label>
+      <input type="date" id="fecha_nac" name="fecha_nac"><br>
+      <label>Género:</label>
+      <input type="text" id="genero" name="genero"><br>
+      <label>País de residencia:</label>
+      <input type="text" id="pais_residencia" name="pais_residencia"><br>
+      <label>Afiliacion con una universidad:</label>
+      <input type="text" id="afiliacion_u" name="afiliacion_u"><br>
+      <label>Tipo de afiliacion:</label>
+      <input type="text" id="tipo_afiliacion" name="tipo_afiliacion"><br>
+      <label>Área tematica:</label>
+      <input type="text" id="area_tematica" name="area_tematica"><br>
+      <label>Disciplina cientifica:</label>
+      <input type="text" id="disciplina_cientifica" name="disciplina_cientifica"><br>
+
       <button type="submit">Guardar</button>
     </form>
   </div>
@@ -116,6 +138,20 @@
       <label>País de Origen:</label>
       <input type="text" id="pais_origen_crear" name="pais_origen" required><br>
       <input type="hidden" name="id_rol" value="3">
+      <label>Fecha de nacimiento:</label>
+      <input type="date" id="fecha_nac_crear" name="fecha_nac" required><br>
+      <label>Género:</label>
+      <input type="text" id="genero_crear" name="genero" required><br>
+      <label>País de residencia:</label>
+      <input type="text" id="pais_residencia_crear" name="pais_residencia" required><br>
+      <label>Afiliacion con una universidad:</label>
+      <input type="text" id="afiliacion_u_crear" name="afiliacion_u" required><br>
+      <label>Tipo de afiliacion:</label>
+      <input type="text" id="tipo_afiliacion_crear" name="tipo_afiliacion" required><br>
+      <label>Área tematica:</label>
+      <input type="text" id="area_tematica_crear" name="area_tematica" required><br>
+      <label>Disciplina cientifica:</label>
+      <input type="text" id="disciplina_cientifica_crear" name="disciplina_cientifica" required><br>
       <button type="submit">Crear</button>
     </form>
   </div>
