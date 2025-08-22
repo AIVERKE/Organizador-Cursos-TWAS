@@ -16,7 +16,7 @@ def crear_estudiante():
     data = request.json
     campos = ["nombre", "apellido", "email", "contrasena", "documento", "pais_origen","fecha_nac", "genero", "pais_residencia", "afiliacion_u", "tipo_afiliacion", "area_tematica", "disciplina_cientifica"]
     if not data or not all(k in data for k in campos):
-        return jsonify({"error": "Datos incompletos"}), 400
+        return jsonify({"error": "Datos incompletos🎈"}), 400
     usu.crear_estudiante(
         data["nombre"],
         data["apellido"],
@@ -52,7 +52,7 @@ def editar_estudiante(id_usuario):
     data = request.json
     campos_requeridos = ["nombre", "apellido", "email", "documento", "pais_origen", "id_rol", "fecha_nac", "genero", "pais_residencia", "afiliacion_u", "tipo_afiliacion", "area_tematica", "disciplina_cientifica"]
     if not data or not all(k in data for k in campos_requeridos):
-        return jsonify({"error": "Datos incompletos"}), 400
+        return jsonify({"error": "Datos incompletos🍔"}), 400
     contrasena = data.get("contrasena")
     usu.actualizar_estudiante(
         id_usuario,
