@@ -1,88 +1,21 @@
-<!DOCTYPE html>
-<html lang="es" class="lang-es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Curso Postgrado UMSA</title>
+{% extends "base.html" %}
 
-  <!-- Fuente + Iconos -->
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
-
-  <!-- Bootstrap (local) -->
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
-
-  <!-- Tu CSS al final para poder sobrescribir -->
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/styleinicio.css') }}">
-</head>
-<body>
-
-<!-- NAVBAR -->
-<nav class="navbar navbar-expand-lg bg-white border-bottom fixed-top py-2">
-  <div class="container">
-    <a class="navbar-brand d-flex align-items-center gap-2" href="https://twas.org/">
-      <img src="{{ url_for('static', filename='images/Unesco-TWAS.jpg') }}" alt="UNESCO" class="logo me-2" style="height:48px;">
-      <span class="fw-semibold">TWAS</span>
-    </a>
-
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain" aria-controls="navMain" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-
-    <div class="collapse navbar-collapse" id="navMain">
-      <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
-        <li class="nav-item"><a class="nav-link fw-semibold" href="#inicioid">
-          <span class="i18n i18n-es">Inicio</span><span class="i18n i18n-en">Home</span>
-        </a></li>
-        <li class="nav-item"><a class="nav-link fw-semibold" href="#informacionid">
-          <span class="i18n i18n-es">Información</span><span class="i18n i18n-en">Information</span>
-        </a></li>
-        <li class="nav-item"><a class="nav-link fw-semibold" href="#ubicacionid">
-          <span class="i18n i18n-es">Ubicación</span><span class="i18n i18n-en">Location</span>
-        </a></li>
-        <li class="nav-item"><a class="nav-link fw-semibold" href="#nosotrosid">
-          <span class="i18n i18n-es">Sobre Nosotros</span><span class="i18n i18n-en">About Us</span>
-        </a></li>
-        <li class="nav-item"><a class="nav-link fw-semibold" href="#footerid">
-          <span class="i18n i18n-es">Contacto</span><span class="i18n i18n-en">Contact</span>
-        </a></li>
-      </ul>
-
-      <div class="d-flex align-items-center gap-2">
-        <!-- Botón Traductor -->
-        <button id="btnLang" class="btn btn-outline-secondary btn-sm" type="button" aria-label="Change language">
-          <i class="fa-solid fa-globe"></i>
-          <span class="i18n i18n-es">EN</span><span class="i18n i18n-en">ES</span>
-        </button>
-
-        <!-- Botón Login -->
-        <a href="{{ url_for('auth.login') }}" class="btn btn-outline-primary btn-sm">
-          <span class="i18n i18n-es">Iniciar Sesión</span><span class="i18n i18n-en">Login</span>
-        </a>
-
-        <!-- Logo UMSA -->
-        <a href="https://www.fcpn.edu.bo/" class="ms-1">
-          <img src="/static/images/umsalogo.webp" alt="UMSA" class="logo-umsa">
-        </a>
-      </div>
-    </div>
-  </div>
-</nav>
-
+{% block content %}
 <!-- HERO / INICIO -->
 <section class="inicio d-flex align-items-center" id="inicioid">
   <div class="container">
     <div class="overlay rounded-3 p-4 p-md-5 text-center text-lg-end">
       <h1 class="titulo fw-bold mb-3">
-        <span class="i18n i18n-es">CURSO POSTGRADO<br>3RA VERSIÓN</span>
-        <span class="i18n i18n-en">POSTGRADUATE COURSE<br>3RD VERSION</span>
+        <span class="i18n i18n-es">TYAN Hands-on Schools en Bolivia 2025<br>3RA VERSIÓN</span>
+        <span class="i18n i18n-en">TYAN Hands-on Schools in Bolivia 2025<br>3RD VERSION</span>
       </h1>
       <h3 class="subtitulo fw-semibold mb-3">
         <span class="i18n i18n-es">UNIVERSIDAD MAYOR DE SAN ANDRÉS</span>
         <span class="i18n i18n-en">UNIVERSIDAD MAYOR DE SAN ANDRÉS</span>
       </h3>
       <p class="texto mb-0">
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Optio fuga amet cum deserunt asperiores. Laboriosam, provident maxime consectetur qui corporis ducimus, cumque dolores illo officia id, odit incidunt ipsa.
+        <span class="i18n i18n-es">Da la bienvenida a los expositores y estudiantes a las Escuelas TYAN Hands-on Schools en Bolivia, de la red internacional TYAN -TWAS <br>de la UNESCO. Organizado por La Red de Jovenes Afiliados(TYAN) y la academia internacional de Ciencias (TWAS)<br> y la Universidad Mayor de San Andre(UMSA)</span>
+        <span class="i18n i18n-en">Welcome to the TYAN Hands-on Schools in Bolivia, organized by the international network TYAN-TWAS (UNESCO)<br>, in collaboration with the The World Academy of Sciences (TWAS), The Young Affiliates Network (TYAN),<br> and the Universidad Mayor de San Andrés (UMSA).</span> 
       </p>
     </div>
   </div>
@@ -96,64 +29,297 @@
       <span class="i18n i18n-en">INFORMATION</span>
     </h2>
     <p class="mx-auto mb-4" style="max-width:900px;">
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin ac ligula vitae nunc aliquet tincidunt. Lorem ipsum dolor sit amet consectetur adipisicing elit. Ullam necessitatibus minus soluta provident aliquid tempore exercitationem, doloremque repellat sint repudiandae reiciendis dolorum doloribus reprehenderit illum accusamus, sed quasi! Voluptatum, ex!
-    </p>
+    <span class="i18n i18n-es">
+      Esta version establece una red de colaboracion que vincula a Universidades Bolivianas con sus homologas Latinoamericanas e Internacionales, centrandose en la Agroindustria y las ciencias ambientales para abordar los desafios de seguridad alimentaria en Bolivia y la region.
+      <br>Basandose en el exito de las Escuelas Practicas del 2023 y 2024, esta iniciativa, liderada por TYAN-TWAS. prioriza el fortalecimiento de la colaboracion cientifica para combatir la pobreza y promover el desarrollo sostenible a largo plazo, en constancia con la mision de la UNESCO 
+      <br>Este encuentro representa una oportunidad única para conectar con investigadores y expertos de diversas áreas, compartir conocimientos y fortalecer la colaboración científica. Creemos firmemente que la interacción entre mentes brillantes es clave para impulsar el progreso y la innovación.
+    </span>
+    <span class="i18n i18n-en">
+      This version establishes a collaborative network linking Bolivian universities with their Latin American and international counterparts, focusing on agribusiness and environmental sciences to address food security challenges in Bolivia and the region.
+      <br>Building on the success of the 2023 and 2024 Practical Schools, this initiative, led by TYAN-TWAS, prioritizes strengthening scientific collaboration to combat poverty and promote long-term sustainable development, in line with UNESCO's mission.
+      <br>This meeting represents a unique opportunity to connect with researchers and experts from diverse fields, share knowledge, and strengthen scientific collaboration. We firmly believe that the interaction between brilliant minds is key to driving progress and innovation. 
+    </span>
+</p>
 
-    <h2 class="h4 text-center mb-4">
-      <span class="i18n i18n-es">Calendario de Eventos</span>
-      <span class="i18n i18n-en">Events Calendar</span>
+    <h2 class="h4 text-center mb-4"> 
+      <span class="i18n i18n-es">Horarios</span>
+      <span class="i18n i18n-en">Schedules</span>
+      <br>
+      <span class="i18n-es">TYAN-TWAS hands-on schools en Bolivia, 2025</span>
+      <span class="i18n-en">TYAN-TWAS hands-on schools in Bolivia, 2025</span>
     </h2>
 
     <div class="tabla-horario">
       <h3 class="h5 mb-2">
-        <span class="i18n i18n-es">Cursos - Turno Mañana</span>
-        <span class="i18n i18n-en">Courses - Morning</span>
+        <span class="i18n i18n-es">Turno Mañana</span>
+        <span class="i18n i18n-en">Morning</span>
       </h3>
       <div class="table-responsive mb-4">
-        <table class="table table-bordered table-striped align-middle">
-          <thead class="table-primary">
-            <tr>
-              <th><span class="i18n i18n-es">Horario</span><span class="i18n i18n-en">Time</span></th>
-              <th><span class="i18n i18n-es">Lunes</span><span class="i18n i18n-en">Monday</span></th>
-              <th><span class="i18n i18n-es">Martes</span><span class="i18n i18n-en">Tuesday</span></th>
-              <th><span class="i18n i18n-es">Miércoles</span><span class="i18n i18n-en">Wednesday</span></th>
-              <th><span class="i18n i18n-es">Jueves</span><span class="i18n i18n-en">Thursday</span></th>
-              <th><span class="i18n i18n-es">Viernes</span><span class="i18n i18n-en">Friday</span></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr><td>08:00</td><td>Clase</td><td>Clase</td><td>Clase</td><td>Clase</td><td>Clase</td></tr>
-            <tr><td>08:00</td><td>Clase</td><td>Clase</td><td>Clase</td><td>Clase</td><td>Clase</td></tr>
-            <tr><td>08:00</td><td>Clase</td><td>Clase</td><td>Clase</td><td>Clase</td><td>Clase</td></tr>
-            <tr><td>08:00</td><td>Clase</td><td>Clase</td><td>Clase</td><td>Clase</td><td>Clase</td></tr>
-          </tbody>
-        </table>
-      </div>
+    <table class="table table-bordered table-striped align-middle">
+                <thead class="table-primary">
+                    <tr>
+                        <th><span class="i18n i18n-es">Horario</span><span class="i18n i18n-en">Time</span></th>
+                        <th><span class="i18n i18n-es">Lunes 6 de Octubre</span><span class="i18n i18n-en">Monday October 6</span></th>
+                        <th><span class="i18n i18n-es">Martes 7 de Octubre</span><span class="i18n i18n-en">Tuesday October 7</span></th>
+                        <th><span class="i18n i18n-es">Miércoles 8 de Octubre</span><span class="i18n i18n-en">Wednesday October 8</span></th>
+                        <th><span class="i18n i18n-es">Jueves 9 de Octubre</span><span class="i18n i18n-en">Thursday October 9</span></th>
+                        <th><span class="i18n i18n-es">Viernes 10 de Octubre</span><span class="i18n i18n-en">Friday October 10</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>8:30-8:45</td>
+                        <td><span class="i18n i18n-es">Registro</span><span class="i18n i18n-en">Registration</span></td>
+                        <td><span class="i18n i18n-es">Registro</span><span class="i18n i18n-en">Registration</span></td>
+                        <td><span class="i18n i18n-es">Registro</span><span class="i18n i18n-en">Registration</span></td>
+                        <td><span class="i18n i18n-es">Registro</span><span class="i18n i18n-en">Registration</span></td>
+                        <td><span class="i18n i18n-es">Registro</span><span class="i18n i18n-en">Registration</span></td>
+                    </tr>
+                    <tr>
+                        <td>9:00-9:45</td>
+                        <td>
+                            <span class="i18n i18n-es">Inauguración del evento:</span>
+                            <span class="i18n i18n-en">Event opening:</span> 
+                            <br>
+                            <ul>
+                                <li><span class="i18n i18n-es">Dra. Maria Eugenia Garcia, <br>Rectora de la Universidad Mayor de San Andrés</span>
+                                    <span class="i18n i18n-en">Dr. Maria Eugenia Garcia, <br>Rector of the Universidad Mayor de San Andrés</span></li>
+                                <li><span class="i18n i18n-es">Dr. Marcelo Knobel,<br> Director Ejecutivo de TWAS</span>
+                                    <span class="i18n i18n-en">Dr. Marcelo Knobel,<br> Executive Director of TWAS</span></li>
+                                <li><span class="i18n i18n-es">Dr. Max Paoli,<br> Coordinador General TYAN-TWAS</span>
+                                    <span class="i18n i18n-en">Dr. Max Paoli,<br> General Coordinator TYAN-TWAS</span></li>
+                                <li><span class="i18n i18n-es">Dr. André João,<br> Jefe del Sector de Cooperación Cultural y Educativa</span>
+                                    <span class="i18n i18n-en">Dr. André João,<br> Head of the Cultural and Educational Cooperation Sector</span></li>
+                                <li><span class="i18n i18n-es">M.Sc. Aldo Valdez,<br> Decano de la Facultad de FCPN</span>
+                                    <span class="i18n i18n-en">M.Sc. Aldo Valdez,<br> Dean of the Faculty of FCPN</span></li>
+                                <li><span class="i18n i18n-es">Ing. Jorge Vásquez, <br>Jefe del Programa de Ingeniería Química</span>
+                                    <span class="i18n i18n-en">Ing. Jorge Vásquez, <br>Head of the Chemical Engineering Program</span></li>
+                            </ul>
+                        </td>
+                        <td>
+                            <ul>
+                                <li><span class="i18n i18n-es">Dr. Franco Cabrerizo (Argentina),<br> presentación oral</span>
+                                    <span class="i18n i18n-en">Dr. Franco Cabrerizo (Argentina),<br> oral presentation</span></li>
+                                <li><span class="i18n i18n-es">Dr. Warshi Dandeniya (Sri Lanka),<br> presentación oral</span>
+                                    <span class="i18n i18n-en">Dr. Warshi Dandeniya (Sri Lanka),<br> oral presentation</span></li>
+                            </ul>
+                        </td>
+                        <td>
+                            <span class="i18n i18n-es">Dra. Mónica Izurieta (Ecuador),<br> presentación oral</span>
+                            <span class="i18n i18n-en">Dr. Mónica Izurieta (Ecuador),<br> oral presentation</span>
+                        </td>
+                        <td>
+                            <span class="i18n i18n-es">Dr. Ranga Ambati (India),<br> presentación oral</span>
+                            <span class="i18n i18n-en">Dr. Ranga Ambati (India),<br> oral presentation</span>
+                        </td>
+                        <td>
+                            <span class="i18n i18n-es">Dr. Pablo Bolaños (Costa Rica),<br> presentación oral</span>
+                            <span class="i18n i18n-en">Dr. Pablo Bolaños (Costa Rica),<br> oral presentation</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>09:45-10:00</td>
+                        <td><span class="i18n i18n-es">Descanso</span><span class="i18n i18n-en">Break</span></td>
+                        <td><span class="i18n i18n-es">Descanso</span><span class="i18n i18n-en">Break</span></td>
+                        <td><span class="i18n i18n-es">Descanso</span><span class="i18n i18n-en">Break</span></td>
+                        <td><span class="i18n i18n-es">Descanso</span><span class="i18n i18n-en">Break</span></td>
+                        <td><span class="i18n i18n-es">Descanso</span><span class="i18n i18n-en">Break</span></td>
+                    </tr>
+                    <tr>
+                        <td>10:00-12:00</td>
+                        <td><span class="i18n i18n-es">
+                            <ol>
+                              <li>Biofertilizantes para la producción agrícola sostenible</li>
+                              <li>Algas para la seguridad alimentaria y nutricional</li>
+                              <li>Biología de la reproducción vegetal para fitomejoradores</li>
+                              <li>Agro-innovación para la construcción de resiliencia: modelos gastronómicos sostenibles y saludables</li>
+                              <li>Modelos animales y aplicaciones en la agroindustria y el medio ambiente</li>
+                            </ol>
+                          </span>
+                            <span class="i18n i18n-en">
+                              <ol>
+                              <li>Biofertilizers for Sustainable Crop Production</li>
+                              <li>Algae for Food and Nutritional Security</li>
+                              <li>Plant Reproduction Biology for Breeders</li>
+                              <li>Agro-innovation for building resilience: sustainable and healthy gastronomic models</li>
+                              <li>Animal models and applications in agroindustry and environment</li>
+                            </ol>
+                            </span>
+                          </td>
+                          <td><span class="i18n i18n-es">
+                            <ol>
+                              <li>Biofertilizantes para la producción agrícola sostenible</li>
+                              <li>Algas para la seguridad alimentaria y nutricional</li>
+                              <li>Biología de la reproducción vegetal para fitomejoradores</li>
+                              <li>Agro-innovación para la construcción de resiliencia: modelos gastronómicos sostenibles y saludables</li>
+                              <li>Modelos animales y aplicaciones en la agroindustria y el medio ambiente</li>
+                            </ol>
+                          </span>
+                            <span class="i18n i18n-en">
+                              <ol>
+                              <li>Biofertilizers for Sustainable Crop Production</li>
+                              <li>Algae for Food and Nutritional Security</li>
+                              <li>Plant Reproduction Biology for Breeders</li>
+                              <li>Agro-innovation for building resilience: sustainable and healthy gastronomic models</li>
+                              <li>Animal models and applications in agroindustry and environment</li>
+                            </ol>
+                            </span>
+                          </td>
+                            <td><span class="i18n i18n-es">
+                            <ol>
+                              <li>Biofertilizantes para la producción agrícola sostenible</li>
+                              <li>Algas para la seguridad alimentaria y nutricional</li>
+                              <li>Biología de la reproducción vegetal para fitomejoradores</li>
+                              <li>Agro-innovación para la construcción de resiliencia: modelos gastronómicos sostenibles y saludables</li>
+                              <li>Modelos animales y aplicaciones en la agroindustria y el medio ambiente</li>
+                            </ol>
+                          </span>
+                            <span class="i18n i18n-en">
+                              <ol>
+                              <li>Biofertilizers for Sustainable Crop Production</li>
+                              <li>Algae for Food and Nutritional Security</li>
+                              <li>Plant Reproduction Biology for Breeders</li>
+                              <li>Agro-innovation for building resilience: sustainable and healthy gastronomic models</li>
+                              <li>Animal models and applications in agroindustry and environment</li>
+                            </ol>
+                            </span>
+                          </td>
+                            <td><span class="i18n i18n-es">
+                            <ol>
+                              <li>Biofertilizantes para la producción agrícola sostenible</li>
+                              <li>Algas para la seguridad alimentaria y nutricional</li>
+                              <li>Biología de la reproducción vegetal para fitomejoradores</li>
+                              <li>Agro-innovación para la construcción de resiliencia: modelos gastronómicos sostenibles y saludables</li>
+                              <li>Modelos animales y aplicaciones en la agroindustria y el medio ambiente</li>
+                            </ol>
+                          </span>
+                            <span class="i18n i18n-en">
+                              <ol>
+                              <li>Biofertilizers for Sustainable Crop Production</li>
+                              <li>Algae for Food and Nutritional Security</li>
+                              <li>Plant Reproduction Biology for Breeders</li>
+                              <li>Agro-innovation for building resilience: sustainable and healthy gastronomic models</li>
+                              <li>Animal models and applications in agroindustry and environment</li>
+                            </ol>
+                            </span>
+                          </td>
+                        <td>
+                            <span class="i18n i18n-es">
+                              <ol>
+                                <li>Biofertilizantes para la producción agrícola sostenible</li>
+                                <li>Algas para la seguridad alimentaria y nutricional</li>
+                                <li>Biología de la reproducción vegetal para fitomejoradores</li>
+                                <li>Agro-innovación para la construcción de resiliencia: modelos gastronómicos sostenibles y saludables</li>
+                                <li>Modelos animales y aplicaciones en la agroindustria y el medio ambiente</li>
+                              </ol>
+                            </span>
+                            <span class="i18n i18n-en">
+                              <ol>
+                                <li>Biofertilizers for Sustainable Crop Production</li>
+                                <li>Algae for Food and Nutritional Security</li>
+                                <li>Plant Reproduction Biology for Breeders</li>
+                                <li>Agro-innovation for building resilience: sustainable and healthy gastronomic models</li>
+                                <li>Animal models and applications in agroindustry and environment</li>
+                              </ol>
+                            </span>
+                            <br>
+                            <span class="i18n i18n-es">Clausura del evento:</span>
+                            <span class="i18n i18n-en">Closing of the event:</span>
+                            <ul>
+                                <li><span class="i18n i18n-es">Dra. Maria Eugenia Garcia, Rectora de la Universidad Mayor de San Andrés</span>
+                                    <span class="i18n i18n-en">Dr. Maria Eugenia Garcia, Rector of the Universidad Mayor de San Andrés</span></li>
+                                <li><span class="i18n i18n-es">M.Sc. Aldo Valdez, Decano de la Facultad de FCPN</span>
+                                    <span class="i18n i18n-en">M.Sc. Aldo Valdez, Dean of the Faculty of FCPN</span></li>
+                                <li><span class="i18n i18n-es">Ing. Jorge Vásquez, Jefe del Programa de Ingeniería Química</span>
+                                    <span class="i18n i18n-en">Ing. Jorge Vásquez, Head of the Chemical Engineering Program</span></li>
+                            </ul>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
-      <h3 class="h5 mb-2">
-        <span class="i18n i18n-es">Cursos - Turno Tarde</span>
-        <span class="i18n i18n-en">Courses - Afternoon</span>
-      </h3>
-      <div class="table-responsive">
-        <table class="table table-bordered table-striped align-middle">
-          <thead class="table-primary">
-            <tr>
-              <th><span class="i18n i18n-es">Horario</span><span class="i18n i18n-en">Time</span></th>
-              <th><span class="i18n i18n-es">Lunes</span><span class="i18n i18n-en">Monday</span></th>
-              <th><span class="i18n i18n-es">Martes</span><span class="i18n i18n-en">Tuesday</span></th>
-              <th><span class="i18n i18n-es">Miércoles</span><span class="i18n i18n-en">Wednesday</span></th>
-              <th><span class="i18n i18n-es">Jueves</span><span class="i18n i18n-en">Thursday</span></th>
-              <th><span class="i18n i18n-es">Viernes</span><span class="i18n i18n-en">Friday</span></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr><td>14:00</td><td>Clase</td><td>Clase</td><td>Clase</td><td>Clase</td><td>Clase</td></tr>
-            <tr><td>14:00</td><td>Clase</td><td>Clase</td><td>Clase</td><td>Clase</td><td>Clase</td></tr>
-            <tr><td>14:00</td><td>Clase</td><td>Clase</td><td>Clase</td><td>Clase</td><td>Clase</td></tr>
-            <tr><td>14:00</td><td>Clase</td><td>Clase</td><td>Clase</td><td>Clase</td><td>Clase</td></tr>
-            <tr><td>14:00</td><td>Clase</td><td>Clase</td><td>Clase</td><td>Clase</td><td>Clase</td></tr>
-          </tbody>
-        </table>
+        <h3 class="h5 mb-2">
+            <span class="i18n i18n-es">Turno Tarde</span>
+            <span class="i18n i18n-en">Afternoon</span>
+        </h3>
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped align-middle">
+                <thead class="table-primary">
+                    <tr>
+                        <th><span class="i18n i18n-es">Horario</span><span class="i18n i18n-en">Time</span></th>
+                        <th><span class="i18n i18n-es">Lunes 6 de Octubre</span><span class="i18n i18n-en">Monday October 6</span></th>
+                        <th><span class="i18n i18n-es">Martes 7 de Octubre</span><span class="i18n i18n-en">Tuesday October 7</span></th>
+                        <th><span class="i18n i18n-es">Miércoles 8 de Octubre</span><span class="i18n i18n-en">Wednesday October 8</span></th>
+                        <th><span class="i18n i18n-es">Jueves 9 de Octubre</span><span class="i18n i18n-en">Thursday October 9</span></th>
+                        <th><span class="i18n i18n-es">Viernes 10 de Octubre</span><span class="i18n i18n-en">Friday October 10</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>14:00-17:00</td>
+                        <td></td>
+                        <td><span class="i18n i18n-es">
+                            <ol>
+                              <li>Biofertilizantes para la producción agrícola sostenible</li>
+                              <li>Algas para la seguridad alimentaria y nutricional</li>
+                              <li>Biología de la reproducción vegetal para fitomejoradores</li>
+                              <li>Agro-innovación para la construcción de resiliencia: modelos gastronómicos sostenibles y saludables</li>
+                              <li>Modelos animales y aplicaciones en la agroindustria y el medio ambiente</li>
+                            </ol>
+                          </span>
+                            <span class="i18n i18n-en">
+                              <ol>
+                              <li>Biofertilizers for Sustainable Crop Production</li>
+                              <li>Algae for Food and Nutritional Security</li>
+                              <li>Plant Reproduction Biology for Breeders</li>
+                              <li>Agro-innovation for building resilience: sustainable and healthy gastronomic models</li>
+                              <li>Animal models and applications in agroindustry and environment</li>
+                            </ol>
+                            </span>
+                          </td>
+                          <td><span class="i18n i18n-es">
+                            <ol>
+                              <li>Biofertilizantes para la producción agrícola sostenible</li>
+                              <li>Algas para la seguridad alimentaria y nutricional</li>
+                              <li>Biología de la reproducción vegetal para fitomejoradores</li>
+                              <li>Agro-innovación para la construcción de resiliencia: modelos gastronómicos sostenibles y saludables</li>
+                              <li>Modelos animales y aplicaciones en la agroindustria y el medio ambiente</li>
+                            </ol>
+                          </span>
+                            <span class="i18n i18n-en">
+                              <ol>
+                              <li>Biofertilizers for Sustainable Crop Production</li>
+                              <li>Algae for Food and Nutritional Security</li>
+                              <li>Plant Reproduction Biology for Breeders</li>
+                              <li>Agro-innovation for building resilience: sustainable and healthy gastronomic models</li>
+                              <li>Animal models and applications in agroindustry and environment</li>
+                            </ol>
+                            </span>
+                          </td>
+                          <td><span class="i18n i18n-es">
+                            <ol>
+                              <li>Biofertilizantes para la producción agrícola sostenible</li>
+                              <li>Algas para la seguridad alimentaria y nutricional</li>
+                              <li>Biología de la reproducción vegetal para fitomejoradores</li>
+                              <li>Agro-innovación para la construcción de resiliencia: modelos gastronómicos sostenibles y saludables</li>
+                              <li>Modelos animales y aplicaciones en la agroindustria y el medio ambiente</li>
+                            </ol>
+                          </span>
+                            <span class="i18n i18n-en">
+                              <ol>
+                              <li>Biofertilizers for Sustainable Crop Production</li>
+                              <li>Algae for Food and Nutritional Security</li>
+                              <li>Plant Reproduction Biology for Breeders</li>
+                              <li>Agro-innovation for building resilience: sustainable and healthy gastronomic models</li>
+                              <li>Animal models and applications in agroindustry and environment</li>
+                            </ol>
+                            </span>
+                          </td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
       </div>
     </div>
   </div>
@@ -180,103 +346,234 @@
 <section class="nosotros py-5" id="nosotrosid">
   <div class="container">
     <h2 class="subtitulo text-primary fw-bold text-center mb-3">
-      <span class="i18n i18n-es">SOBRE NOSOTROS</span>
-      <span class="i18n i18n-en">ABOUT US</span>
+      <span class="i18n i18n-es">PLANTEL EXPOSITOR </span>
+      <span class="i18n i18n-en">EXHIBITING STAFF</span>
     </h2>
     <p class="mx-auto mb-5" style="max-width:900px;">
       <span class="i18n i18n-es">
-        El curso está dirigido por el equipo académico de la Carrera de Química. Coordinador general: Dr. Juan Pérez. Equipo técnico y administrativo comprometido con la excelencia académica.
+     La tercera version de TYAN hands-on schools en Bolivia contara con expositores internacionales y locales que abordaran 
+     <br>el tema de Agroindustria y medio ambiente desde diferentes diciplinas. Esta actividad esta organizada bajo 
+     <br>la coordinacion de la Dra. Leslie Tejada y Apoyada bajo un equipo tecnico administrativo de la FCPN
       </span>
       <span class="i18n i18n-en">
-        The course is led by the academic team of the Chemistry Program. General Coordinator: Dr. Juan Pérez. A technical and administrative team committed to academic excellence.
-      </span>
+      The third edition of TYAN Hands-on Schools in Bolivia will feature international and local speakers who will address 
+      <br>the topic of agribusiness and the environment from different disciplines. This activity is organized under the coordination 
+      <br>of Dr. Leslie Tejada and supported by a technical and administrative team from the FCPN.
+    </span>
     </p>
 
-    <div class="row g-4 organizadores">
-      <div class="col-12 col-sm-6 col-lg-4">
+    <!-- Contenedor de EXPOSITORES -->
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-2 g-4">
+      <div class="col">
         <div class="organizador h-100">
-          <img src="/static/images/org1.jpg" alt="Organizador 1">
-          <h4>Dr. Alan Maldonado</h4>
-          <p><span class="i18n i18n-es">Coordinador General</span><span class="i18n i18n-en">General Coordinator</span></p>
+          <img src="/static/images/Dandeniya.webp" alt="Organizador 1">
+          <h4>Dr Warshi Dandeniya</h4>
+          <b>
+            <span class="i18n i18n-es">Sri Lanka</span>
+            <span class="i18n i18n-en">Sri Lanka</span>
+          </b>
+          <p>
+            <span class="i18n i18n-es">Biofertilizantes para la producción sostenible de cultivos</span>
+            <span class="i18n i18n-en">Biofertilizers for Sustainable Crop Production</span>
+          </p>
         </div>
       </div>
-      <div class="col-12 col-sm-6 col-lg-4">
+
+      <div class="col">
         <div class="organizador h-100">
-          <img src="/static/images/org2.jpg" alt="Organizador 2">
-          <h4>Lic. Diegue Gutierrez</h4>
-          <p><span class="i18n i18n-es">Asistente Técnica</span><span class="i18n i18n-en">Technical Assistant</span></p>
+         <img src="/static/images/AbantiRaga.webp" alt="Organizador">
+          <h4> Dr. Ranga Ambati</h4>
+         <b>
+            <span class="i18n i18n-es">India</span>
+            <span class="i18n i18n-en">India</span>
+          </b>
+          <p>
+            <span class="i18n i18n-es">Algas para la seguridad alimentaria y nutricional</span>
+            <span class="i18n i18n-en">Algae for Food and Nutritional Security</span>
+          </p>
         </div>
       </div>
-      <div class="col-12 col-sm-6 col-lg-4">
+
+      <div class="col">
         <div class="organizador h-100">
-          <img src="/static/images/org3.jpg" alt="Organizador 3">
-          <h4>Ing. Michael Quispe</h4>
-          <p><span class="i18n i18n-es">Logística Académica</span><span class="i18n i18n-en">Academic Logistics</span></p>
+          <img src="/static/images/PabloBollanos.png" alt="Organizador 3">
+          <h4>Dr Pablo Bolaños-Villegas</h4>
+          <b>
+            <span class="i18n i18n-es">Costa Rica</span>
+            <span class="i18n i18n-en">Costa Rica</span>
+          </b>
+          <p>
+            <span class="i18n i18n-es">Biología de la reproducción vegetal para fitomejoradores</span>
+            <span class="i18n i18n-en">Plant Reproduction Biology for Breeders</span>
+          </p>
+        </div>
+      </div>
+      <div class="col">
+        <div class="organizador h-100">
+          <img src="/static/images/MonicaGuevara.webp" alt="Organizador 4 ">
+          <h4>Dr. Mónica Izurieta Guavara</h4>
+          <b>
+            <span class="i18n i18n-es">Ecuador</span>
+            <span class="i18n i18n-en">Ecuador</span>
+          </b>
+          <p>
+            <span class="i18n i18n-es">Agroinnovación para construir resiliencia: modelos gastronómicos sostenibles y saludables</span>
+            <span class="i18n i18n-en">Agro-innovation for building resilience: sustainable and healthy gastronomic models</span>
+          </p>
         </div>
       </div>
     </div>
+      <!-- Carrusel para el 5to perfil (3 expositores) -->
+  <div class="row mt-4">
+    <div class="col-12 d-flex justify-content-center">
+      <div class="organizador-carousel" style="max-width: 800px; width: 100%;">
+        <div id="quintoPerfilCarousel" class="carousel slide" data-bs-ride="carousel">
+          <div class="carousel-inner">
+            <!-- Expositor 1 -->
+            <div class="carousel-item active">
+              <div class="organizador h-100">
+                <img src="/static/images/Exp-Gloria.webp" alt="Dr. Gloria Rodrigo">
+                <h4>Dr. Gloria Rodrigo</h4>
+                <b>
+                  <span class="i18n i18n-es">Bolivia</span>
+                  <span class="i18n i18n-en">Bolivia</span>
+                </b>
+                <p>
+                  <span class="i18n i18n-es">Modelos animales y aplicaciones en agroindustria y medio ambiente</span>
+                  <span class="i18n i18n-en">Animal models and applications in agroindustry and environment</span>
+                </p>
+              </div>
+            </div>
+            
+            <!-- Expositor 2 -->
+            <div class="carousel-item">
+              <div class="organizador h-100">
+                <img src="/static/images/Exp-Sdenka.webp" alt="Dr. Sdenka Moscoso">
+                <h4>Dr. Sdenka Moscoso</h4>
+                <b>
+                  <span class="i18n i18n-es">Bolivia</span>
+                  <span class="i18n i18n-en">Bolivia</span>
+                </b>
+                <p>
+                  <span class="i18n i18n-es">Modelos animales y aplicaciones en agroindustria y medio ambiente</span>
+                  <span class="i18n i18n-en">Animal models and applications in agroindustry and environment</span>
+                </p>
+              </div>
+            </div>
+            
+            <!-- Expositor 3 -->
+            <div class="carousel-item">
+              <div class="organizador h-100">
+                <img src="/static/images/org-Federico.webp" alt="Dr. Federico Brown">
+                <h4>Dr. Federico Brown</h4>
+                <b>
+                  <span class="i18n i18n-es">Brasil-Ecuador</span>
+                  <span class="i18n i18n-en">Brazil-Ecuador</span>
+                </b>
+                <p>
+                  <span class="i18n i18n-es">Modelos animales y aplicaciones en agroindustria y medio ambiente</span>
+                  <span class="i18n i18n-en">Animal models and applications in agroindustry and environment</span>
+                </p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Controles del carrusel -->
+          <button class="carousel-control-prev" type="button" data-bs-target="#quintoPerfilCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon bg-primary rounded-circle p-3" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+          </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#quintoPerfilCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon bg-primary rounded-circle p-3" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<br><br>
+<br>
+<br>
+    <!--ORGANIZADORES-->
+    <h1 class="subtitulo text-primary fw-bold text-center mb-3">
+      <span class="i18n i18n-es">COMITE ORGANIZADOR</span>
+      <span class="i18n i18n-en">ORGANIZING COMMITTEE</span>
+    </h1>
+
+     <p class="mx-auto mb-5" style="max-width:900px;">
+      <span class="i18n i18n-es">
+        Este evento es posible gracias a la colaboración de la Academia Mundial de Ciencias (TWAS) y la Universidad Mayor de San Andrés (UMSA).
+        Agradecemos especialmente a [Dr. Cristian Carrasco y la Dr. Leslie Tejeda por su invaluable apoyo en la
+        organización de este evento. </span>
+      <span class="i18n i18n-en">
+        This event is made possible thanks to the collaboration of the World Academy of Sciences (TWAS) and the Universidad Mayor de San Andrés (UMSA). 
+        We would like to extend a special thanks to Dr. Cristian Carrasco and Dr. Leslie Tejeda for their invaluable support in organizing
+        this event.      
+        </span>
+    </p>
+
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-5 g-4">
+      <div class="col">
+        <div class="organizador h-100">
+          <img src="{{ url_for('static', filename='images/org-cristhian.webp') }}" alt="Organizador 1">
+          <h4>Dr. Cristian Carrasco</h4>
+          <b>
+            <span class="i18n i18n-es">Bolivia</span>
+            <span class="i18n i18n-en">Bolivia</span>
+          </b>
+        </div>
+      </div>
+
+      <div class="col">
+        <div class="organizador h-100">
+          <img src="{{ url_for('static', filename='images/org-leslie.webp') }}" alt="Organizador 2">
+          <h4> Dr. Leslie Tejeda </h4>
+         <b>
+            <span class="i18n i18n-es">Bolivia</span>
+            <span class="i18n i18n-en">Bolivia</span>
+          </b>
+          
+        </div>
+      </div>
+
+      <div class="col">
+        <div class="organizador h-100">
+          <img src="{{ url_for('static', filename='images/org-yraima.jpg') }}" alt="Organizador 3">
+          <h4>Dra. Yraima Cordeiro</h4>
+          <b>
+            <span class="i18n i18n-es">Brazil</span>
+            <span class="i18n i18n-en">Brazil</span>
+          </b>
+          
+        </div>
+      </div>
+
+      <div class="col">
+        <div class="organizador h-100">
+          <img src="{{ url_for('static', filename='images/org-Federico.webp') }}" alt="Organizador 3">
+          <h4>Dr. Federico Brown </h4>
+          <b>
+            <span class="i18n i18n-es"> Brasil-Ecuador</span>
+            <span class="i18n i18n-en"> Brazil-Ecuador</span>
+          </b>
+          
+        </div>
+      </div>
+
+      <div class="col">
+        <div class="organizador h-100">
+          <img src="{{ url_for('static', filename='images/org-Franco.webp') }}" alt="Organizador 3">
+          <h4>Dr. Franco Cabrerizo</h4>
+          <b>
+            <span class="i18n i18n-es">Argentina</span>
+            <span class="i18n i18n-en">Argentina</span>
+          </b>
+          
+        </div>
+      </div>
+    </div>
+    <!--FIN ORGANIZADORES-->
   </div>
 </section>
-
-<!-- FOOTER -->
-<footer class="footer" id="footerid">
-  <div class="container">
-    <div class="footer-top row gy-4">
-      <div class="col-12 col-md-4">
-        <strong><span class="i18n i18n-es">Dónde estamos:</span><span class="i18n i18n-en">Where we are:</span></strong>
-        <p>Av. Villazón N° 1995, Plaza del Bicentenario - La Paz, Bolivia</p>
-      </div>
-      <div class="col-12 col-md-4">
-        <strong><span class="i18n i18n-es">Contáctanos:</span><span class="i18n i18n-en">Contact us:</span></strong>
-        <p>Tel: (591-2) 2441570 / 2440571</p>
-        <p>Fax: 2441092</p>
-        <p>Email: decanato@fcpn.edu.bo</p>
-      </div>
-      <div class="col-12 col-md-4">
-        <strong><span class="i18n i18n-es">Diseño Curricular:</span><span class="i18n i18n-en">Curricular Design:</span></strong>
-        <p>Carrera de Ciencias Químicas<br>5to Piso - Aula 21<br>Cota Cota, Calle 27 #1995</p>
-      </div>
-    </div>
-
-    <div class="footer-bottom mt-4">
-      <p class="mb-1">&copy; 2025 - <span class="i18n i18n-es">Todos los derechos reservados</span><span class="i18n i18n-en">All rights reserved</span> - Carrera de Química UMSA</p>
-      <div class="social-icons">
-        <a href="#" class="icon facebook"><i class="fab fa-facebook-f"></i></a>
-        <a href="#" class="icon twitter"><i class="fab fa-twitter"></i></a>
-        <a href="#" class="icon instagram"><i class="fab fa-instagram"></i></a>
-        <a href="#" class="icon linkedin"><i class="fab fa-linkedin-in"></i></a>
-        <a href="#" class="icon youtube"><i class="fab fa-youtube"></i></a>
-      </div>
-      <div class="dev-bba">Desarrollado por | <a href="https://www.instagram.com/thebattle_bread?igsh=ZHl3b29vcDN3OWhk">BattleBread Academy</a></div>
-    </div>
-  </div>
-</footer>
-
-<!-- Bootstrap (local) -->
-<script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
-
-<!-- Traductor simple ES/EN -->
-<script>
-(function() {
-  const root = document.documentElement; // <html>
-  const btn = document.getElementById('btnLang');
-
-  // Persistir preferencia
-  const saved = localStorage.getItem('lang') || 'es';
-  setLang(saved);
-
-  btn?.addEventListener('click', () => {
-    const next = root.classList.contains('lang-es') ? 'en' : 'es';
-    setLang(next);
-  });
-
-  function setLang(code) {
-    root.classList.toggle('lang-es', code === 'es');
-    root.classList.toggle('lang-en', code === 'en');
-    localStorage.setItem('lang', code);
-  }
-})();
-</script>
-
-</body>
-</html>
+{% endblock %}

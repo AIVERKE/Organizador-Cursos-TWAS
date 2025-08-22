@@ -1,2 +1,85 @@
-nombre,descripcion,modalidad
-Introducción a Python,Curso básico de Python teórico,Catedra
+nombre,apellido,email,documento,pais_origen,nombre_curso
+Victor Hugo,Uño Alvarado,aapitar@hotmail.com,228,Bolivia,Modelos animales y aplicaciones en la agroindustria y el medio ambiente
+Brian,Ayala,bayalac@fcpn.edu.bo,229,Bolivia,Modelos animales y aplicaciones en la agroindustria y el medio ambiente
+Luis Alejandro ,Mendoza Escobar,venoluigui22@gmail.com,230,Bolivia,Modelos animales y aplicaciones en la agroindustria y el medio ambiente
+Angel,Lovera Rojas,alr0004t@gmail.com,231,Bolivia,Modelos animales y aplicaciones en la agroindustria y el medio ambiente
+Sussan Jhennifer ,Lopez Mercado ,sussan.j.lopez.m@gmail.com,232,Bolivia ,Modelos animales y aplicaciones en la agroindustria y el medio ambiente
+Monserrat,Zapata Alanoca,monsez2512@gmail.com,233,Bolivia,Modelos animales y aplicaciones en la agroindustria y el medio ambiente
+JOSE LUIS,PEREZ ,ing.joseph.perez@gmail.com,234,Bolivia ,Modelos animales y aplicaciones en la agroindustria y el medio ambiente
+Paola Andrea,Mamami Montecinos,ing.paola.mamani@gmail.com,235,Bolivia ,Modelos animales y aplicaciones en la agroindustria y el medio ambiente
+Lourdes ,Apaza Gutierrez ,lapazagutierrez22@gmail.com,236,Bolivia ,Modelos animales y aplicaciones en la agroindustria y el medio ambiente
+Lourdes ,Apaza Gutierrez ,elaotaku21@gmail.com,237,Bolivia ,Modelos animales y aplicaciones en la agroindustria y el medio ambiente
+RODRIGO,FERNANDEZ RAMIREZ,rfernandez9@umsa.bo,238,BOLIVIA,Modelos animales y aplicaciones en la agroindustria y el medio ambiente
+Estefani ,Navarro ,jesikanavarrolequipe@gmail.com,239,Bolivia ,Modelos animales y aplicaciones en la agroindustria y el medio ambiente
+FERNANDO JOSE ,HUASCO FIGUEROA ,huascoaries2025@gmail.com,240,Bolivia ,Modelos animales y aplicaciones en la agroindustria y el medio ambiente
+Silvia Eugenia ,Ramos Paredes ,silvia.rp.qmc@gmail.com,241,Bolivia ,Modelos animales y aplicaciones en la agroindustria y el medio ambiente
+Vianka Celeste ,Avendaño Rios,vavendanor@fcpn.edu.bo,242,Bolivia ,Agro-innovación para la construcción de resiliencia: modelos gastronómicos sostenibles y saludables
+Doris Fanny ,Mollisaca Mamani,dfmollisaca@umsa.bo,243,Bolivia,Agro-innovación para la construcción de resiliencia: modelos gastronómicos sostenibles y saludables
+Patricio ,Bolaños ,patricio.bolanos@ucb.edu.bo,244,Bolivia,Agro-innovación para la construcción de resiliencia: modelos gastronómicos sostenibles y saludables
+CARLOS BISMARK,BERROCAL HERRADA,berrocalherradacarlos@gmail.com,245,Bolivia,Agro-innovación para la construcción de resiliencia: modelos gastronómicos sostenibles y saludables
+Valquiria Rocio,Marca Mamani,valquiriaroco@gmail.com,246,Bolivia ,Agro-innovación para la construcción de resiliencia: modelos gastronómicos sostenibles y saludables
+Luis Fernando ,Loayza Flores ,luisfernandoloayzaflorescia@gmail.com,247,Bolivia,Agro-innovación para la construcción de resiliencia: modelos gastronómicos sostenibles y saludables
+Karina Luisa ,Alcazar Espinoza ,kluisa_@hotmail.com,248,Bolivia,Agro-innovación para la construcción de resiliencia: modelos gastronómicos sostenibles y saludables
+Maricel Amanda ,Quispe Baltazar ,qb.maricel.amanda@gmail.com,249,Bolivia ,Agro-innovación para la construcción de resiliencia: modelos gastronómicos sostenibles y saludables
+Jhovanna,Poma,jhovanna.poma18@gmail.com,250,Bolivia,Agro-innovación para la construcción de resiliencia: modelos gastronómicos sostenibles y saludables
+María Alejandra ,Apaza Esquivel ,maesquivel1994@gmail.com,251,Bolivia,Agro-innovación para la construcción de resiliencia: modelos gastronómicos sostenibles y saludables
+Bernardo ,Coaquira Hilari ,coaquira.1b@gmail.com,252,Bolivia ,Agro-innovación para la construcción de resiliencia: modelos gastronómicos sostenibles y saludables
+Richard ,Mamani Lopez ,richard1818@hotmail.com,253,Bolivia ,Algas para la seguridad alimentaria y nutricional
+Gaston luis ,Nina ,gastoncolesol@gmail.com,254,Bolivia ,Algas para la seguridad alimentaria y nutricional
+Jesús angel,Quispe quispe,jesus.angel.quispe.quispe.95@gmail.com,255,La Paz bolivia ,Algas para la seguridad alimentaria y nutricional
+Lourdes Janeth ,Mamani Cori ,jmaamaa1123@gmail.com,256,Bolivia ,Algas para la seguridad alimentaria y nutricional
+Bruno Didier ,Rodríguez Plata,Brunorodriguezplata@gmail.com,257,Bolivia,Algas para la seguridad alimentaria y nutricional
+Alejandra Bolivia,Quispe Quispe ,quispe7062703@gmail.com,258,Bolivia,Algas para la seguridad alimentaria y nutricional
+Cielo Belen,Huallpan Choque ,cielohuallpan1@gmail.com,259,Bolivia ,Algas para la seguridad alimentaria y nutricional
+Angelica Yaneth,Poma Tuco ,aypoma1@umsa.bo,260,Bolivia ,Biología de la reproducción vegetal para fitomejoradores
+Noelia ,Alvarez Veizaga ,nalvarezv@fcpn.edu.bo,261,Bolivia ,Biología de la reproducción vegetal para fitomejoradores
+Sebastian,Irigoyen Hurtado ,sirigoyenh@fcpn.edu.bo,262,Bolivia,Biología de la reproducción vegetal para fitomejoradores
+Daniel,Onofre,danielo.uc18@gmail.com,263,Bolivia ,Biología de la reproducción vegetal para fitomejoradores
+Kembly ,Ballestero ,kem1721@gmail.com,264,Costa Rica ,Biología de la reproducción vegetal para fitomejoradores
+SILVIA,ALVARADO CALLISAYA ,alvaradosilvia43@gmail.com,265,BOLIVIA/ LA PAZ,Biología de la reproducción vegetal para fitomejoradores
+Ramiro ,Alcon Fabio ,ralcon010@gmail.com,266,Bolivia ,Biología de la reproducción vegetal para fitomejoradores
+Michel,Matias,mmatias@umsa.bo,267,Bolivia,Biología de la reproducción vegetal para fitomejoradores
+Lizeth Ximena ,Patzi Aquino ,lizethpatziaquino@gmail.com,268,Bolivia ,Biología de la reproducción vegetal para fitomejoradores
+AIDEE MAGY,ALEJO PARI,aideemagyalejo@gmail.com,269,Bolivia,Biología de la reproducción vegetal para fitomejoradores
+Grover Ruperto,Arce Ticona,groverarce1977@gmail.com,270,Bolivia,Biología de la reproducción vegetal para fitomejoradores
+Carolina,Calamani,caromanda4444@gmail.com,271,Bolivia,Biología de la reproducción vegetal para fitomejoradores
+Juan Carlos,Titirico Aruquipa,jaruquipa577@gmail.com,272,Bolivia,Biología de la reproducción vegetal para fitomejoradores
+Luz Valeria ,Choque Cabas ,luchipink16@gmail.com,273,Bolivia ,Biología de la reproducción vegetal para fitomejoradores
+Daniela Melany ,Condori Paucara ,dcondoripaucara@gmail.com,274,Bolivia ,Biología de la reproducción vegetal para fitomejoradores
+Nayeli,Casillo,casillomnayelinicol2003@gmail.com,275,Bolivia - Peru,Biofertilizantes para la producción agrícola sostenible
+Daniela,Alvarez Portugal,dalvarezp@fcpn.edu.bo,276,Bolivia,Biofertilizantes para la producción agrícola sostenible
+Juan Jose,Quispe Vargas,jjquispe32@umsa.bo,277,Bolivia,Biofertilizantes para la producción agrícola sostenible
+David ,Maldonado Gonzales,davidmaldonad204@gmail.com,278,Bolivia,Biofertilizantes para la producción agrícola sostenible
+Liliana ,Chambi Mamani,lchambim@fcpn.edu.bo,279,Bolivia ,Biofertilizantes para la producción agrícola sostenible
+Christian Beymar ,Luna Mamani ,christianluna827@gmail.com,280,Bolivia ,Biofertilizantes para la producción agrícola sostenible
+Erland Ernesto,Veliz Jallaza,erlandveliz3@gmail.com,281,Bolivia,Biofertilizantes para la producción agrícola sostenible
+Gabriela Mishel ,Marin Machicado ,mgmishelm@gmail.com,282,Bolivia,Biofertilizantes para la producción agrícola sostenible
+Alejandra Bolivia ,Quispe Quispe ,quispe7062703@gmail.com,283,Bolivia,Biofertilizantes para la producción agrícola sostenible
+Alejandra Bolivia,Quispe Quispe ,alejandrabolivia8@gmail.com,284,Bolivia ,Biofertilizantes para la producción agrícola sostenible
+Pedro Reynaldo,Marin,marinpedro500@gmail.com,285,Bolivia,Biofertilizantes para la producción agrícola sostenible
+Adriana Yacil ,Sullcata Aro ,asullcataa@fcpn.edu.bo,286,Bolivia,Biofertilizantes para la producción agrícola sostenible
+JIMENA,ROJAS,zubietajime@gmail.com,287,Bolivia,Biofertilizantes para la producción agrícola sostenible
+MAIRE,ALBORTA POMA ,neisalba@gmail.com,288,Bolivia,Biofertilizantes para la producción agrícola sostenible
+Sara ,Huaquisaca Laura,sarahuaquisaca77@gmail.com,289,BOLIVIA,Biofertilizantes para la producción agrícola sostenible
+Mónica Angelica ,Vicente Pinedo ,vicentemonica700@gmail.com,290,Bolivia ,Biofertilizantes para la producción agrícola sostenible
+Wilson,Segura ,saulseguraram@gmail.com,291,,Biofertilizantes para la producción agrícola sostenible
+María Daniela ,Callizaya Quenta ,mariadanielacallizaya@gmail.com,292,Bolivia,Biofertilizantes para la producción agrícola sostenible
+Adriana Jerusalen ,De La Barra Montes ,adrijerm@gmail.com,293,La Paz ,Biofertilizantes para la producción agrícola sostenible
+Ángela ,Mendoza Lemus ,guadalegna@gmail.com,294,,Biofertilizantes para la producción agrícola sostenible
+Jael Carolina,Caballero Torrez,caritocaballero55@gmail.com,295,Bolivia,Biofertilizantes para la producción agrícola sostenible
+Sonia,Limachi Barreto ,slimachibarreto@gmail.com,296,Bolivia ,Biofertilizantes para la producción agrícola sostenible
+Anahi,Cabrera Calisaya ,anahicabreracalisaya@gmail.com,297,Bolivia,Biofertilizantes para la producción agrícola sostenible
+Johnson Arturo,Quispe,arturo.huarachi@icloud.com,298,Bolivia ,Biofertilizantes para la producción agrícola sostenible
+Johnson,Quispe,arturo.huarachi@yahoo.com,299,Bolivia ,Biofertilizantes para la producción agrícola sostenible
+Adriana Paola ,Apaza Marquez ,paolapaza5832@gmail.com,300,Bolivia ,Biofertilizantes para la producción agrícola sostenible
+Gloria,Rodrigo Lira,grodrigo@fcpn.edu.bo,301,Bolivia,Biofertilizantes para la producción agrícola sostenible
+Karen,Siñani,quelalinerak@gmail.com,302,Bolivia,Biofertilizantes para la producción agrícola sostenible
+Karen,Siñani,karensq1734@gmail.com,303,Bolivia,Biofertilizantes para la producción agrícola sostenible
+Jhon ,Nina ,jhonninaperez@gmail.com,304,Bolivia ,Biofertilizantes para la producción agrícola sostenible
+Rodrigo,Surculento,keepero7keys@gmail.com,305,Bolivia,Biofertilizantes para la producción agrícola sostenible
+Natalie Nicole,Escobar Flores,nescobarf@fcpn.edu.bo,306,Bolivia,Biofertilizantes para la producción agrícola sostenible
+Dania Carolina,Quispe Valdez,daniacarolinaquispevaldez.123@gmail.com,307,Bolivia ,Biofertilizantes para la producción agrícola sostenible
+Fernando ,Cruz Mita,fernandocruzmita1319@gmail.com,308,Bolivia ,Biofertilizantes para la producción agrícola sostenible
+Belén Mireyra ,Laura Mejía ,laura.11093593@gmail.com,309,Bolivia ,Biofertilizantes para la producción agrícola sostenible
+Lorena,Chavez Ramos,lorenaangelachavezramos@gmail.com,310,Bolivia,Biofertilizantes para la producción agrícola sostenible
+Adriana Alejandra ,Arevalo Herbas ,LeaRFlores41@gmail.com,311,Bolivia,Biofertilizantes para la producción agrícola sostenible

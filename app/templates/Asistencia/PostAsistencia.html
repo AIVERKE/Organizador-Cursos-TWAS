@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}TYAN en Bolivia 2025{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/styleLogin.css') }}">
+{% endblock %}
+
+{% block footer %}{% endblock %}
+
+{% block content %}
+<div class="container-fluid vh-100 d-flex flex-column">
+  <!-- Navbar heredado de base.html -->
+  
+  <div class="row flex-grow-1 g-0">
+    <!-- Panel izquierdo - Formulario -->
+    <div class="col-lg-6 d-flex flex-column justify-content-center p-4 p-md-5">
+      <br>
+      <br>
+      
+      <div class="mx-auto" style="max-width: 400px; width: 100%; margin-top: 2rem; margin-bottom: 2rem;">
+        <h1 class="display-5 fw-bold mb-3">
+          <span class="i18n i18n-es">Escuelas Prácticas TYAN en Bolivia 2025<br><small class="fs-4">3ra Versión</small></span>
+          <span class="i18n i18n-en">TYAN Hands-on Schools en Bolivia 2025<br><small class="fs-4">3rd Version</small></span>
+        </h1>
+        
+        <p class="lead mb-4">
+          <span class="i18n i18n-es">¡Bienvenido! Al control de Asistencia de la Escuelas Prácticas TYAN en Bolivia 2025. <br> Por favor insertar el Correo Electrónico con el que se registro en el sistema <br>y el codigo proporsionado para registrar su asistencia </span>
+          <span class="i18n i18n-en">To the Attendance Control of the TYAN Hands-on Schools in Bolivia 2025. <br> Please enter the email address you used to register in the system <br>and the code provided to register your attendance. </span>
+        </p>
+
+        <h1 class="display-5 fw-bold mb-3">
+          <span class="i18n i18n-es">Su asistencia ha sido registrada Correctamente <br><small class="fs-4">Puede verificarlo Iniciando Sesion en el Sistema</small></span>
+          <span class="i18n i18n-en">Your attendance has been recorded correctly.<br><small class="fs-4">You can verify this by logging into the system.</small></span>
+        </h1>
+       
+      </div>
+    </div>
+
+    <!-- Panel derecho - Imagen UNESCO (solo desktop) -->
+    <div class="col-lg-6 d-none d-lg-flex bg-primary align-items-center justify-content-center p-5">
+      <img src="{{ url_for('static', filename='images/Flag_of_UNESCO.png') }}" alt="UNESCO" class="img-fluid" style="max-height: 70vh; opacity: 0.9;">
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+
+{% endblock %}

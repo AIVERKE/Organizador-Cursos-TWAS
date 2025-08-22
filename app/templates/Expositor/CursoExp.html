@@ -14,6 +14,10 @@
       <form action="/scan/scanning" method="GET">        
         <button class="btn-qr" type="submit">Escanear QR</button>
       </form>
+
+      <p>{{descripcion}}</p>      
+        <!-- <button class="btn btn-primary" onclick="generarPin({{id_curso}})">Generar PIN Asistencia {{id_curso}}</button> -->
+
     </div>
 
     <!-- Buscador -->
@@ -44,20 +48,9 @@
           {% endfor %}
         </tbody>
       </table>
+      
     </div>
   </div>
 
-  <script>
-    // Script para filtrar estudiantes
-    document.getElementById("buscador").addEventListener("keyup", function() {
-      let filtro = this.value.toLowerCase();
-      let filas = document.querySelectorAll("#tabla-estudiantes tbody tr");
-
-      filas.forEach(function(fila) {
-        let textoFila = fila.textContent.toLowerCase();
-        fila.style.display = textoFila.includes(filtro) ? "" : "none";
-      });
-    });
-  </script>
 </body>
 </html>

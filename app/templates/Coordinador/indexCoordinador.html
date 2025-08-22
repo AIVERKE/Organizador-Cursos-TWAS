@@ -8,7 +8,7 @@
    <link rel="stylesheet" href="{{ url_for('static', filename='css/Coordinador/styleCoordinador.css') }}">
     <!-- Bootstrap CSS -->
     <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"> -->
-
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </head>
   <body>
 <header>
@@ -20,12 +20,12 @@
     <div class="acciones-derecha">
       <div class="top-actions">
         <form action="/auth/logout" method="POST">
-          <button onclick="location.href='/estudiante'">Coordinador</button>
           <button type="submit">Cerrar Sesión</button>
         </form>
+          <button onclick="location.href='/auth/dashboard'">Coordinador</button>
       </div>
       <div class="logou">
-        <img class="logo-umsa" src="{{ url_for('static', filename='images/umsalogo.webp') }}" alt="Logo UMSA" />
+        <img class="logo-umsa" src="{{ url_for('static', filename='images/EscudoUMSA.png') }}" alt="Logo UMSA" />
       </div>
     </div>
   </div>
@@ -52,11 +52,67 @@
         <!-- Contenido -->
         <section id="contenido">
           <!-- Aquí se mostrará el CRUD correspondiente -->
+          
+          <!-- Grafico Barras-->
+          <div id="dashboard" class="charts-container">
+            <h2>Inscritos por Curso</h2>
+            <div id="chartInscritosDiv">
+              <canvas id="chartInscritos"></canvas>                
+            </div>
+            <div id="chartPorcentajeDiv">
+              <canvas id="chartPorcentaje"></canvas>                
+            </div>
+          </div>
+
+
         </section>
       </div>
     </main>
 
+
+  <script>
+  function verEstudiantes(idPonente) {
+      fetch(`/ponente/estudiantes_curso/${idPonente}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.error) {
+            alert(data.error);
+            return;
+          }
+
+          // Llenar título y descripción
+          document.getElementById("titulo-curso").innerText = data.nombre_curso;
+          document.getElementById("descripcion-curso").innerText = data.descripcion;
+
+          // Llenar tabla de estudiantes
+          const tbody = document.querySelector("#tabla-estudiantes tbody");
+          tbody.innerHTML = ""; // limpiar
+
+          data.estudiantes.forEach((est, i) => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+              <td>${i+1}</td>
+              <td>${est.nombre}</td>
+              <td>${est.email}</td>
+            `;
+            tbody.appendChild(tr);
+          });
+
+          // Mostrar modal
+          document.getElementById("modal-estudiantes").style.display = "block";
+        })
+        .catch(err => console.error(err));
+  }
+
+  function cerrarModalEstudiantes() {
+    document.getElementById("modal-estudiantes").style.display = "none";
+  }
+  </script>
+
+
     <script>
+
+
       function showSection(section) {
         fetch(`/${section}`)
           .then((response) => response.text())
@@ -68,7 +124,42 @@
             inicializarEventosCursos();
           });
       }
+      function generarPin(id_crs){
+        fetch(`/cursos/pin/${id_crs}/nuevo_pin`, {method:'POST'})
+        .then(response =>response.json())
+        .then(data=>{
+          if(data.success){
+            document.getElementById("form-info").innerHTML= 
+            `<p><strong>PIN: </strong> ${data.nuevo_pin}</p>
+            <p><strong>Expiración: </strong> ${data.expiracion}</p>`
+
+            document.getElementById('modal-pin').classList.add("activo");
+            //Mostrar PIN debajo del nombre en la tabla
+            const fila = document.querySelector(`#tabla-cursos tbody tr td[data-label='N °']:nth-child(${id_crs})`)?.parentNode;
+            // Mejor buscar por data-id si agregamos data-id al tr
+            const filaCurso = document.querySelector(`#tabla-cursos tbody tr[data-id="${id_crs}"]`);
+            if (filaCurso) {
+              const tdNombre = filaCurso.querySelector("td[data-label='Nombres']");
+              if (tdNombre) {
+                  const spanPin = document.createElement("span");
+                  spanPin.classList.add("text-warning", "small");
+                  spanPin.innerHTML = `<br>Código: ${data.nuevo_pin}`;
+                  tdNombre.appendChild(spanPin);
+              }
+
+              // 3️⃣ Ocultar el botón “Generar Código de Asistencia”
+              const btnGenerar = filaCurso.querySelector(".btn-primary[onclick^='generarPin']");
+              if (btnGenerar) btnGenerar.style.display = "none";
+            }
+          } else {
+              alert("Error: " + data.error);
+          }
+        })
+        .catch(error => alert("Error: "+error.message));
+      } 
       window.showSection = showSection;
+      window.generarPin = generarPin;
+
       function inicializarEventos(tipo) {
         const endpointBase = `/usuarios/coor/${tipo}`;
         const idRol = tipo === 'estudiantes' ? 3 : 2;
@@ -98,42 +189,102 @@
           });
         });
 
-        // Envío editar
-        const formEditar = document.getElementById('form-editar');
-        if (formEditar) {
-          formEditar.addEventListener('submit', function (e) {
-            e.preventDefault();
-            const id = document.getElementById('id_usuario').value;
-            const data = {
-              nombre: document.getElementById('nombre').value,
-              apellido: document.getElementById('apellido').value,
-              email: document.getElementById('email').value,
-              contrasena: document.getElementById('contrasena').value,
-              documento: document.getElementById('documento').value,
-              pais_origen: document.getElementById('pais_origen').value,
-              id_rol: idRol
-            };
+        // // Envío editar
+        // const formEditar = document.getElementById('form-editar');
+        // if (formEditar) {
+        //   formEditar.addEventListener('submit', function (e) {
+        //     e.preventDefault();
+        //     const id = document.getElementById('id_usuario').value;
+        //     const data = {
+        //       nombre: document.getElementById('nombre').value,
+        //       apellido: document.getElementById('apellido').value,
+        //       email: document.getElementById('email').value,
+        //       contrasena: document.getElementById('contrasena').value,
+        //       documento: document.getElementById('documento').value,
+        //       pais_origen: document.getElementById('pais_origen').value,
+        //       id_rol: idRol
+        //     };
 
-            fetch(`${endpointBase}/${id}`, {
-              method: 'PUT',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify(data)
-            })
-            .then(response => {
-              if (response.ok) {
-                alert(`${tipo === 'estudiantes' ? 'Estudiante' : 'Expositor'} actualizado correctamente.`);
-                cerrarModalEdit();
-                showSection(`usuarios/coor/${tipo}`);
-              } else {
-                return response.json().then(err => {
-                  throw new Error(err.error || "Error desconocido");
-                });
-              }
-            })
-            .catch(err => alert("Error al actualizar: " + err.message));
-          });
-        }
+        //     fetch(`${endpointBase}/${id}`, {
+        //       method: 'PUT',
+        //       headers: { 'Content-Type': 'application/json' },
+        //       body: JSON.stringify(data)
+        //     })
+        //     .then(response => {
+        //       if (response.ok) {
+        //         alert(`${tipo === 'estudiantes' ? 'Estudiante' : 'Expositor'} actualizado correctamente.`);
+        //         cerrarModalEdit();
+        //         showSection(`usuarios/coor/${tipo}`);
+        //       } else {
+        //         return response.json().then(err => {
+        //           throw new Error(err.error || "Error desconocido");
+        //         });
+        //       }
+        //     })
+        //     .catch(err => alert("Error al actualizar: " + err.message));
+        //   });
+        // }
 
+//Modifique estas vistas qlias y ahora estoy escuchando sabrina carpenter
+
+// Envío editar
+const formEditar = document.getElementById('form-editar');
+if (formEditar) {
+  formEditar.addEventListener('submit', async function (e) {
+    e.preventDefault();
+
+    const id = document.getElementById('id_usuario').value;
+    const idRol = document.getElementById('id_rol').value; // ya lo pones en 3
+
+    const payload = {
+      nombre: document.getElementById('nombre').value.trim(),
+      apellido: document.getElementById('apellido').value.trim(),
+      email: document.getElementById('email').value.trim(),
+      contrasena: (document.getElementById('contrasena').value || '').trim() || null,
+      documento: document.getElementById('documento').value.trim(),
+      pais_origen: document.getElementById('pais_origen').value.trim(),
+      id_rol: idRol,
+      // ---- campos que pedía el backend ----
+      fecha_nac: document.getElementById('fecha_nac').value || null,
+      genero: document.getElementById('genero').value.trim(),
+      pais_residencia: document.getElementById('pais_residencia').value.trim(),
+      afiliacion_u: document.getElementById('afiliacion_u').value.trim(),
+      tipo_afiliacion: document.getElementById('tipo_afiliacion').value.trim(),
+      area_tematica: document.getElementById('area_tematica').value.trim(),
+      disciplina_cientifica: document.getElementById('disciplina_cientifica').value.trim()
+    };
+
+    try {
+      const resp = await fetch(`/usuarios/coor/estudiantes/${id}`, {
+        method: 'PUT',                       // tu ruta acepta PUT
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',              // manda cookie de sesión
+        body: JSON.stringify(payload)
+      });
+
+      const ct = resp.headers.get('content-type') || '';
+      const raw = await resp.text();
+
+      if (!ct.includes('application/json')) {
+        // HTML => seguramente error/redirect
+        alert(`Respuesta no JSON (${resp.status}).\n` + raw.slice(0,200));
+        return;
+      }
+
+      const data = JSON.parse(raw);
+      if (!resp.ok) {
+        alert(data.error || `Error ${resp.status}`);
+        return;
+      }
+
+      alert('Estudiante actualizado correctamente.');
+      cerrarModalEdit();
+      showSection('usuarios/coor/estudiantes');
+    } catch (err) {
+      alert('Error al actualizar: ' + err.message);
+    }
+  });
+}
         // Crear usuario
         document.querySelectorAll('.create-btn').forEach(btn => {
           btn.addEventListener("click", function () {
@@ -153,7 +304,14 @@
               contrasena: document.getElementById("contrasena_crear").value,
               documento: document.getElementById("documento_crear").value,
               pais_origen: document.getElementById("pais_origen_crear").value,
-              id_rol: idRol
+              id_rol: idRol,
+              fecha_nac: document.getElementById('fecha_nac_crear').value || null,
+              genero: document.getElementById('genero_crear').value,
+              pais_residencia: document.getElementById('pais_residencia_crear').value,
+              afiliacion_u: document.getElementById('afiliacion_u_crear').value,
+              tipo_afiliacion: document.getElementById('tipo_afiliacion_crear').value,
+              area_tematica: document.getElementById('area_tematica_crear').value,
+              disciplina_cientifica: document.getElementById('disciplina_cientifica_crear').value
             };
 
             try {
@@ -370,7 +528,6 @@
       }
 
       function inicializarEventosCursos(){
-
         // boton editar Curso
         document.querySelectorAll('.edit-curso-btn').forEach(btn => {
           btn.addEventListener('click', function () {
@@ -582,6 +739,21 @@
           });
         });
 
+        // Script para filtrar estudiantes
+        const buscador = document.getElementById("buscador");
+        if (buscador){
+          buscador.addEventListener("keyup", function() {
+            let filtro = this.value.toLowerCase();
+            let filas = document.querySelectorAll("#tabla-estudiantes tbody tr");
+
+            filas.forEach(function(fila) {
+              let textoFila = fila.textContent.toLowerCase();
+              fila.style.display = textoFila.includes(filtro) ? "" : "none";
+            });
+          });
+        }
+        
+
       }
       // Cerrar modales
       const btnClose = document.querySelector(".close");
@@ -605,12 +777,172 @@
         const modal = document.getElementById("modal-info-curso");
         if (modal) modal.classList.remove("activo");
       }
+      function cerrarModalPin() {
+        const modal = document.getElementById("modal-pin");
+        if (modal) modal.classList.remove("activo");
+      }
 
       document.addEventListener("DOMContentLoaded", () => { 
         inicializarEventos();
-        inicializarEventosCursos();     
+        inicializarEventosCursos();    
+        // Mostrar gráfico inicial
+        fetch("/cursos/estadisticas/inscritos")
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            const nombres = data.data.map(d => d.nombre);
+            const inscritos = data.data.map(d => d.inscritos);
+            const ctx = document.getElementById("chartInscritos").getContext("2d");
+            new Chart(ctx, {
+              type: "bar",
+              data: {
+                labels: nombres,
+                datasets: [{
+                  label: "Inscritos",
+                  data: inscritos,
+                  backgroundColor: "rgba(54, 162, 235, 0.6)",
+                  borderColor: "rgba(54, 162, 235, 1)",
+                  borderWidth: 1
+                }]
+              },
+              options: {
+                // responsive: true,
+                plugins: { legend: { display: false } },
+                scales: {
+                  y: { beginAtZero: true }
+                }
+              }
+            });
+        const total = inscritos.reduce((a, b) => a + b, 0);
+        const porcentajes = inscritos.map(i => ((i / total) * 100).toFixed(1));
+
+        // Gráfico de pastel
+        const ctxPie = document.getElementById("chartPorcentaje").getContext("2d");
+        new Chart(ctxPie, {
+          type: "pie",
+          data: {
+            labels: nombres,
+            datasets: [{
+              data: porcentajes,
+              backgroundColor: [
+                "rgba(255, 99, 132, 0.6)",
+                "rgba(54, 162, 235, 0.6)",
+                "rgba(255, 206, 86, 0.6)",
+                "rgba(75, 192, 192, 0.6)",
+                "rgba(153, 102, 255, 0.6)"
+              ]
+            }]
+          },
+          options: {
+            plugins: {
+              legend: { position: "bottom" },
+              tooltip: {
+                callbacks: {
+                  label: function(context) {
+                    return context.label + ": " + context.raw + "%";
+                  }
+                }
+              }
+            },
+            // responsive: true
+          }
+        });
+          }
+        })
+        .catch(err => console.error("Error cargando gráfico:", err));
       });
 
+      //buscador cursos
+      (() => {
+        // Normaliza mayúsculas/acentos para búsquedas más “humanas”
+        const norm = s => (s || "")
+            .toString()
+            .normalize('NFD')
+            .replace(/\p{Diacritic}/gu, '')
+            .toLowerCase();
+
+        // Delegación: escucha cualquier input que coincida con #buscador-cursos
+        document.addEventListener('input', (e) => {
+          if (!e.target.matches('#buscador-cursos')) return;
+
+          const input = e.target;
+          const filtro = norm(input.value);
+          const selectorTabla = input.dataset.target || '#tabla-cursos';
+
+          // Busca la tabla cercana; si no, usa el selector global
+          const contenedor = input.closest('section, main, .contenido, body') || document;
+          const tabla = contenedor.querySelector(selectorTabla) || document.querySelector(selectorTabla);
+          if (!tabla || !tabla.tBodies || !tabla.tBodies[0]) return;
+
+          const filas = Array.from(tabla.tBodies[0].rows);
+          for (const tr of filas) {
+            const texto = norm(tr.textContent);
+            tr.style.display = texto.includes(filtro) ? '' : 'none';
+          }
+        });
+      })();
+
+      //Buscardo estudiantes
+
+      (() => {
+        // Normaliza mayúsculas/acentos para búsquedas más “humanas”
+        const norm = s => (s || "")
+            .toString()
+            .normalize('NFD')
+            .replace(/\p{Diacritic}/gu, '')
+            .toLowerCase();
+
+        // Delegación: escucha cualquier input que coincida con #buscador-cursos
+        document.addEventListener('input', (e) => {
+          if (!e.target.matches('#buscador-estudiante')) return;
+
+          const input = e.target;
+          const filtro = norm(input.value);
+          const selectorTabla = input.dataset.target || '#tabla-estudiante';
+
+          // Busca la tabla cercana; si no, usa el selector global
+          const contenedor = input.closest('section, main, .contenido, body') || document;
+          const tabla = contenedor.querySelector(selectorTabla) || document.querySelector(selectorTabla);
+          if (!tabla || !tabla.tBodies || !tabla.tBodies[0]) return;
+
+          const filas = Array.from(tabla.tBodies[0].rows);
+          for (const tr of filas) {
+            const texto = norm(tr.textContent);
+            tr.style.display = texto.includes(filtro) ? '' : 'none';
+          }
+        });
+      })();
+
+      //Buscardo ponente
+      (() => {
+        // Normaliza mayúsculas/acentos para búsquedas más “humanas”
+        const norm = s => (s || "")
+            .toString()
+            .normalize('NFD')
+            .replace(/\p{Diacritic}/gu, '')
+            .toLowerCase();
+
+        // Delegación: escucha cualquier input que coincida con #buscador-cursos
+        document.addEventListener('input', (e) => {
+          if (!e.target.matches('#buscador-ponente')) return;
+
+          const input = e.target;
+          const filtro = norm(input.value);
+          const selectorTabla = input.dataset.target || '#tabla-ponente';
+
+          // Busca la tabla cercana; si no, usa el selector global
+          const contenedor = input.closest('section, main, .contenido, body') || document;
+          const tabla = contenedor.querySelector(selectorTabla) || document.querySelector(selectorTabla);
+          if (!tabla || !tabla.tBodies || !tabla.tBodies[0]) return;
+
+          const filas = Array.from(tabla.tBodies[0].rows);
+          for (const tr of filas) {
+            const texto = norm(tr.textContent);
+            tr.style.display = texto.includes(filtro) ? '' : 'none';
+          }
+        });
+      })();
     </script>
+
   </body>
 </html>

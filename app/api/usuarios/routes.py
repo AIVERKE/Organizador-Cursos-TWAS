@@ -14,9 +14,9 @@ import psycopg2
 @login_required
 def crear_estudiante():
     data = request.json
-    campos = ["nombre", "apellido", "email", "contrasena", "documento", "pais_origen"]
+    campos = ["nombre", "apellido", "email", "contrasena", "documento", "pais_origen","fecha_nac", "genero", "pais_residencia", "afiliacion_u", "tipo_afiliacion", "area_tematica", "disciplina_cientifica"]
     if not data or not all(k in data for k in campos):
-        return jsonify({"error": "Datos incompletos"}), 400
+        return jsonify({"error": "Datos incompletos🎈"}), 400
     usu.crear_estudiante(
         data["nombre"],
         data["apellido"],
@@ -24,6 +24,13 @@ def crear_estudiante():
         data["contrasena"],
         data["documento"],
         data["pais_origen"],
+        data["fecha_nac"],
+        data["genero"],
+        data["pais_residencia"],
+        data["afiliacion_u"],
+        data["tipo_afiliacion"],
+        data["area_tematica"],
+        data["disciplina_cientifica"]
     )
     return jsonify({"mensaje": "Estudiante creado", "success": True}), 201
 
@@ -43,9 +50,9 @@ def obtener_datos_estudiante_json(id_u):
 @login_required
 def editar_estudiante(id_usuario):
     data = request.json
-    campos_requeridos = ["nombre", "apellido", "email", "documento", "pais_origen", "id_rol"]
+    campos_requeridos = ["nombre", "apellido", "email", "documento", "pais_origen", "id_rol", "fecha_nac", "genero", "pais_residencia", "afiliacion_u", "tipo_afiliacion", "area_tematica", "disciplina_cientifica"]
     if not data or not all(k in data for k in campos_requeridos):
-        return jsonify({"error": "Datos incompletos"}), 400
+        return jsonify({"error": "Datos incompletos🍔"}), 400
     contrasena = data.get("contrasena")
     usu.actualizar_estudiante(
         id_usuario,
@@ -56,6 +63,13 @@ def editar_estudiante(id_usuario):
         data["documento"],
         data["pais_origen"],
         data["id_rol"],
+        data["fecha_nac"],
+        data["genero"],
+        data["pais_residencia"],
+        data["afiliacion_u"],
+        data["tipo_afiliacion"],
+        data["area_tematica"],
+        data["disciplina_cientifica"]
     )
     return jsonify({"mensaje": "Estudiante actualizado"})
 
@@ -132,7 +146,7 @@ def expositores():
 @login_required
 def crear_expositor():
     data = request.json
-    campos = ["nombre", "apellido", "email", "contrasena", "documento", "pais_origen"]
+    campos = ["nombre", "apellido", "email", "contrasena", "documento", "pais_origen", "fecha_nac", "genero", "pais_residencia", "afiliacion_u", "tipo_afiliacion", "area_tematica", "disciplina_cientifica"]
     if not data or not all(k in data for k in campos):
         return jsonify({"error": "Datos incompletos"}), 400
     usu.crear_ponente(
@@ -142,6 +156,14 @@ def crear_expositor():
         data["contrasena"],
         data["documento"],
         data["pais_origen"],
+        data["fecha_nac"],
+        data["genero"],
+        data["pais_residencia"],
+        data["afiliacion_u"],
+        data["tipo_afiliacion"],
+        data["area_tematica"],
+        data["disciplina_cientifica"]
+
     )
     return jsonify({"mensaje": "Ponente creado", "success": True}), 201
 
@@ -161,7 +183,7 @@ def obtener_datos_ponente_json(id_u):
 @login_required
 def editar_ponente(id_usuario):
     data = request.json
-    campos_requeridos = ["nombre", "apellido", "email", "documento", "pais_origen", "id_rol"]
+    campos_requeridos = ["nombre", "apellido", "email", "documento", "pais_origen", "id_rol","fecha_nac", "genero", "pais_residencia", "afiliacion_u", "tipo_afiliacion", "area_tematica", "disciplina_cientifica"]
     if not data or not all(k in data for k in campos_requeridos):
         return jsonify({"error": "Datos incompletos"}), 400
     contrasena = data.get("contrasena")
@@ -174,6 +196,14 @@ def editar_ponente(id_usuario):
         data["documento"],
         data["pais_origen"],
         data["id_rol"],
+        data["fecha_nac"],
+        data["genero"],
+        data["pais_residencia"],
+        data["afiliacion_u"],
+        data["tipo_afiliacion"],
+        data["area_tematica"],
+        data["disciplina_cientifica"]
+
     )
     return jsonify({"mensaje": "Ponente actualizado"})
 
@@ -226,6 +256,13 @@ def put_estudiante(id_usuario):
         data["documento"],
         data["pais_origen"],
         data["id_rol"],
+        data["fecha_nac"],
+        data["genero"],
+        data["pais_residencia"],
+        data["afiliacion_u"],
+        data["tipo_afiliacion"],
+        data["area_tematica"],
+        data["disciplina_cientifica"]
     )
     return jsonify({"mensaje": "Estudiante actualizado"})
 

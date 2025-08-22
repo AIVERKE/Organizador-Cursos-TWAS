@@ -1,0 +1,175 @@
+{% extends "base.html" %}
+
+{% block title %}TYAN en Bolivia 2025{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/styleLogin.css') }}">
+{% endblock %}
+
+{% block footer %}{% endblock %}
+
+{% block content %}
+<div class="container-fluid vh-100 d-flex flex-column">
+  <!-- Navbar heredado de base.html -->
+  
+  <div class="row flex-grow-1 g-0">
+
+
+
+    <!-- Panel izquierdo - Formulario -->
+    <div class="col-lg-6 d-flex flex-column justify-content-center p-4 p-md-5">
+      
+
+    
+      <!-- Boton de regreso al index -->
+        <div class="d-flex justify-content-start mb-3">
+  <a href="{{ url_for('home.index') }}" class="btn btn-outline-primary">
+    <i class="fas fa-arrow-left me-1"></i>
+    <span class="i18n i18n-es">Volver al inicio</span>
+    <span class="i18n i18n-en">Back to home</span>
+  </a>
+</div>
+      
+      <div class="mx-auto" style="max-width: 420px; width: 100%; margin-top: 2rem; margin-bottom: 2rem;">
+        
+        <h1 class="display-5 fw-bold mb-3 text-center">
+          <span class="i18n i18n-es">TYAN Hands-on Schools en Bolivia 2025<br><small class="fs-4">3ra Versión</small></span>
+          <span class="i18n i18n-en">TYAN Hands-on Schools in Bolivia 2025<br><small class="fs-4">3rd Version</small></span>
+        </h1>
+        
+        <p class="lead mb-4 text-center">
+          <span class="i18n i18n-es">
+            ¡Bienvenido al control de asistencia de TYAN Hands-on Schools en Bolivia 2025! <br>
+            Por favor, ingrese el correo electrónico con el que se registró en el sistema <br>
+            y el código proporcionado para registrar su asistencia.
+          </span>
+          <span class="i18n i18n-en">
+            Welcome to the Attendance Control of the TYAN Hands-on Schools in Bolivia 2025. <br>
+            Please enter the email address you used to register in the system <br>
+            and the code provided to register your attendance.
+          </span>
+        </p>
+
+        <form class="needs-validation" id="formValidacion" novalidate>
+          <div class="mb-3">
+            <label for="correo" class="form-label">
+              <span class="i18n i18n-es">Correo Electrónico</span>
+              <span class="i18n i18n-en">Email Address</span>
+            </label>
+            <input type="email" class="form-control py-2" id="correo" name="correo" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="curso" class="form-label">
+              <span class="i18n i18n-es">Seleccione un curso</span>
+              <span class="i18n i18n-en">Select a course</span>
+            </label>
+            <select class="form-select py-2" name="curso" id="curso" required>
+              {% for curso in cursos %}
+                <option value="{{ curso.id }}">{{ curso.nombre }}</option>
+              {% endfor %}
+            </select>  
+          </div>
+          
+          <div class="mb-3 position-relative">
+            <label for="pin" class="form-label">
+              <span class="i18n i18n-es">Código de Asistencia</span>
+              <span class="i18n i18n-en">Attendance Code</span>
+            </label>
+            <div class="input-group">
+              <input type="password" class="form-control py-2" id="pin" name="pin" required>
+              <button class="btn btn-outline-secondary toggle-password" type="button">
+                <i class="fas fa-eye"></i>
+              </button>
+            </div>
+          </div>
+          
+          <button type="submit" class="btn btn-primary w-100 py-2">
+            <span class="i18n i18n-es">Registrar Asistencia</span>
+            <span class="i18n i18n-en">Register Attendance</span>
+          </button>
+        </form>
+        <br>
+
+        <div id="alertContainer" class="mt-4 text-center"></div>
+
+
+      </div>
+    </div>
+
+    <!-- Panel derecho - Imagen UNESCO (solo desktop) -->
+    <div class="col-lg-6 d-none d-lg-flex bg-primary align-items-center justify-content-center p-5">
+      <img src="{{ url_for('static', filename='images/Flag_of_UNESCO.png') }}" alt="UNESCO" class="img-fluid" style="max-height: 70vh; opacity: 0.9;">
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  // Mostrar/ocultar PIN
+  document.querySelector(".toggle-password").addEventListener("click", function() {
+    const pinInput = document.getElementById("pin");
+    const icon = this.querySelector("i");
+    if (pinInput.type === "password") {
+      pinInput.type = "text";
+      icon.classList.replace("fa-eye", "fa-eye-slash");
+    } else {
+      pinInput.type = "password";
+      icon.classList.replace("fa-eye-slash", "fa-eye");
+    }
+  });
+
+  // Enviar formulario
+  document.getElementById("formValidacion").addEventListener("submit", async function(e) {
+    e.preventDefault();
+
+    const correo = document.getElementById("correo").value.trim();
+    const curso = document.getElementById("curso").value;
+    const pin = document.getElementById("pin").value.trim();
+
+    const response = await fetch("/ins/registrar_asistencia/validar/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        correo: correo,
+        curso: curso,
+        pin: pin
+      })
+    });
+
+    const data = await response.json();
+    const container = document.getElementById("alertContainer");
+
+    // Limpiar alertas previas
+    container.innerHTML = "";
+
+    // Definir color por defecto
+    let alertClass = "alert-danger"; // rojo
+
+    if (response.ok) {
+      alertClass = "alert-success"; // verde
+    } else if (data.mensaje && data.mensaje.toLowerCase().includes("ya registrada")) {
+      alertClass = "alert-warning"; // amarillo
+    }
+
+    // Crear alerta Bootstrap con ES y EN separados
+    container.innerHTML = `
+      <div class="alert ${alertClass} alert-dismissible fade show d-inline-block text-start" role="alert">
+        <h2 class="fs-6 fw-bold mb-1 i18n i18n-es">${data.mensaje || ""}</h2>
+        <h2 class="fs-6 fw-bold mb-0 i18n i18n-en">${data.message || ""}</h2>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    `;
+
+    setTimeout(() => {
+      const alertEl = document.querySelector("#alertContainer .alert");
+      if (alertEl) {
+        alertEl.classList.remove("show");
+        alertEl.classList.add("fade");
+        setTimeout(() => alertEl.remove(), 300);
+      }
+    }, 7500);
+  });
+</script>
+{% endblock %}
