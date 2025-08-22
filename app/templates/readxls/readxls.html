@@ -19,28 +19,36 @@
     <h2>Subir archivo Excel o CSV para {{ titulo }}</h2>
     
     {% if columnas_recomendadas %}
-      <div class="columnas-recomendadas">
-        <h5>Columnas recomendadas:</h5>
-        <ul>
-          {% for col in columnas_recomendadas %}
-            <li>{{ col }}</li>
-          {% endfor %}
-        </ul>
-        <h6>Ejemplo de fila:</h6>
-        <ul>
-          {% for val in ejemplo_fila %}
-            <li>{{ val }}</li>
-          {% endfor %}
-        </ul>
-        <a href="{{ url_for('rxls.descargar_plantilla', tipo=tipo) }}" class="btn btn-info mb-3">
-          Descargar plantilla {{ titulo }}
-        </a>
+      <h4 class="mt-4">Columnas recomendadas para {{ titulo }}:</h4>
+      <div class="table-responsive">
+        <table class="table table-bordered">
+          <thead class="table-light">
+            <tr>
+              {% for col in columnas_recomendadas %}
+                <th>{{ col }}</th>
+              {% endfor %}
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              {% for val in ejemplo_fila %}
+                <td>{{ val }}</td>
+              {% endfor %}
+            </tr>
+          </tbody>
+        </table>
       </div>
+      <br>
+      <a href="{{ url_for('rxls.descargar_plantilla', tipo=tipo) }}" class="btn btn-info mb-3">
+        Descargar plantilla
+      </a><br>
     {% endif %}
+
 
     <form method="POST" enctype="multipart/form-data">
       <input type="file" name="file" accept=".xlsx,.xls,.csv" class="form-control mb-3">
       <button type="submit" name="accion" value="vista" class="btn btn-primary">Ver contenido</button>
+      <br>
       {% if tabla %}
         <button type="submit" name="accion" value="guardar" class="btn btn-success">Confirmar y guardar {{ titulo }}</button>
       {% endif %}
@@ -48,11 +56,11 @@
 
     {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
-        <div class="alert alert-{{ 'info' if category=='message' else category }} mt-3">
-          {% for msg in messages %}
-            <p>{{ msg }}</p>
+        <ul class="flashes">
+          {% for category, message in messages %}
+            <li class="alert alert-{{ category }}">{{ message|safe|replace('\n','<br>') }}</li>
           {% endfor %}
-        </div>
+        </ul>
       {% endif %}
     {% endwith %}
 

@@ -258,7 +258,7 @@ def generar_contrasena(apellido, documento):
 def crear_estudiantes_con_inscripcion_con_lote(lista_estudiantes):
     conn = None
     registrados = []
-    errores = []
+    fallidos = []
     try:
         conn = get_connection()
         cursor = conn.cursor()
@@ -746,14 +746,14 @@ def crear_ponentes_con_lote(lista_ponentes):
                     "usuario": p,
                     "id_usuario": id_usuario
                 })
-                except Exception as e:
-                    # Si falla un usuario, lo guardamos en fallidos con el error
-                    fallidos.append({
-                        "usuario": p,
-                        "error": str(e)
-                    })
-                    conn.rollback()  # rollback solo para esa query
-                    cursor = conn.cursor()  # reset cursor para continuar con el siguiente
+            except Exception as e:
+                # Si falla un usuario, lo guardamos en fallidos con el error
+                fallidos.append({
+                    "usuario": p,
+                    "error": str(e)
+                })
+                conn.rollback()  # rollback solo para esa query
+                cursor = conn.cursor()  # reset cursor para continuar con el siguiente
             conn.commit()
             return {"registrados": registrados, "fallidos": fallidos}
 

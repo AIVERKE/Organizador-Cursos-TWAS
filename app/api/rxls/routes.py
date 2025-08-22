@@ -1,4 +1,4 @@
-from flask import render_template, request, redirect, url_for, flash, session
+from flask import render_template, request, redirect, url_for, flash, session, send_file
 import pandas as pd
 import io
 
@@ -33,17 +33,16 @@ def index(tipo):
 
     if tipo == "estudiantes":
         columnas_recomendadas = ["nombre", "apellido", "email", "documento", "pais_origen", "fecha_nac", "genero", "pais_residencia", "afiliacion_u", "tipo_afiliacion", "area_tematica", "disciplina_cientifica", "nombre_curso", "modalidad"]
-        ejemplo_fila = ["Juan", "Perez", "juan@email.com", "12345678", "Bolivia", "1995-01-01", "M", "Bolivia", "Universidad X", "Estudiante", "Ciencias", "Física", "Matemáticas Básicas", "Presencial"]
+        ejemplo_fila = ["Juan", "Perez", "juan@email.com", "12345678", "Bolivia", "1995-01-01", "male", "Bolivia", "Universidad X", "public", "Ciencias", "Enfermeria", "Manejo de medicamentos", "Presencial"]
     elif tipo == "ponentes":
         columnas_recomendadas = ["nombre", "apellido", "email", "documento", "pais_origen", "fecha_nac", "genero", "pais_residencia", "afiliacion_u", "tipo_afiliacion", "area_tematica", "disciplina_cientifica"]
-        ejemplo_fila = ["Ana", "Gomez", "ana@email.com", "87654321", "Bolivia", "1980-05-05", "F", "Bolivia", "Universidad Y", "Ponente", "Ingeniería", "Electrónica"]
+        ejemplo_fila = ["Ana", "Gomez", "ana@email.com", "87654321", "Bolivia", "1980-05-05", "female", "Bolivia", "Universidad Y", "private", "Quimica", "Biologia avanzada"]
     elif tipo == "cursos":
-        columnas_recomendadas = ["nombre", "descripcion", "modalidad", "id_version", "id_ponente"]
-        ejemplo_fila = ["Curso X", "Descripción del curso", "Presencial", "1", "1"]
+        columnas_recomendadas = ["nombre", "descripcion", "modalidad"]
+        ejemplo_fila = ["Curso X", "Descripción del curso", "Presencial"]
 
     titulo, guardar_fn = TIPOS[tipo]
     tabla_html = None
-
     fallidos = []
     exitosos = []
 
@@ -79,6 +78,25 @@ def index(tipo):
                 exitosos = resultado.get("registrados", [])
                 fallidos  = resultado.get("fallidos", [])
 
+                detalle_fallidos = []
+                for f in fallidos:
+                    if isinstance(f, dict) and 'usuario' in f:
+                        u = f['usuario']
+                        nombre_completo = f"{u.get('nombre','')} {u.get('apellido','')}"
+                        error = f.get('error','')
+                        detalle_fallidos.append(f"{nombre_completo}: {error}")
+                    else:
+                        detalle_fallidos.append(str(f))
+
+                detalle_exitosos = []
+                for e in exitosos:
+                    if isinstance(e, dict) and 'usuario' in e:
+                        u = e['usuario']
+                        nombre_completo = f"{u.get('nombre','')} {u.get('apellido','')}"
+                        detalle_exitosos.append(nombre_completo)
+                    else:
+                        detalle_exitosos.append(str(e))
+
                 session["ultimo_guardado"] = {
                     "tipo": tipo,
                     "exitosos": exitosos,
@@ -86,16 +104,14 @@ def index(tipo):
                 }
                 session.pop("df_data", None)
 
-                msg = f"{len(exitosos)} registros guardados correctamente."
-                if fallidos:
-                    msg += f" {len(fallidos)} fallaron."
-                    # Opcional: mostrar detalles de fallidos en flash
-                    detalle_fallidos = ", ".join([str(f) for f in fallidos])
-                    flash(f"Fallidos: {detalle_fallidos}", "warning") 
-                flash(msg, "success")
+                if detalle_fallidos:
+                    flash("Fallidos:\n" + "\n".join(detalle_fallidos), "warning")
+                if detalle_exitosos:
+                    flash(f"{len(detalle_exitosos)} registros guardados correctamente.", "success")
+
                 return redirect(url_for("rxls.index", tipo=tipo))
             except Exception as e:
-                flash(f"Error al guardar {titulo}: {e}")
+                flash(f"Error al guardar {titulo}: {e}","danger")
                 return redirect(request.url)
     return render_template(
         "readxls/readxls.html",
@@ -108,7 +124,14 @@ def index(tipo):
         ejemplo_fila=ejemplo_fila
     )
 
-from flask import send_file
+
+# --- DESCARGA DE EXCELS ---
+def send_df_excel(df, filename):
+    output = io.BytesIO()
+    with pd.ExcelWriter(output, engine="openpyxl") as writer:
+        df.to_excel(writer, index=False, sheet_name="Sheet1")
+    output.seek(0)
+    return send_file(output, download_name=filename, as_attachment=True)
 
 @rxls_bp.route("/descargar/exitosos/<tipo>")
 @login_required
@@ -124,11 +147,7 @@ def descargar_exitosos(tipo):
         return redirect(url_for("rxls.index", tipo=tipo))
 
     df = pd.DataFrame(exitosos)
-    output = io.BytesIO()
-    with pd.ExcelWriter(output, engine="xlsxwriter") as writer:
-        df.to_excel(writer, index=False, sheet_name="Exitosos")
-    output.seek(0)
-    return send_file(output, download_name=f"{tipo}_exitosos.xlsx", as_attachment=True)
+    return send_df_excel(df, f"{tipo}_exitosos.xlsx")
 
 
 @rxls_bp.route("/descargar/fallidos/<tipo>")
@@ -145,9 +164,35 @@ def descargar_fallidos(tipo):
         return redirect(url_for("rxls.index", tipo=tipo))
 
     df = pd.DataFrame(fallidos)
-    output = io.BytesIO()
-    with pd.ExcelWriter(output, engine="xlsxwriter") as writer:
-        df.to_excel(writer, index=False, sheet_name="Fallidos")
-    output.seek(0)
-    return send_file(output, download_name=f"{tipo}_fallidos.xlsx", as_attachment=True)
+    return send_df_excel(df, f"{tipo}_fallidos.xlsx")
 
+@rxls_bp.route("/descargar/plantilla/<tipo>")
+@login_required
+@role_required(1, 4)
+def descargar_plantilla(tipo):
+    if tipo not in TIPOS:
+        flash("Tipo no válido.", "warning")
+        return redirect(url_for("rxls.index", tipo="estudiantes"))
+
+    # Columnas recomendadas por tipo
+    columnas = {
+        "estudiantes": ["nombre", "apellido", "email", "documento", "pais_origen",
+                        "fecha_nac", "genero", "pais_residencia", "afiliacion_u",
+                        "tipo_afiliacion", "area_tematica", "disciplina_cientifica", "nombre_curso", "modalidad"],
+        "ponentes": ["nombre", "apellido", "email", "documento", "pais_origen",
+                     "fecha_nac", "genero", "pais_residencia", "afiliacion_u",
+                     "tipo_afiliacion", "area_tematica", "disciplina_cientifica"],
+        "cursos": ["nombre", "descripcion", "modalidad"]
+    }
+
+    # Ejemplo de fila (puedes dejar vacíos o con datos de muestra)
+    ejemplo = {
+        "estudiantes": ["Juan", "Perez", "juan@mail.com", "123456", "Bolivia",
+                        "2000-01-01", "male", "Bolivia", "Universidad X", "public", "Ciencias", "Matemática", "Curso 1", "Virtual"],
+        "ponentes": ["Ana", "Gomez", "ana@mail.com", "987654", "Bolivia",
+                     "1990-05-05", "female", "Bolivia", "Universidad Y", "private", "Ciencias", "Física"],
+        "cursos": ["Curso 1", "Descripción ejemplo", "Presencial"]
+    }
+
+    df = pd.DataFrame([ejemplo[tipo]], columns=columnas[tipo])
+    return send_df_excel(df, f"plantilla_{tipo}.xlsx")
