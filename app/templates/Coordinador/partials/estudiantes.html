@@ -45,6 +45,7 @@
             Eliminar
         </button>
         <button onclick="window.location.href='{{ url_for('certificate.descargar_certificado', user_id=estudiante.id_usuario) }}'" class="btn btn-success cert-btn">Descargar Certificado</button>
+        <button onclick="window.location.href='{{ url_for('certificate.enviar_certificado', user_id=estudiante.id_usuario) }}'" class="btn btn-success cert-btn">Enviar Certificado</button>
       </td>
     </tr>
     {% endfor %}

@@ -18,11 +18,11 @@
       <button onclick="location.href='/logout'">Cerrar Sesión</button>
     </div>
 
-    <img src="{{ url_for('static', filename='images/umsalogo.webp') }}" alt="Logo UMSA" class="logo">
+    <img src="{{ url_for('static', filename='images/EscudoUMSA.png') }}" alt="Logo UMSA" class="logo">
   </header>
 
   <main class="contenido">
-
+    
     <div class="info-izquierda">
       <a href="javascript:history.back()" class="volver">←</a>
       <p class="enviar-a">Enviar Certificado a:<br> <strong>{{ student }} {{ apellido }}</strong></p>
@@ -42,7 +42,21 @@
       <button type="submit" class="boton-enviar">Enviar Certificado</button>
     </form>
 
+    
   </main>
-
+    <!-- Bloque de mensajes flash -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% set last_message = messages[-1] %}
+        <center>
+        <strong>
+        <div class="flash-message {{ last_message[0] }}">
+          {{ last_message[1] }}
+        </div>
+        </strong>
+        </center>
+      {% endif %}
+    {% endwith %}    
+    <!-- Fin bloque de mensajes flash -->
 </body>
 </html>
