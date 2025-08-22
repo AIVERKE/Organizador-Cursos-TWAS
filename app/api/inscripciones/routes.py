@@ -153,7 +153,7 @@ def validar():
         cur.execute("""
             SELECT id_inscripcion
             FROM asistencias 
-            WHERE id_inscripcion = %s AND fecha = %s
+            WHERE id_inscripcion = %s AND fecha::DATE = %s
         """, (inscripcion_id, hoy.date()))
 
         existente = cur.fetchone()
@@ -225,4 +225,4 @@ def validar():
 
     cur.close()
     conn.close()
-    return jsonify({"mensaje": msg_es,"message": msg_en})
+    return jsonify({"mensaje": msg_es,"message": msg_en}),400

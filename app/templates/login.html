@@ -9,34 +9,27 @@
 {% block footer %}{% endblock %}
 
 {% block content %}
-<div class="container-fluid min-vh-100 d-flex flex-column">
-  <!-- Navbar heredado de base.html -->
-  
+<div class="container-fluid login-container">
   <!-- Espacio para evitar solapamiento con navbar en móviles -->
-  <div class="d-block d-lg-none" style="height: 80px;"></div>
+  <div class="d-block d-lg-none navbar-spacer" style="height: 80px;"></div>
   
   <div class="row flex-grow-1 g-0">
-
-<!-- Boton volver al index -->
-
-
- <div class="col-lg-6 d-flex flex-column justify-content-center p-4 p-md-5">
-      <div class="mx-auto form-content" style="max-width: 400px; width: 100%;">
-        <div class="d-flex justify-content-start mb-3">
-  <a href="{{ url_for('home.index') }}" class="btn btn-outline-primary">
-    <i class="fas fa-arrow-left me-1"></i>
-    <span class="i18n i18n-es">Volver al inicio</span>
-    <span class="i18n i18n-en">Back to home</span>
-  </a>
-</div>
-
-
-
-
     <!-- Panel izquierdo - Formulario -->
+    <div class="col-lg-6 d-flex flex-column justify-content-center p-4 p-md-5 left-panel">
+      <div class="mx-auto form-content">
+        <!-- Botón volver al index -->
+        <div class="d-flex justify-content-start mb-4">
+          <a href="{{ url_for('home.index') }}" class="btn btn-outline-primary btn-back">
+            <i class="fas fa-arrow-left me-1"></i>
+            <span class="i18n i18n-es">Volver al inicio</span>
+            <span class="i18n i18n-en">Back to home</span>
+          </a>
+        </div>
+
+        <!-- Título y descripción -->
         <h1 class="display-5 fw-bold mb-3">
           <span class="i18n i18n-es">TYAN Hands-on Schools en Bolivia 2025<br><small class="fs-4">3ra Versión</small></span>
-          <span class="i18n i18n-en">TYAN Hands-on Schools en Bolivia 2025<br><small class="fs-4">3rd Version</small></span>
+          <span class="i18n i18n-en">TYAN Hands-on Schools in Bolivia 2025<br><small class="fs-4">3rd Version</small></span>
         </h1>
         
         <p class="lead mb-4">
@@ -44,6 +37,7 @@
           <span class="i18n i18n-en">Welcome! Please log in to your account.</span>
         </p>
 
+        <!-- Formulario -->
         <form class="needs-validation" action="{{ url_for('auth.login') }}" method="POST" novalidate>
           <div class="mb-3">
             <label for="email" class="form-label">
@@ -74,13 +68,13 @@
                 <span class="i18n i18n-en">Remember me</span>
               </label>
             </div>
-            <a href="{{ url_for('auth.forgot_password') }}" class="text-decoration-none">
+            <a href="{{ url_for('auth.forgot_password') }}" class="text-decoration-none forgot-link">
               <span class="i18n i18n-es">¿Olvidó su contraseña?</span>
               <span class="i18n i18n-en">Forgot password?</span>
             </a>
           </div>
           
-          <button type="submit" class="btn btn-primary w-100 py-2 mb-3">
+          <button type="submit" class="btn btn-primary w-100 py-2 mb-3 btn-login">
             <span class="i18n i18n-es">Iniciar Sesión</span>
             <span class="i18n i18n-en">Login</span>
           </button>
@@ -89,7 +83,7 @@
     </div>
 
     <!-- Panel derecho - Imagen UNESCO (solo desktop) -->
-    <div class="col-lg-6 d-none d-lg-flex bg-primary align-items-center justify-content-center p-5">
+    <div class="col-lg-6 d-none d-lg-flex bg-primary align-items-center justify-content-center p-5 right-panel">
       <div class="unesco-container">
         <img src="{{ url_for('static', filename='images/Flag_of_UNESCO.png') }}" alt="UNESCO" class="unesco-img">
       </div>

@@ -39,7 +39,7 @@
         
         <p class="lead mb-4 text-center">
           <span class="i18n i18n-es">
-            ¡Bienvenido al control de asistencia de las Escuelas Prácticas TYAN en Bolivia 2025! <br>
+            ¡Bienvenido al control de asistencia de TYAN Hands-on Schools en Bolivia 2025! <br>
             Por favor, ingrese el correo electrónico con el que se registró en el sistema <br>
             y el código proporcionado para registrar su asistencia.
           </span>
@@ -89,12 +89,10 @@
             <span class="i18n i18n-en">Register Attendance</span>
           </button>
         </form>
+        <br>
 
-        <!-- Resultado -->
-        <div class="mt-4 text-center">
-          <h2 class="fs-5 fw-bold text-success i18n i18n-es" id="resultado_es"></h2>
-          <h2 class="fs-5 fw-bold text-success i18n i18n-en" id="resultado_en"></h2>
-        </div>
+        <div id="alertContainer" class="mt-4 text-center"></div>
+
 
       </div>
     </div>
@@ -130,22 +128,48 @@
     const curso = document.getElementById("curso").value;
     const pin = document.getElementById("pin").value.trim();
 
-    try {
-      const response = await fetch("/ins/registrar_asistencia/validar/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ correo, curso, pin })
-      });
+    const response = await fetch("/ins/registrar_asistencia/validar/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        correo: correo,
+        curso: curso,
+        pin: pin
+      })
+    });
 
-      if (!response.ok) throw new Error("Error en la solicitud");
+    const data = await response.json();
+    const container = document.getElementById("alertContainer");
 
-      const data = await response.json();
-      document.getElementById("resultado_es").textContent = data.mensaje || "";
-      document.getElementById("resultado_en").textContent = data.message || "";
-    } catch (error) {
-      document.getElementById("resultado_es").textContent = "Ocurrió un error al registrar la asistencia.";
-      document.getElementById("resultado_en").textContent = "An error occurred while registering attendance.";
+    // Limpiar alertas previas
+    container.innerHTML = "";
+
+    // Definir color por defecto
+    let alertClass = "alert-danger"; // rojo
+
+    if (response.ok) {
+      alertClass = "alert-success"; // verde
+    } else if (data.mensaje && data.mensaje.toLowerCase().includes("ya registrada")) {
+      alertClass = "alert-warning"; // amarillo
     }
+
+    // Crear alerta Bootstrap con ES y EN separados
+    container.innerHTML = `
+      <div class="alert ${alertClass} alert-dismissible fade show d-inline-block text-start" role="alert">
+        <h2 class="fs-6 fw-bold mb-1 i18n i18n-es">${data.mensaje || ""}</h2>
+        <h2 class="fs-6 fw-bold mb-0 i18n i18n-en">${data.message || ""}</h2>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    `;
+
+    setTimeout(() => {
+      const alertEl = document.querySelector("#alertContainer .alert");
+      if (alertEl) {
+        alertEl.classList.remove("show");
+        alertEl.classList.add("fade");
+        setTimeout(() => alertEl.remove(), 300);
+      }
+    }, 7500);
   });
 </script>
 {% endblock %}
