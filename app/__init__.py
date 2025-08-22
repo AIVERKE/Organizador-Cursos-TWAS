@@ -50,9 +50,8 @@ def create_app(config_class=DevConfig):
 
     print("\n=== URL MAP ===")
     for rule in app.url_map.iter_rules():
-        print(rule, "→", sorted(list(rule.methods)))
+        print(rule, "->", sorted(list(rule.methods)))
     print("===============\n")
-
 
     from app.api.eventos import evento_bp
 
