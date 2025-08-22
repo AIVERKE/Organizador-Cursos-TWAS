@@ -88,23 +88,32 @@ from app.db_c import get_connection
 
 def crear_cursos_con_lote(lista_cursos):
     conn = None
+    registrados, fallidos = [], []
     try:
         conn = get_connection()
         cursor = conn.cursor()
         for c in lista_cursos:
-            cursor.execute(
-                """
-                INSERT INTO cursos (nombre, descripcion, modalidad, id_version, id_ponente)
-                VALUES (%s, %s, %s, %s, %s)
-                """,
-                (
-                    c["nombre"].strip(),
-                    c["descripcion"].strip(),
-                    c["modalidad"].strip(),
-                    1,
-                    1,  # por defecto 1 = sin ponente
-                ),
-            )
+            try:
+                cursor.execute(
+                    """
+                    INSERT INTO cursos (nombre, descripcion, modalidad, id_version, id_ponente)
+                    VALUES (%s, %s, %s, %s, %s)
+                    RETURNING id_curso
+                    """,
+                    (
+                        c["nombre"].strip(),
+                        c["descripcion"].strip(),
+                        c["modalidad"].strip(),
+                        1,  # id_version por defecto
+                        1,  # por defecto 1 = sin ponente
+                    ),
+                )
+                id_curso = cursor.fetchone()[0]
+                registrados.append({"curso" : c, "id_curso": id_curso})
+            except Exception as e:
+                fallidos.append({"curso" : c, "error": str(e)})
+                conn.rollback()  # rollback parcial para este curso
+                cursor = conn.cursor()  # reabrir cursor limpio
         conn.commit()
     except Exception as e:
         if conn:
@@ -114,6 +123,7 @@ def crear_cursos_con_lote(lista_cursos):
     finally:
         if conn:
             conn.close()
+    return {"registrados": registrados, "fallidos": fallidos}
 
 
 def actualizar_curso_base(id_curso, nombre, descripcion, modalidad):
