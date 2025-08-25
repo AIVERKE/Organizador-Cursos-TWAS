@@ -267,6 +267,8 @@ button:hover,
   border-radius: 8px;
   position: relative;
   border: 1px solid #0077c2;
+    overflow-y: auto; /* Scroll vertical si el contenido excede */
+
 }
 
 .modal-content label {
@@ -463,3 +465,5 @@ button:hover,
   background-color: #004f84;
   transform: translateY(0);
 }
+
+
