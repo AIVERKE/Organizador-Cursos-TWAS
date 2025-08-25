@@ -20,6 +20,11 @@ body {
   display: none !important; 
 }
 
+.lang-en .i18n-en,
+.lang-es .i18n-es {
+  display: inline !important;
+}
+
 /* Encabezados y textos principales */
 .titulo { 
   font-size: clamp(28px, 4vw, 48px); 
@@ -72,9 +77,96 @@ body {
   background: #fff; 
 }
 
-/* Tablas */
-.tabla-horario table { 
-  width: 100%; 
+/* Tablas - Estilos responsivos optimizados */
+.tabla-horario {
+  margin: 20px 0;
+}
+
+.tabla-horario .table-responsive {
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.tabla-horario .table {
+  margin-bottom: 0;
+  min-width: 600px;
+  width: 100%;
+}
+
+.tabla-horario .table th {
+  background-color: #4a6fdc;
+  color: white;
+  font-weight: 600;
+  vertical-align: middle;
+  white-space: nowrap;
+  padding: 0.75rem;
+}
+
+.tabla-horario .table td {
+  transition: background-color 0.2s;
+  padding: 0.5rem;
+}
+
+.tabla-horario .table-striped tbody tr:nth-of-type(odd) td {
+  background-color: rgba(74, 111, 220, 0.05);
+}
+
+.tabla-horario .table-hover tbody tr:hover td {
+  background-color: rgba(74, 111, 220, 0.1);
+}
+
+.tabla-horario .table-sm {
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+.tabla-horario .table-sm td {
+  padding: 0.25rem;
+}
+
+.tabla-horario .btn-sm {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+}
+
+/* Columnas optimizadas para la tabla */
+.col-time {
+  width: 100px;
+  min-width: 100px;
+}
+
+.col-day {
+  width: 180px;
+  min-width: 180px;
+}
+
+/* Flat design improvements */
+.tabla-horario .table-bordered {
+  border: 1px solid #dee2e6;
+}
+
+.tabla-horario .table-bordered th,
+.tabla-horario .table-bordered td {
+  border: 1px solid #dee2e6;
+}
+
+.tabla-horario .table-primary {
+  background-color: #4a6fdc;
+}
+
+.tabla-horario .btn-outline-primary {
+  color: #4a6fdc;
+  border-color: #4a6fdc;
+}
+
+.tabla-horario .btn-outline-primary:hover {
+  color: #fff;
+  background-color: #4a6fdc;
+  border-color: #4a6fdc;
 }
 
 /* Ubicación */
@@ -167,18 +259,6 @@ body {
   text-align: center;
 }
 
-/* Responsividad */
-@media (max-width: 768px) {
-  .organizador-carousel {
-    max-width: 100%;
-  }
-  
-  .carousel-control-prev, 
-  .carousel-control-next {
-    width: 15%;
-  }
-}
-
 /* FOOTER */
 .footer {
   background: #314163;
@@ -201,6 +281,7 @@ body {
   justify-items: center;
   align-items: center;
 }
+
 .logo-grid2 {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -311,7 +392,7 @@ body {
 }
 
 /* Responsive adjustments */
-@media (max-width: 768px) {
+@media (max-width: 600px) {
   .logo-grid {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -334,5 +415,42 @@ body {
     width: 36px;
     height: 36px;
     font-size: 1rem;
+  }
+  
+  /* Optimización para tablas en móviles */
+  .tabla-horario .table {
+    min-width: 500px;
+  }
+  
+  .tabla-horario .table td, 
+  .tabla-horario .table th {
+    padding: 0.4rem;
+  }
+  
+  .col-time {
+    width: 90px;
+    min-width: 90px;
+  }
+  
+  .col-day {
+    width: 150px;
+    min-width: 150px;
+  }
+}
+
+/* Mejoras para pantallas grandes */
+@media (min-width: 1200px) {
+  .tabla-horario .table {
+    min-width: 100%;
+  }
+  
+  .col-time {
+    width: 120px;
+    min-width: 120px;
+  }
+  
+  .col-day {
+    width: 200px;
+    min-width: 200px;
   }
 }
