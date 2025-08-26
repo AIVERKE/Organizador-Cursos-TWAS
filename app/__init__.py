@@ -48,6 +48,11 @@ def create_app(config_class=DevConfig):
 
     safe_register(usuario_bp, "/usuarios")
 
+    print("\n=== URL MAP ===")
+    for rule in app.url_map.iter_rules():
+        print(rule, "->", sorted(list(rule.methods)))
+    print("===============\n")
+
     from app.api.eventos import evento_bp
 
     safe_register(evento_bp, "/eventos")

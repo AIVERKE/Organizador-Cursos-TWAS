@@ -1,7 +1,7 @@
 import psycopg2
 from app.db_c import get_connection
 from werkzeug.security import generate_password_hash
-
+from datetime import datetime, timedelta, date
 
 # --- Usuarios General
 def obtener_usuarios(rol):
@@ -51,23 +51,7 @@ def obtener_estudiante(id_usuario):
 
 
 # ----cambio 1
-def actualizar_estudiante(
-    id_usuario,
-    nombre,
-    apellido,
-    email,
-    contrasena,
-    documento,
-    pais_origen,
-    id_rol,
-    fecha_nac,
-    genero,
-    pais_residencia,
-    afiliacion_u,
-    tipo_afiliacion,
-    area_tematica,
-    disciplina_cientifica,
-):
+def actualizar_estudiante(id_usuario,nombre,apellido,email,contrasena,documento,pais_origen,id_rol,fecha_nac,genero,pais_residencia,afiliacion_u,tipo_afiliacion,area_tematica,disciplina_cientifica):
     query = """
         UPDATE public.usuarios
         SET nombre = %s,
@@ -188,7 +172,7 @@ def crear_estudiante(
             afiliacion_u,
             tipo_afiliacion,
             area_tematica,
-            disciplina_cientifica,
+            disciplina_cientifica
         ),
     )
     conn.commit()
@@ -255,72 +239,99 @@ def generar_contrasena(apellido, documento):
     return apellido_limpio + primeros_digitos
 
 
-def crear_estudiantes_con_inscripcion(lista_estudiantes):
+def crear_estudiantes_con_inscripcion_con_lote(lista_estudiantes):
     conn = None
+    registrados = []
+    fallidos = []
     try:
         conn = get_connection()
         cursor = conn.cursor()
-        id_rol = 3  # Estudiante
+        id_rol = 3
 
         for est in lista_estudiantes:
-            # 1) Buscar id_curso por nombre (case‐insensitive)
-            cursor.execute(
-                "SELECT id_curso FROM cursos WHERE LOWER(nombre) = LOWER(%s)",
-                (est.get("nombre_curso", "").strip(),),
-            )
-            row = cursor.fetchone()
-            if not row:
-                raise ValueError(f"Curso '{est.get('nombre_curso')}' no encontrado.")
-            id_curso = row[0]
+            try:
 
-            # Automatizacion contrasena
-            contrasena_auto = generar_contrasena(est["apellido"], est["documento"])
-            hashed = generate_password_hash(contrasena_auto)
-            # 2) Insertar usuario y obtener id_usuario
-            cursor.execute(
-                """
-                INSERT INTO Usuarios (nombre, apellido, email, contrasena, documento, pais_origen, id_rol, fecha_nac, genero, pais_residencia, afiliacion_u, tipo_afiliacion, area_tematica, disciplina_cientifica)
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-                RETURNING id_usuario
-                """,
-                (
-                    est["nombre"],
-                    est["apellido"],
-                    est["email"],
-                    hashed,
-                    est["documento"],
-                    est["pais_origen"],
-                    id_rol,
-                    estudiante["fecha_nac"],
-                    estudiante["genero"],
-                    estudiante["pais_residencia"],
-                    estudiante["afiliacion_u"],
-                    estudiante["tipo_afiliacion"],
-                    estudiante["area_tematica"],
-                    estudiante["disciplina_cientifica"],
-                ),
-            )
-            id_usuario = cursor.fetchone()[0]
+                # 1) Buscar id_curso por nombre (case‐insensitive)
+                cursor.execute(
+                    "SELECT id_curso FROM cursos WHERE LOWER(nombre) = LOWER(%s)",
+                    (est.get("nombre_curso", "").strip(),),
+                )
+                row = cursor.fetchone()
+                if not row:
+                    fallidos.append({
+                        "usuario": est,
+                        "error": "Curso no encontrado"
+                    })
+                    continue    
+                id_curso = row[0]
 
-            # 3) Crear inscripción
-            cursor.execute(
-                "INSERT INTO inscripciones (id_usuario, id_curso, fecha_inscripcion) VALUES (%s,%s,CURRENT_DATE) RETURNING id_inscripcion",
-                (id_usuario, id_curso),
-            )
-            id_insc = cursor.fetchone()[0]
+                # Automatizacion contrasena
+                hashed = generate_password_hash(
+                    generar_contrasena(est["apellido"], est["documento"])
+                )
+                # 2) Insertar usuario y obtener id_usuario
+                cursor.execute(
+                    """
+                    INSERT INTO Usuarios (nombre, apellido, email, contrasena, documento, pais_origen, id_rol, fecha_nac, genero, pais_residencia, afiliacion_u, tipo_afiliacion, area_tematica, disciplina_cientifica)
+                    VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+                    RETURNING id_usuario
+                    """,
+                    (
+                        est["nombre"],
+                        est["apellido"],
+                        est["email"],
+                        hashed,
+                        est["documento"],
+                        est["pais_origen"],
+                        id_rol,
+                        est["fecha_nac"],
+                        est["genero"],
+                        est["pais_residencia"],
+                        est["afiliacion_u"],
+                        est["tipo_afiliacion"],
+                        est["area_tematica"],
+                        est["disciplina_cientifica"],
+                    ),
+                )
+                id_usuario = cursor.fetchone()[0]
+                # 3) Crear inscripción
+                cursor.execute(
+                    """
+                    INSERT INTO inscripciones (id_usuario,id_curso,fecha_inscripcion,modalidad,certificado_generado) 
+                    VALUES (%s,%s,%s,%s,%s) RETURNING id_inscripcion
+                    """,
+                    (id_usuario, id_curso,date.today(),est["modalidad"],False),
+                )
+                id_insc = cursor.fetchone()[0]
 
-            # 4) Crear nota inicial
-            cursor.execute(
-                "INSERT INTO notas (id_inscripcion, nota_final, nota_asistencia, nota_acumulada) VALUES (%s, %s, %s,%s)",
-                (id_insc, 0.00, 0.00, 0.00),
-            )
+                # 4) Crear nota inicial
+                cursor.execute(
+                    """INSERT INTO notas (id_inscripcion, nota_final, nota_asistencia, nota_acumulada) 
+                    VALUES (%s, %s, %s,%s)
+                    """,
+                    (id_insc, 0.00, 0.00, 0.00),
+                )
+                
+                registrados.append({
+                    "usuario": est,
+                    "id_usuario": id_usuario,
+                    "id_inscripcion": id_insc
+                })
 
-        conn.commit()
+            except Exception as e:
+                conn.rollback()
+                fallidos.append({
+                        "usuario": est,
+                        "error": str(e)
+                })
+                continue
 
-    except Exception:
+        conn.commit()  # confirmo todo lo que sí funcionó
+        return {"registrados": registrados, "fallidos": fallidos}
+    except Exception as e:
         if conn:
             conn.rollback()
-        raise
+        raise e
     finally:
         if conn:
             conn.close()
@@ -671,44 +682,64 @@ def crear_ponentes_bulk(lista_expositores):
 
 def crear_ponentes_con_lote(lista_ponentes):
     conn = None
+    registrados = []
+    fallidos = []
     try:
         conn = get_connection()
         cursor = conn.cursor()
-        id_rol = 2  # Ponente
+        id_rol = 2
 
         for p in lista_ponentes:
-            # 1) Generar y hashear contraseña
-            contrasena_auto = generar_contrasena(p["apellido"], p["documento"])
-            hashed = generate_password_hash(contrasena_auto)
+            try:
+                # 1) Generar y hashear contraseña
+                hashed = generate_password_hash(
+                    generar_contrasena(p["apellido"], p["documento"])
+                )
 
-            # 2) Insertar usuario
-            cursor.execute(
-                """
-                INSERT INTO Usuarios (nombre, apellido, email, contrasena, documento, pais_origen, id_rol, fecha_nac, genero, pais_residencia, afiliacion_u, tipo_afiliacion, area_tematica, disciplina_cientifica)
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-                RETURNING id_usuario
-                """,
-                (
-                    p["nombre"],
-                    p["apellido"],
-                    p["email"],
-                    hashed,
-                    p["documento"],
-                    p["pais_origen"],
-                    id_rol,
-                    p["fecha_nac"],
-                    p["genero"],
-                    p["pais_residencia"],
-                    p["afiliacion_u"],
-                    p["tipo_afiliacion"],
-                    p["area_tematica"],
-                    p["disciplina_cientifica"],
-                ),
-            )
-            # Opcional: recoger id_usuario si necesitas usarlo
-            _ = cursor.fetchone()[0]
+                # 2) Insertar usuario
+                cursor.execute(
+                    """
+                    INSERT INTO Usuarios 
+                        (nombre, apellido, email, contrasena, documento, pais_origen, id_rol, 
+                         fecha_nac, genero, pais_residencia, afiliacion_u, tipo_afiliacion, 
+                         area_tematica, disciplina_cientifica)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                    RETURNING id_usuario
+                    """,
+                    (
+                        p["nombre"],
+                        p["apellido"],
+                        p["email"],
+                        hashed,
+                        p["documento"],
+                        p["pais_origen"],
+                        id_rol,
+                        p["fecha_nac"],
+                        p["genero"],
+                        p["pais_residencia"],
+                        p["afiliacion_u"],
+                        p["tipo_afiliacion"],
+                        p["area_tematica"],
+                        p["disciplina_cientifica"],
+                    ),
+                )
+                # Opcional: recoger id_usuario si necesitas usarlo
+                id_usuario  = cursor.fetchone()[0]
 
-        conn.commit()
+                registrados.append({
+                    "usuario": p,
+                    "id_usuario": id_usuario
+                })
+            except Exception as e:
+                # Si falla un usuario, lo guardamos en fallidos con el error
+                fallidos.append({
+                    "usuario": p,
+                    "error": str(e)
+                })
+                conn.rollback()  # rollback solo para esa query
+                cursor = conn.cursor()  # reset cursor para continuar con el siguiente
+            conn.commit()
+            return {"registrados": registrados, "fallidos": fallidos}
 
     except Exception:
         if conn:
