@@ -243,14 +243,14 @@ def crear_estudiantes_con_inscripcion_con_lote(lista_estudiantes):
     conn = None
     registrados = []
     fallidos = []
+    id_rol = 3
     try:
         conn = get_connection()
         cursor = conn.cursor()
-        id_rol = 3
-
         for est in lista_estudiantes:
             try:
-
+                conn.rollback()  # limpio posibles restos
+                conn.autocommit = False
                 # 1) Buscar id_curso por nombre (case‐insensitive)
                 cursor.execute(
                     "SELECT id_curso FROM cursos WHERE LOWER(nombre) = LOWER(%s)",
@@ -258,6 +258,7 @@ def crear_estudiantes_con_inscripcion_con_lote(lista_estudiantes):
                 )
                 row = cursor.fetchone()
                 if not row:
+                    conn.rollback()
                     fallidos.append({
                         "usuario": est,
                         "error": "Curso no encontrado"
@@ -265,11 +266,20 @@ def crear_estudiantes_con_inscripcion_con_lote(lista_estudiantes):
                     continue    
                 id_curso = row[0]
 
+                # 2) Verificar duplicados (email o documento)
+                cursor.execute("SELECT 1 FROM usuarios WHERE email = %s OR documento = %s",
+                               (est["email"], est["documento"]))
+                if cursor.fetchone():
+                    conn.rollback()
+                    fallidos.append({"usuario": est, "error": "Usuario ya registrado"})
+                    continue
+
                 # Automatizacion contrasena
                 hashed = generate_password_hash(
                     generar_contrasena(est["apellido"], est["documento"])
                 )
-                # 2) Insertar usuario y obtener id_usuario
+
+                # 3) Insertar usuario y obtener id_usuario
                 cursor.execute(
                     """
                     INSERT INTO Usuarios (nombre, apellido, email, contrasena, documento, pais_origen, id_rol, fecha_nac, genero, pais_residencia, afiliacion_u, tipo_afiliacion, area_tematica, disciplina_cientifica)
@@ -294,7 +304,7 @@ def crear_estudiantes_con_inscripcion_con_lote(lista_estudiantes):
                     ),
                 )
                 id_usuario = cursor.fetchone()[0]
-                # 3) Crear inscripción
+                # 4) Crear inscripción
                 cursor.execute(
                     """
                     INSERT INTO inscripciones (id_usuario,id_curso,fecha_inscripcion,modalidad,certificado_generado) 
@@ -304,7 +314,7 @@ def crear_estudiantes_con_inscripcion_con_lote(lista_estudiantes):
                 )
                 id_insc = cursor.fetchone()[0]
 
-                # 4) Crear nota inicial
+                # 5) Crear nota inicial
                 cursor.execute(
                     """INSERT INTO notas (id_inscripcion, nota_final, nota_asistencia, nota_acumulada) 
                     VALUES (%s, %s, %s,%s)
@@ -334,6 +344,7 @@ def crear_estudiantes_con_inscripcion_con_lote(lista_estudiantes):
         raise e
     finally:
         if conn:
+            cursor.close()
             conn.close()
 
 
