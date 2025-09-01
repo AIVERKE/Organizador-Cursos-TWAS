@@ -87,7 +87,7 @@ def generar_certificados(rol_boton):
 
         if rol_boton == 3:
             # 1. Generar QR con la URL de validación
-            url = f"https://miapp.com/verificar/{row['id_inscripcion']}"
+            url = f"http://127.0.0.1:5000/cert/verificar/{row['id_inscripcion']}-0"
             qr_img = segno.make(url)
 
             # 2. Guardar QR en archivo temporal (FPDF no acepta BytesIO directamente)
@@ -97,7 +97,7 @@ def generar_certificados(rol_boton):
             # 3. Insertar QR en el PDF
             pdf.image(qr_path, x=740, y=500, w=80, h=80)  # ajusta x,y,w,h a tu diseño
         elif rol_boton == 2:            
-            url = f"https://miapp.com/verificar/{row['id_usuario'] or ''}-{row['id_curso_doc']}"
+            url = f"http://127.0.0.1:5000/cert/verificar/{row['id_usuario'] or ''}-{row['id_curso_doc']}"
             qr_img = segno.make(url)
 
             # 2. Guardar QR en archivo temporal (FPDF no acepta BytesIO directamente)
@@ -240,7 +240,7 @@ def descargar_certificado(user_id):
         pdf.multi_cell(600, 14, docente+" \nDocente de Materia", 0, "C")
     
         # 1. Generar QR con la URL de validación
-        url = f"https://miapp.com/verificar/{result.id_inscripcion}"
+        url = f"http://127.0.0.1:5000/cert/verificar/{result.id_inscripcion}-0"
         qr_img = segno.make(url)
 
         # 2. Guardar QR en archivo temporal (FPDF no acepta BytesIO directamente)
@@ -251,7 +251,7 @@ def descargar_certificado(user_id):
         pdf.image(qr_path, x=740, y=500, w=80, h=80)  # ajusta x,y,w,h a tu diseño
 
     elif rol == 2:            
-            url = f"https://miapp.com/verificar/{result.id_usuario or ''}-{result.id_curso_doc}"
+            url = f"http://127.0.0.1:5000/cert/verificar/{result.id_usuario or ''}-{result.id_curso_doc}"
             qr_img = segno.make(url)
 
             # 2. Guardar QR en archivo temporal (FPDF no acepta BytesIO directamente)
@@ -378,7 +378,7 @@ def enviar_certificado(user_id):
             pdf.multi_cell(600, 14, docente+" \nDocente de Materia", 0, "C")
             
             # 1. Generar QR con la URL de validación
-            url = f"https://miapp.com/verificar/{id_inscripcion}"
+            url = f"http://127.0.0.1:5000/cert/verificar/{id_inscripcion}-0"
             qr_img = segno.make(url)
 
             # 2. Guardar QR en archivo temporal (FPDF no acepta BytesIO directamente)
@@ -389,7 +389,7 @@ def enviar_certificado(user_id):
             pdf.image(qr_path, x=740, y=500, w=80, h=80)  # ajusta x,y,w,h a tu diseño
 
         elif rol == 2:            
-                url = f"https://miapp.com/verificar/{id_usuario or ''}-{id_curso_doc}"
+                url = f"http://127.0.0.1:5000/cert/verificar/{id_usuario or ''}-{id_curso_doc}"
                 qr_img = segno.make(url)
 
                 # 2. Guardar QR en archivo temporal (FPDF no acepta BytesIO directamente)
@@ -540,3 +540,82 @@ def enviar_certificados_todos(rol_boton):
     # GET: mostrar formulario
     return render_template("Certificados/SendMuchosCertificados.html", rol_boton=rol_boton)
 
+@certificate_bp.route("/verificar/<string:search>")
+def verificar(search):
+    partes = search.split('-')
+    id_principal = int(partes[0])
+    id_extra = int(partes[1])
+
+    result = None
+    tipo = None
+
+    with db.engine.connect() as conn:
+        if id_extra == 0:
+            # Caso estudiante: buscamos por inscripcion
+            tipo = "estudiante"
+            query = text("""
+                SELECT 
+                    u.id_usuario,
+                    i.id_inscripcion,
+                    p.nombre as docente,
+                    p.apellido as doc_ape,
+                    u.nombre as nombre, 
+                    u.apellido as apellido, 
+                    u.email as email,
+                    u.documento as documento,
+                    i.modalidad as modalidad, 
+                    i.fecha_inscripcion as fecha_inscripcion,
+                    c.nombre as curso_nombre,
+                    n.nota_final as nota,
+                    u.id_rol as rol,
+                    cur.nombre as materia_dada,
+                    cur.id_curso as id_curso_doc
+                FROM usuarios u
+                LEFT JOIN inscripciones i ON i.id_usuario = u.id_usuario
+                LEFT JOIN cursos c ON c.id_curso = i.id_curso
+                LEFT JOIN notas n ON n.id_inscripcion = i.id_inscripcion
+                LEFT JOIN usuarios p ON p.id_usuario = c.id_ponente
+                LEFT JOIN cursos cur ON cur.id_ponente = u.id_usuario
+                WHERE i.id_inscripcion = :id_inscripcion
+                LIMIT 1
+            """)
+            result = conn.execute(query, {"id_inscripcion": id_principal}).fetchone()
+        else:
+            # Caso docente
+            tipo = "docente"
+            query = text("""
+                SELECT 
+                    u.id_usuario,
+                    i.id_inscripcion,
+                    p.nombre as docente,
+                    p.apellido as doc_ape,
+                    u.nombre as nombre, 
+                    u.apellido as apellido, 
+                    u.email as email,
+                    u.documento as documento,
+                    i.modalidad as modalidad, 
+                    i.fecha_inscripcion as fecha_inscripcion,
+                    c.nombre as curso_nombre,
+                    n.nota_final as nota,
+                    u.id_rol as rol,
+                    cur.nombre as materia_dada,
+                    cur.id_curso as id_curso_doc
+                FROM usuarios u
+                LEFT JOIN inscripciones i ON i.id_usuario = u.id_usuario
+                LEFT JOIN cursos c ON c.id_curso = i.id_curso
+                LEFT JOIN notas n ON n.id_inscripcion = i.id_inscripcion
+                LEFT JOIN usuarios p ON p.id_usuario = c.id_ponente
+                LEFT JOIN cursos cur ON cur.id_ponente = u.id_usuario
+                WHERE p.id_usuario = :id_usuario
+                AND c.id_curso = :id_curso
+                LIMIT 1
+            """)
+            result = conn.execute(query, {"id_usuario": id_principal, "id_curso": id_extra}).fetchone()
+
+    # Renderizamos resultados
+    return render_template(
+        "Certificados/verificar.html",
+        existe=result is not None,
+        certificado=result,
+        tipo=tipo
+    )
