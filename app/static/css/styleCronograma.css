@@ -1,0 +1,243 @@
+/* Estilos para el cronograma con prefijo ct- */
+.ct-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.ct-subtitle {
+    color: #7f8c8d;
+    font-size: 18px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.ct-calendar-container {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.ct-week-days {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 15px;
+}
+
+.ct-day {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.ct-day:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+.ct-day.active {
+    background: #3498db;
+    color: white;
+}
+
+.ct-day-number {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 5px;
+    color: #2c3e50;
+}
+
+.ct-day.active .ct-day-number {
+    color: white;
+}
+
+.ct-day-name {
+    font-size: 16px;
+    color: #7f8c8d;
+    margin-bottom: 15px;
+}
+
+.ct-day.active .ct-day-name {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.ct-event-preview {
+    font-size: 14px;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #eee;
+}
+
+.ct-day.active .ct-event-preview {
+    border-top: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.ct-event-preview div {
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+}
+
+.ct-event-time {
+    background: #f1f8ff;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+    margin-right: 8px;
+    color: #3498db;
+}
+
+.ct-day.active .ct-event-time {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+.ct-agenda-view {
+    background: white;
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    display: none;
+}
+
+.ct-agenda-view.active {
+    display: block;
+    animation: ctFadeIn 0.5s ease;
+}
+
+@keyframes ctFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.ct-agenda-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.ct-agenda-title {
+    font-size: 24px;
+    color: #2c3e50;
+    font-weight: 600;
+}
+
+.ct-close-agenda {
+    background: #e74c3c;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.ct-close-agenda:hover {
+    background: #c0392b;
+}
+
+.ct-events-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.ct-event-item {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+    border-radius: 10px;
+    background: #f9f9f9;
+    transition: transform 0.3s;
+}
+
+.ct-event-item:hover {
+    transform: translateX(5px);
+    background: #f1f8ff;
+}
+
+.ct-event-time-large {
+    min-width: 100px;
+    text-align: center;
+}
+
+.ct-event-hour {
+    font-size: 18px;
+    font-weight: 700;
+    color: #3498db;
+}
+
+.ct-event-duration {
+    font-size: 14px;
+    color: #7f8c8d;
+}
+
+.ct-event-details {
+    flex: 1;
+}
+
+.ct-event-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #2c3e50;
+}
+
+.ct-event-description {
+    color: #7f8c8d;
+    margin-bottom: 10px;
+}
+
+.ct-event-location {
+    display: flex;
+    align-items: center;
+    color: #3498db;
+    font-size: 14px;
+}
+
+.ct-event-location i {
+    margin-right: 5px;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+    .ct-week-days {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .ct-week-days {
+        grid-template-columns: 1fr;
+    }
+    
+    .ct-agenda-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+    
+    .ct-event-item {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .ct-event-time-large {
+        text-align: left;
+        display: flex;
+        gap: 15px;
+        align-items: center;
+    }
+}
