@@ -1,8 +1,11 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, current_app
 import smtplib
 from email.message import EmailMessage
+import os
+
 from . import mail_bp as email_bp
-@email_bp.route("/send-email", methods=["POST"])
+
+@email_bp.route("/", methods=["POST"])
 def send_email():
     data = request.json
     subject = data.get("subject")
@@ -20,8 +23,10 @@ def send_email():
     msg["Subject"] = subject
     msg.set_content(body)
 
-    # Adjuntar imagen de prueba
-    with open("static/ramires.jpeg", "rb") as f:
+    # ✅ Construir ruta absoluta al archivo en static
+    file_path = os.path.join(current_app.root_path, "static", "ramires.jpeg")
+
+    with open(file_path, "rb") as f:
         msg.add_attachment(
             f.read(),
             maintype="image",
