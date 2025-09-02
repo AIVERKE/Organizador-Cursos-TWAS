@@ -238,10 +238,9 @@ def generar_contrasena(apellido, documento):
     # return apellido_limpio + primeros_digitos[:3] #primeros 3 digidtos
     return apellido_limpio + primeros_digitos
 
-
 def crear_estudiantes_con_inscripcion_con_lote(lista_estudiantes):
     conn = None
-    registrados = []
+    exitosos = []
     fallidos = []
     id_rol = 3
     try:
@@ -275,8 +274,11 @@ def crear_estudiantes_con_inscripcion_con_lote(lista_estudiantes):
                     continue
 
                 # Automatizacion contrasena
-                hashed = generate_password_hash(
-                    generar_contrasena(est["apellido"], est["documento"])
+                # hashed = generate_password_hash(
+                #     generar_contrasena(est["apellido"], est["documento"])
+                # )
+
+                hashed = generate_password_hash(est["email"]
                 )
 
                 # 3) Insertar usuario y obtener id_usuario
@@ -321,8 +323,9 @@ def crear_estudiantes_con_inscripcion_con_lote(lista_estudiantes):
                     """,
                     (id_insc, 0.00, 0.00, 0.00),
                 )
-                
-                registrados.append({
+                conn.commit()
+
+                exitosos.append({
                     "usuario": est,
                     "id_usuario": id_usuario,
                     "id_inscripcion": id_insc
@@ -335,9 +338,7 @@ def crear_estudiantes_con_inscripcion_con_lote(lista_estudiantes):
                         "error": str(e)
                 })
                 continue
-
-        conn.commit()  # confirmo todo lo que sí funcionó
-        return {"registrados": registrados, "fallidos": fallidos}
+        return {"exitosos": exitosos, "fallidos": fallidos}
     except Exception as e:
         if conn:
             conn.rollback()
@@ -693,7 +694,7 @@ def crear_ponentes_bulk(lista_expositores):
 
 def crear_ponentes_con_lote(lista_ponentes):
     conn = None
-    registrados = []
+    exitosos = []
     fallidos = []
     try:
         conn = get_connection()
@@ -736,8 +737,8 @@ def crear_ponentes_con_lote(lista_ponentes):
                 )
                 # Opcional: recoger id_usuario si necesitas usarlo
                 id_usuario  = cursor.fetchone()[0]
-
-                registrados.append({
+                conn.commit()
+                exitosos.append({
                     "usuario": p,
                     "id_usuario": id_usuario
                 })
@@ -749,8 +750,7 @@ def crear_ponentes_con_lote(lista_ponentes):
                 })
                 conn.rollback()  # rollback solo para esa query
                 cursor = conn.cursor()  # reset cursor para continuar con el siguiente
-            conn.commit()
-            return {"registrados": registrados, "fallidos": fallidos}
+        return {"exitosos": exitosos, "fallidos": fallidos}
 
     except Exception:
         if conn:

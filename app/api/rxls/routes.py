@@ -195,10 +195,14 @@ def index(tipo):
 
             try:
                 df = load_temp_df(tmp_path)
+
+                for col in df.select_dtypes(include=["datetime64[ns]"]).columns:
+                    df[col] = df[col].dt.strftime("%Y-%m-%d")
+                    df[col] = df[col].replace("NaT", None)
                 # pasar a lista de dicts al controlador
                 data = df.to_dict("records")
-                resultado = func_guardar(data)  # {"registrados": [...], "fallidos": [...]}
-                registrados = resultado.get("registrados", [])
+                resultado = func_guardar(data)
+                exitosos = resultado.get("exitosos", [])
                 fallidos = resultado.get("fallidos", [])
 
                 session["ultimo_guardado"] = {
