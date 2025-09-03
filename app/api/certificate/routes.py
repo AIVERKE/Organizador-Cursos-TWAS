@@ -7,6 +7,8 @@ from flask import (
     redirect,
     url_for,
 )
+import io
+import segno
 from flask_mail import Mail, Message
 from sqlalchemy import text
 from app import db, mail
@@ -33,6 +35,7 @@ def generar_certificados(rol_boton):
     with db.engine.connect() as conn:
         query = """
             SELECT 
+                u.id_usuario,
                 i.id_inscripcion,
                 p.nombre as docente,
                 p.apellido as doc_ape,
@@ -43,7 +46,8 @@ def generar_certificados(rol_boton):
                 i.fecha_inscripcion as fecha_inscripcion,
                 c.nombre as curso_nombre,
                 n.nota_final as nota,
-                cur.nombre as materia_dada
+                cur.nombre as materia_dada,
+                cur.id_curso as id_curso_doc
             FROM usuarios u
             LEFT JOIN inscripciones i ON i.id_usuario = u.id_usuario
             LEFT JOIN cursos c ON c.id_curso = i.id_curso
@@ -59,14 +63,14 @@ def generar_certificados(rol_boton):
         return "No hay usuarios para este rol", 404
 
     for _, row in participants.iterrows():
-        participante = row["nombre"] +" "+ row["apellido"]
-        documento = row["documento"]
-        docente = row["docente"] + " "+row["doc_ape"]
+        participante = f"{row['nombre'] or ''} {row['apellido'] or ''}".strip()
+        documento = row['documento'] or ''
+        docente = f"{row['docente'] or ''} {row['doc_ape'] or ''}".strip()
         mensaje = ''
         curso=''        
         titulo="CERTIFICADO DE APROBACION\nIII TYAN Hands-on Schools en Bolivia 2025" if row["modalidad"] == 'catedra-laboratorio' and int(row["nota"]) > 64 else "CERTIFICADO\nIII TYAN Hands-on Schools en Bolivia 2025"
         if (rol_boton) == 3:
-            curso = row["curso_nombre"]
+            curso = row["curso_nombre"] or ''
             if row["modalidad"] == 'catedra-laboratorio' and int(row["nota"]) > 64 :
                 mensaje=f"""Ha completado exitosamente el curso de "{curso}" dictado por {docente}, inaugurado dentro del postgrado de Ciencias Químicas\n de la Facultad de Ciencias Puras y Naturales, de la Universidad Mayor de San Andrés. Realizado en la ciudad La Paz del '11 al 15 de Marzo del 2024', con una duración de 30 hrs. académicas equivalente a 1 CLAR (Crédito Latinoamericano de Referencia)."""
             else:
@@ -80,6 +84,28 @@ def generar_certificados(rol_boton):
         pdf.add_page()
         template_path = os.path.join(base_dir, "Input", "certificate_template.jpg")
         pdf.image(template_path, 0, 0, w=842, h=595)                
+
+        if rol_boton == 3:
+            # 1. Generar QR con la URL de validación
+            url = f"http://127.0.0.1:5000/cert/verificar/{row['id_inscripcion']}-0"
+            qr_img = segno.make(url)
+
+            # 2. Guardar QR en archivo temporal (FPDF no acepta BytesIO directamente)
+            qr_path = os.path.join(folder, f"qr_{row['id_inscripcion']}.png")
+            qr_img.save(qr_path, scale=5)  # scale=5 controla el tamaño
+
+            # 3. Insertar QR en el PDF
+            pdf.image(qr_path, x=740, y=500, w=80, h=80)  # ajusta x,y,w,h a tu diseño
+        elif rol_boton == 2:            
+            url = f"http://127.0.0.1:5000/cert/verificar/{row['id_usuario'] or ''}-{row['id_curso_doc']}"
+            qr_img = segno.make(url)
+
+            # 2. Guardar QR en archivo temporal (FPDF no acepta BytesIO directamente)
+            qr_path = os.path.join(folder, f"qr_{row['id_usuario'] or ''}-{row['id_curso_doc']}.png")
+            qr_img.save(qr_path, scale=5)  # scale=5 controla el tamaño
+
+            # 3. Insertar QR en el PDF
+            pdf.image(qr_path, x=740, y=500, w=80, h=80)  # ajusta x,y,w,h a tu diseño
 
         pdf.set_font("Arial", "B", 50)
         pdf.set_text_color(0, 20, 60)
@@ -111,7 +137,6 @@ def generar_certificados(rol_boton):
                     {"id": row["id_inscripcion"]}
                 )
 
-
     zip_name = f"certificados_{datetime.now().strftime('%Y%m%d_%H%M%S')}.zip"
     if rol_boton == 3:
         zip_name = f"ESTUDIANTES: certificados_{datetime.now().strftime('%Y%m%d_%H%M%S')}.zip"
@@ -141,6 +166,7 @@ def descargar_certificado(user_id):
     with db.engine.connect() as conn:
         query = text("""
             SELECT 
+                u.id_usuario,
                 i.id_inscripcion,
                 p.nombre as docente,
                 p.apellido as doc_ape,
@@ -152,7 +178,8 @@ def descargar_certificado(user_id):
                 c.nombre as curso_nombre,
                 n.nota_final as nota,
                 u.id_rol as rol,
-                cur.nombre as materia_dada
+                cur.nombre as materia_dada,
+                cur.id_curso as id_curso_doc
             FROM usuarios u
             LEFT JOIN inscripciones i ON i.id_usuario = u.id_usuario
             LEFT JOIN cursos c ON c.id_curso = i.id_curso
@@ -170,7 +197,7 @@ def descargar_certificado(user_id):
     # Datos
     participante = result.nombre + " " + result.apellido
     documento = result.documento
-    docente = 'Dr(a). '+result.docente + " " + result.doc_ape
+    docente = f"Dr(a). {result.docente or ''} {result.doc_ape or ''}".strip()    
     curso = result.curso_nombre or ''
     rol = result.rol
 
@@ -211,7 +238,30 @@ def descargar_certificado(user_id):
         pdf.set_text_color(0, 0, 0)
         pdf.set_xy(0, 510)
         pdf.multi_cell(600, 14, docente+" \nDocente de Materia", 0, "C")
-            
+    
+        # 1. Generar QR con la URL de validación
+        url = f"http://127.0.0.1:5000/cert/verificar/{result.id_inscripcion}-0"
+        qr_img = segno.make(url)
+
+        # 2. Guardar QR en archivo temporal (FPDF no acepta BytesIO directamente)
+        qr_path = os.path.join(folder, f"qr_{result.id_inscripcion}.png")
+        qr_img.save(qr_path, scale=5)  # scale=5 controla el tamaño
+
+        # 3. Insertar QR en el PDF
+        pdf.image(qr_path, x=740, y=500, w=80, h=80)  # ajusta x,y,w,h a tu diseño
+
+    elif rol == 2:            
+            url = f"http://127.0.0.1:5000/cert/verificar/{result.id_usuario or ''}-{result.id_curso_doc}"
+            qr_img = segno.make(url)
+
+            # 2. Guardar QR en archivo temporal (FPDF no acepta BytesIO directamente)
+            qr_path = os.path.join(folder, f"qr_{result.id_usuario or ''}-{result.id_curso_doc}.png")
+            qr_img.save(qr_path, scale=5)  # scale=5 controla el tamaño
+
+            # 3. Insertar QR en el PDF
+            pdf.image(qr_path, x=740, y=500, w=80, h=80)  # ajusta x,y,w,h a tu diseño
+
+
     file_name = f"{documento.replace(' ', '_')}_{participante.replace(' ', '_')}_{curso.replace(' ', '_')}_certificate.pdf"
     file_path = os.path.join(folder, file_name)
     pdf.output(file_path)
@@ -244,6 +294,7 @@ def enviar_certificado(user_id):
     with db.engine.connect() as conn:
         query = text("""
             SELECT 
+                u.id_usuario,
                 i.id_inscripcion,
                 p.nombre as docente,
                 p.apellido as doc_ape,
@@ -256,7 +307,8 @@ def enviar_certificado(user_id):
                 c.nombre as curso_nombre,
                 n.nota_final as nota,
                 u.id_rol as rol,
-                cur.nombre as materia_dada
+                cur.nombre as materia_dada,
+                cur.id_curso as id_curso_doc
             FROM usuarios u
             LEFT JOIN inscripciones i ON i.id_usuario = u.id_usuario
             LEFT JOIN cursos c ON c.id_curso = i.id_curso
@@ -271,7 +323,7 @@ def enviar_certificado(user_id):
         if not result:
             return "Usuario no encontrado", 404
 
-        (id_inscripcion, docente, doc_ape, student, apellido, email, documento, modalidad, fecha_inscripcion, curso_nombre, nota, rol, materia_dada) = result
+        (id_usuario, id_inscripcion, docente, doc_ape, student, apellido, email, documento, modalidad, fecha_inscripcion, curso_nombre, nota, rol, materia_dada, id_curso_doc) = result
 
     if request.method == "POST":
         asunto = request.form["asunto"]
@@ -324,7 +376,28 @@ def enviar_certificado(user_id):
             pdf.set_text_color(0, 0, 0)
             pdf.set_xy(0, 510)
             pdf.multi_cell(600, 14, docente+" \nDocente de Materia", 0, "C")
+            
+            # 1. Generar QR con la URL de validación
+            url = f"http://127.0.0.1:5000/cert/verificar/{id_inscripcion}-0"
+            qr_img = segno.make(url)
 
+            # 2. Guardar QR en archivo temporal (FPDF no acepta BytesIO directamente)
+            qr_path = os.path.join(folder, f"qr_{id_inscripcion}.png")
+            qr_img.save(qr_path, scale=5)  # scale=5 controla el tamaño
+
+            # 3. Insertar QR en el PDF
+            pdf.image(qr_path, x=740, y=500, w=80, h=80)  # ajusta x,y,w,h a tu diseño
+
+        elif rol == 2:            
+                url = f"http://127.0.0.1:5000/cert/verificar/{id_usuario or ''}-{id_curso_doc}"
+                qr_img = segno.make(url)
+
+                # 2. Guardar QR en archivo temporal (FPDF no acepta BytesIO directamente)
+                qr_path = os.path.join(folder, f"qr_{id_usuario or ''}-{id_curso_doc}.png")
+                qr_img.save(qr_path, scale=5)  # scale=5 controla el tamaño
+
+                # 3. Insertar QR en el PDF
+                pdf.image(qr_path, x=740, y=500, w=80, h=80)  # ajusta x,y,w,h a tu diseño
         file_name = f"{documento.replace(' ', '_')}_{student.replace(' ', '_')}_{apellido.replace(' ', '_')}_{curso.replace(' ', '_')}_certificate.pdf"
         output_path = os.path.join(folder, file_name)
         pdf.output(output_path)
@@ -467,3 +540,82 @@ def enviar_certificados_todos(rol_boton):
     # GET: mostrar formulario
     return render_template("Certificados/SendMuchosCertificados.html", rol_boton=rol_boton)
 
+@certificate_bp.route("/verificar/<string:search>")
+def verificar(search):
+    partes = search.split('-')
+    id_principal = int(partes[0])
+    id_extra = int(partes[1])
+
+    result = None
+    tipo = None
+
+    with db.engine.connect() as conn:
+        if id_extra == 0:
+            # Caso estudiante: buscamos por inscripcion
+            tipo = "estudiante"
+            query = text("""
+                SELECT 
+                    u.id_usuario,
+                    i.id_inscripcion,
+                    p.nombre as docente,
+                    p.apellido as doc_ape,
+                    u.nombre as nombre, 
+                    u.apellido as apellido, 
+                    u.email as email,
+                    u.documento as documento,
+                    i.modalidad as modalidad, 
+                    i.fecha_inscripcion as fecha_inscripcion,
+                    c.nombre as curso_nombre,
+                    n.nota_final as nota,
+                    u.id_rol as rol,
+                    cur.nombre as materia_dada,
+                    cur.id_curso as id_curso_doc
+                FROM usuarios u
+                LEFT JOIN inscripciones i ON i.id_usuario = u.id_usuario
+                LEFT JOIN cursos c ON c.id_curso = i.id_curso
+                LEFT JOIN notas n ON n.id_inscripcion = i.id_inscripcion
+                LEFT JOIN usuarios p ON p.id_usuario = c.id_ponente
+                LEFT JOIN cursos cur ON cur.id_ponente = u.id_usuario
+                WHERE i.id_inscripcion = :id_inscripcion
+                LIMIT 1
+            """)
+            result = conn.execute(query, {"id_inscripcion": id_principal}).fetchone()
+        else:
+            # Caso docente
+            tipo = "docente"
+            query = text("""
+                SELECT 
+                    u.id_usuario,
+                    i.id_inscripcion,
+                    p.nombre as docente,
+                    p.apellido as doc_ape,
+                    u.nombre as nombre, 
+                    u.apellido as apellido, 
+                    u.email as email,
+                    u.documento as documento,
+                    i.modalidad as modalidad, 
+                    i.fecha_inscripcion as fecha_inscripcion,
+                    c.nombre as curso_nombre,
+                    n.nota_final as nota,
+                    u.id_rol as rol,
+                    cur.nombre as materia_dada,
+                    cur.id_curso as id_curso_doc
+                FROM usuarios u
+                LEFT JOIN inscripciones i ON i.id_usuario = u.id_usuario
+                LEFT JOIN cursos c ON c.id_curso = i.id_curso
+                LEFT JOIN notas n ON n.id_inscripcion = i.id_inscripcion
+                LEFT JOIN usuarios p ON p.id_usuario = c.id_ponente
+                LEFT JOIN cursos cur ON cur.id_ponente = u.id_usuario
+                WHERE p.id_usuario = :id_usuario
+                AND c.id_curso = :id_curso
+                LIMIT 1
+            """)
+            result = conn.execute(query, {"id_usuario": id_principal, "id_curso": id_extra}).fetchone()
+
+    # Renderizamos resultados
+    return render_template(
+        "Certificados/verificar.html",
+        existe=result is not None,
+        certificado=result,
+        tipo=tipo
+    )

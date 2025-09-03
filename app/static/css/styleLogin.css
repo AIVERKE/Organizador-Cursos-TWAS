@@ -1,9 +1,10 @@
 /* Estilos base */
-body, html {
+body,
+html {
   height: 100%;
   margin: 0;
   font-family: 'Montserrat Alternates', sans-serif;
-  padding-top: 80px;
+  padding-top: 27px;
 }
 
 /* Contenedor principal */
@@ -103,7 +104,7 @@ body, html {
 }
 
 .forgot-link:hover {
-  color: #0084d6;
+  color: #006ab0;
   text-decoration: underline;
 }
 
@@ -159,15 +160,15 @@ body, html {
   .display-5 {
     font-size: 1.8rem;
   }
-  
+
   .lead {
     font-size: 1rem;
   }
-  
+
   .left-panel {
     padding: 2rem !important;
   }
-  
+
   .form-content {
     margin-top: 0;
     padding: 0.5rem;
@@ -175,34 +176,35 @@ body, html {
 }
 
 @media (max-width: 768px) {
-  body, html {
+  body,
+  html {
     padding-top: 70px;
   }
-  
+
   .login-container {
     min-height: calc(100vh - 70px);
   }
-  
+
   .display-5 {
     font-size: 1.6rem;
     margin-bottom: 1rem !important;
   }
-  
+
   .left-panel {
     padding: 1.5rem !important;
     justify-content: flex-start;
   }
-  
+
   .form-content {
     padding-top: 0;
   }
-  
+
   /* CORRECCIÓN: Eliminar margen superior excesivo */
   .mb-3 {
     margin-bottom: 1rem !important;
     margin-top: 0 !important;
   }
-  
+
   .navbar-spacer {
     height: 60px !important;
   }
@@ -212,29 +214,29 @@ body, html {
   .display-5 {
     font-size: 1.4rem;
   }
-  
+
   .display-5 small {
     font-size: 1rem;
   }
-  
+
   .left-panel {
     padding: 1rem !important;
   }
-  
+
   .form-content {
     padding: 0.25rem;
   }
-  
+
   .form-control {
     padding: 0.7rem 0.9rem;
     font-size: 0.95rem;
   }
-  
+
   .btn-login {
     font-size: 1rem;
     padding: 0.7rem;
   }
-  
+
   .forgot-link {
     font-size: 0.8rem;
   }
@@ -268,7 +270,7 @@ body, html {
     align-items: flex-start;
     gap: 1rem;
   }
-  
+
   .forgot-link {
     margin-left: 0;
   }

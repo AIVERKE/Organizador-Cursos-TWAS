@@ -14,7 +14,8 @@
 
   <!-- CSS al final para poder sobrescribir -->
   <link rel="stylesheet" href="{{ url_for('static', filename='css/styleinicio.css') }}">
-
+  <!--CSS de la tabla-->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styleCronograma.css') }}">
   {% block extra_css %}{% endblock %}
 </head>
 <body>
@@ -59,6 +60,7 @@
                 <i class="fa-solid fa-globe"></i>
                 <span class="i18n i18n-es">ENGLISH</span><span class="i18n i18n-en">ESPAÑOL</span>
             </button>
+
 
             <!--
 
@@ -111,18 +113,21 @@
       </div>-->
 
       <!-- Columna de logos (lado derecho) -->
-  <div class="col-12 col-md-3">
-    <div class="logo-column">
-    <!-- Logos en 2 columnas de 2 -->
-        <div class="logo-grid">
-          <img src="{{ url_for('static', filename='images/TWAS_Logo.webp') }}" alt="UNESCO-TWAS" class="footer-logo">
-          <img src="{{ url_for('static', filename='images/TYAN.webp') }}" alt="TYAN" class="footer-logo">
-         <!--</div>-->
-       <!-- <div class="logo-grid2"> -->
-         <img src="{{ url_for('static', filename='images/EscudoUMSA.png') }}" alt="Logo UMSA" class="footer-logo">
-          <img src="{{ url_for('static', filename='images/EscudoFCPN.webp') }}" alt="Escudo FCPN" class="footer-logo">
-          <img src="{{ url_for('static', filename='images/CarreraQuimica.png') }}" alt="Logo UMSA" class="footer-logo">
-       </div>
+      <div class="col-12 col-md-3">
+        <class="logo-column">
+         <!-- Logos en 2 columnas de 2 -->
+          <div class="logo-grid">
+            <img src="{{ url_for('static', filename='images/TWAS_Logo.webp') }}" alt="UNESCO-TWAS" class="footer-logo">
+            <img src="{{ url_for('static', filename='images/TYAN.webp') }}" alt="TYAN" class="footer-logo">
+            <img src="{{ url_for('static', filename='images/EmbajadaBrasil.png') }}" alt="TYAN" class="footer-logo">
+          </div>
+          <div class="logo-grid2"> 
+              <img src="{{ url_for('static', filename='images/EscudoUMSA.png') }}" alt="Logo UMSA" class="logo-umsa">
+              <img src="{{ url_for('static', filename='images/EscudoFCPN.webp') }}" alt="Escudo FCPN" class="footer-logo">
+              <img src="{{ url_for('static', filename='images/CarreraQuimica.png') }}" alt="Logo UMSA" class="footer-logo">
+              <img src="{{ url_for('static', filename='images/ing-quimica.jpg') }}" alt="Logo UMSA" class="footer-logo">
+          </div>
+          
           
           <!-- Botones redes sociales 
           <div class="social-buttons d-flex justify-content-center justify-content-md-end gap-2 mt-3">
@@ -160,6 +165,7 @@
   <!-- Bootstrap (local) -->
   <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
   <script src="{{ url_for('static', filename='js/botonTraductor.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/CronogramaActividades.js') }}"></script>
 
   {% block extra_js %}{% endblock %}
 </body>
