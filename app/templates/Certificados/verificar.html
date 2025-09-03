@@ -1,0 +1,23 @@
+{% if existe %}
+  {% if tipo == "estudiante" %}
+    <h2>✅ Certificado encontrado (Estudiante)</h2>
+    <p><b>Nombre:</b> {{ certificado.nombre }} {{ certificado.apellido }}</p>
+    <p><b>Email:</b> {{ certificado.email }}</p>
+    <p><b>Documento:</b> {{ certificado.documento }}</p>
+    <p><b>Curso inscrito:</b> {{ certificado.curso_nombre }}</p>
+    <p><b>Modalidad:</b> {{ certificado.modalidad }}</p>
+    <p><b>Fecha de inscripción:</b> {{ certificado.fecha_inscripcion }}</p>
+    <p><b>Nota final:</b> {{ certificado.nota }}</p>
+    <p><b>Docente:</b> {{ certificado.docente }} {{ certificado.doc_ape }}</p>
+
+  {% elif tipo == "docente" %}
+    <h2>✅ Certificado encontrado (Docente)</h2>
+    <p><b>Docente:</b> {{ certificado.docente }} {{ certificado.doc_ape }}</p>
+    <!-- <p><b>Email:</b> {{ certificado.email }}</p>
+    <p><b>Documento:</b> {{ certificado.documento }}</p> -->
+    <p><b>Materia dictada:</b> {{ certificado.curso_nombre }}</p>
+    <!-- <p><b>ID curso:</b> {{ certificado.id_curso_doc }}</p> -->
+  {% endif %}
+{% else %}
+  <h2>❌ No existe certificado</h2>
+{% endif %}
