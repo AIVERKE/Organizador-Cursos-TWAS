@@ -1,107 +1,192 @@
 <!doctype html>
 <html>
 <head>
+  <meta charset="utf-8">
   <title>Subir {{ titulo }}</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
   <style>
     .back-arrow img { width: 30px; height: auto; }
     .columnas-recomendadas { font-size: 0.9rem; margin-bottom: 10px; }
+    .small-muted { font-size: .85rem; color: #6c757d; }
+    .file-info { font-size: .85rem; margin-top: 5px; }
+    .preview-note { font-size: .9rem; color: #555; margin-bottom: 10px; }
   </style>
 </head>
 
-  <body class="container mt-4">
-    <div class="back-arrow">
-      <a href="{{ url_for('auth.dashboard') }}">
-        <img  src="{{ url_for('static', filename='images/Flecha-izq.png') }}">
-      </a>
+<body class="container mt-4">
+  <div class="back-arrow mb-3">
+    <a href="{{ url_for('auth.dashboard') }}">
+      <img src="{{ url_for('static', filename='images/Flecha-izq.png') }}" alt="volver">
+    </a>
+  </div>
+
+  <h2>Subir archivo Excel o CSV para {{ titulo }}</h2>
+
+  {% if columnas_recomendadas %}
+    <h4 class="mt-4">Columnas recomendadas para {{ titulo }}:</h4>
+    <div class="table-responsive">
+      <table class="table table-bordered">
+        <thead class="table-light">
+          <tr>
+            {% for col in columnas_recomendadas %}
+              <th>{{ col|e }}</th>
+            {% endfor %}
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            {% for val in ejemplo_fila %}
+              <td>{{ val|e }}</td>
+            {% endfor %}
+          </tr>
+        </tbody>
+      </table>
     </div>
 
-    <h2>Subir archivo Excel o CSV para {{ titulo }}</h2>
-    
-    {% if columnas_recomendadas %}
-      <h4 class="mt-4">Columnas recomendadas para {{ titulo }}:</h4>
-      <div class="table-responsive">
-        <table class="table table-bordered">
-          <thead class="table-light">
-            <tr>
-              {% for col in columnas_recomendadas %}
-                <th>{{ col }}</th>
-              {% endfor %}
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              {% for val in ejemplo_fila %}
-                <td>{{ val }}</td>
-              {% endfor %}
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <br>
-      <a href="{{ url_for('rxls.descargar_plantilla', tipo=tipo) }}" class="btn btn-info mb-3">
-        Descargar plantilla
-      </a><br>
+    <a href="{{ url_for('rxls.descargar_plantilla', tipo=tipo) }}" class="btn btn-info mb-3">
+      Descargar plantilla
+    </a><br>
+  {% endif %}
+
+
+  <form id="upload-form" method="POST" enctype="multipart/form-data" novalidate>
+    {# CSRF token: si usas Flask-WTF activa esto en tu formulario #}
+    {% if csrf_token is defined %}
+      {{ csrf_token() }}
     {% endif %}
 
+    <input id="fileinput" type="file" name="file" accept=".xlsx,.xls,.csv" class="form-control mb-1" required>
+    <div id="fileinfo" class="file-info text-muted"></div>
 
-    <form method="POST" enctype="multipart/form-data">
-      <input type="file" name="file" accept=".xlsx,.xls,.csv" class="form-control mb-3">
-      <button type="submit" name="accion" value="vista" class="btn btn-primary">Ver contenido</button>
-      <br>
+    <div class="mt-2">
+      <button id="vista-btn" type="submit" name="accion" value="vista" class="btn btn-primary">Ver contenido</button>
       {% if tabla %}
-        <button type="submit" name="accion" value="guardar" class="btn btn-success">Confirmar y guardar {{ titulo }}</button>
-      {% endif %}
-    </form>
-
-    {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-        <ul class="flashes">
-          {% for category, message in messages %}
-            <li class="alert alert-{{ category }}">{{ message|safe|replace('\n','<br>') }}</li>
-          {% endfor %}
-        </ul>
-      {% endif %}
-    {% endwith %}
-
-    {% if tabla %}
-      <h3 class="mt-4">Vista previa de {{ titulo }}:</h3>
-      <div class="table-responsive">
-        {{ tabla|safe }}
-      </div>
-    {% endif %}
-
-    {% if exitosos %}
-      <h4>Exitosos:</h4>
-      <ul>
-        {% for e in exitosos %}
-          <li>{{ e }}</li>
-        {% endfor %}
-      </ul>
-    {% endif %}
-
-    {% if fallidos %}
-      <h4>Fallidos:</h4>
-      <ul>
-        {% for f in fallidos %}
-          <li>{{ f }}</li>
-        {% endfor %}
-      </ul>
-    {% endif %}
-
-    {% if exitosos or fallidos %}
-    <div class="mt-4">
-      <h4>Descargar registros:</h4>
-      {% if exitosos %}
-        <a href="{{ url_for('rxls.descargar_exitosos', tipo=tipo) }}" class="btn btn-success mb-2">Descargar Exitosos</a>
-      {% endif %}
-      {% if fallidos %}
-        <a href="{{ url_for('rxls.descargar_fallidos', tipo=tipo) }}" class="btn btn-danger mb-2">Descargar Fallidos</a>
+        <button id="guardar-btn" type="submit" name="accion" value="guardar" class="btn btn-success">Confirmar y guardar {{ titulo }}</button>
+      {% else %}
+        <button id="guardar-btn" type="submit" name="accion" value="guardar" class="btn btn-success" disabled>Confirmar y guardar {{ titulo }}</button>
       {% endif %}
     </div>
+  </form>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <ul class="flashes list-unstyled mt-3">
+        {% for category, message in messages %}
+          <li class="alert alert-{{ category|e }}">
+            {{ message| e |replace('\n','<br>')|safe }}
+          </li>
+        {% endfor %}
+      </ul>
     {% endif %}
+  {% endwith %}
 
+  {% if tabla %}
+    <h3 class="mt-4">Vista previa de {{ titulo }}:</h3>
+    <div class="preview-note">Mostrando las primeras 200 filas (preview). Confirma sólo si todo está correcto.</div>
+    <div class="table-responsive" id="preview-table">
+      {{ tabla|safe }}
+    </div>
+  {% endif %}
 
-  </body>
+  {% if exitosos %}
+    <h4 class="mt-4">Exitosos ({{ exitosos|length }})</h4>
+    <ul>
+      {% for e in exitosos %}
+        <li>
+          {% if e is mapping %}
+            {# Si es dict, intentamos mostrar nombre/apellido/email o el dict en forma legible #}
+            {% set nombre = (e.get('usuario') and e['usuario'].get('nombre')) or e.get('nombre') or '' %}
+            {% set apellido = (e.get('usuario') and e['usuario'].get('apellido')) or e.get('apellido') or '' %}
+            {% set email_ok = (e.get('usuario') and e['usuario'].get('email')) or e.get('email') or '' %}
+            {{ (nombre ~ ' ' ~ apellido).strip()|e }} {% if email_ok %}— {{ email_ok|e }}{% endif %}
+          {% else %}
+            {{ e|e }}
+          {% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
 
+  {% if fallidos %}
+    <h4 class="mt-4 text-danger">Fallidos ({{ fallidos|length }})</h4>
+    <ul>
+      {% for f in fallidos %}
+        <li>
+          {% if f is mapping %}
+            {% if f.get('usuario') %}
+              {# mostrar info de usuario si existe #}
+              {% set u = f['usuario'] %}
+              {{ (u.get('nombre','') ~ ' ' ~ u.get('apellido','')).strip()|e }}
+              {% if u.get('email') %} — {{ u.get('email')|e }}{% endif %}
+              {% if f.get('error') %} : <strong>{{ f.get('error')|e }}</strong>{% endif %}
+            {% elif f.get('error') %}
+              {{ f.get('error')|e }}
+            {% else %}
+              {{ f|e }}
+            {% endif %}
+          {% else %}
+            {{ f|e }}
+          {% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+  {% if (exitosos and exitosos|length > 0) or (fallidos and fallidos|length > 0) %}
+    <div class="mt-4">
+      <h5>Descargar registros:</h5>
+      {% if exitosos and exitosos|length > 0 %}
+        <a href="{{ url_for('rxls.descargar_exitosos', tipo=tipo) }}" class="btn btn-success mb-2">Descargar Exitosos ({{ exitosos|length }})</a>
+      {% endif %}
+      {% if fallidos and fallidos|length > 0 %}
+        <a href="{{ url_for('rxls.descargar_fallidos', tipo=tipo) }}" class="btn btn-danger mb-2">Descargar Fallidos ({{ fallidos|length }})</a>
+      {% endif %}
+    </div>
+  {% endif %}
+
+  <script>
+    // Cliente: bloqueo por tamaño (UX) — valida también en servidor
+    (function(){
+      const MAX_MB = 10; // límite de ejemplo
+      const fileInput = document.getElementById('fileinput');
+      const fileInfo = document.getElementById('fileinfo');
+      const vistaBtn = document.getElementById('vista-btn');
+      const guardarBtn = document.getElementById('guardar-btn');
+
+      function humanSize(bytes){
+        if (!bytes) return '';
+        if (bytes < 1024) return bytes + ' B';
+        if (bytes < 1024*1024) return (bytes/1024).toFixed(1) + ' KB';
+        return (bytes/(1024*1024)).toFixed(1) + ' MB';
+      }
+
+      fileInput && fileInput.addEventListener('change', function(){
+        const f = this.files[0];
+        if (!f) {
+          fileInfo.textContent = '';
+          return;
+        }
+        fileInfo.textContent = `${f.name} — ${humanSize(f.size)}`;
+        if (f.size > MAX_MB * 1024 * 1024) {
+          alert('Archivo demasiado grande. Máx ' + MAX_MB + ' MB.');
+          this.value = '';
+          fileInfo.textContent = '';
+        }
+      });
+
+      // habilitar/deshabilitar boton guardar según preview presente
+      document.addEventListener('DOMContentLoaded', function(){
+        const hasPreview = !!document.getElementById('preview-table');
+        if (guardarBtn) {
+          if (hasPreview) {
+            guardarBtn.removeAttribute('disabled');
+          } else {
+            guardarBtn.setAttribute('disabled','disabled');
+          }
+        }
+      });
+    })();
+  </script>
+
+</body>
 </html>
