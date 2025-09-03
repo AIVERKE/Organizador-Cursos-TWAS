@@ -13,12 +13,7 @@ body {
   line-height: 1.6;
   padding-top: 84px; /* espacio para navbar fixed-top */
 }
-p {
-  text-align: justify;
-}
-.text-centro{
-  text-align: center;
-}
+
 /* I18N: mostrar/ocultar según idioma */
 .lang-es .i18n-en, 
 .lang-en .i18n-es { 
