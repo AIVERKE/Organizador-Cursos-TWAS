@@ -41,10 +41,12 @@ def generate_qr_by_id(id_usuario):
 
         primera_inscripcion = datos[0]
         id_inscripcion = primera_inscripcion["id_inscripcion"]
+        id_curso = primera_inscripcion["id_curso"]
+
+        horario = datetime.now().strftime("%Y-%m-%d %H:%M")
 
         os.makedirs(BASE_DIR, exist_ok=True)
 
-        # Verificar si ya existe un QR para esta inscripción
         existing_files = [
             fname
             for fname in os.listdir(BASE_DIR)
@@ -52,13 +54,15 @@ def generate_qr_by_id(id_usuario):
         ]
 
         if existing_files:
-            # Si ya existe, redirige a perfil para mostrarlo
             return redirect(url_for("qrs.perfil_estudiante", id_usuario=id_usuario))
 
-        # Generar nuevo QR
-        contenido = f"https://ca622a709762.ngrok-free.app/qrs/registrar?id_inscripcion={id_inscripcion}"
-        qr = segno.make(contenido)
+        contenido = (
+            f"https://organizador-cursos-twas.onrender.com/qrs/registrar?"
+            f"id_inscripcion={id_inscripcion}&id_curso={id_curso}"
+            f"&id_usuario={id_usuario}&horario={horario}"
+        )
 
+        qr = segno.make(contenido)
         filename = f"qr_{id_inscripcion}_{datetime.now().strftime('%Y%m%d%H%M%S')}.png"
         output_file = os.path.join(BASE_DIR, filename)
         qr.save(output_file, scale=10)
@@ -108,7 +112,7 @@ def registrar():
         conn.commit()
         conn.close()
 
-        return "Asistencia registrada correctamente.", 200
+        return render_template("Answers/asistencia.html"), 200
 
     except Exception as e:
         return f"Error al registrar la asistencia: {str(e)}", 500

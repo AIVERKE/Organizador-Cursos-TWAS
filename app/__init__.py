@@ -89,6 +89,12 @@ def create_app(config_class=DevConfig):
 
     safe_register(ponente_bp, "/ponente")
 
+#Envio por Gmail
+    from app.api.Mail import mail_bp
+
+    safe_register(mail_bp, "/mail")
+
+
     # Configurar Flask-Login
     login_manager = LoginManager(app)
     login_manager.login_view = "auth.login"

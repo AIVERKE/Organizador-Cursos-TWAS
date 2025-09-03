@@ -238,19 +238,18 @@ def generar_contrasena(apellido, documento):
     # return apellido_limpio + primeros_digitos[:3] #primeros 3 digidtos
     return apellido_limpio + primeros_digitos
 
-
 def crear_estudiantes_con_inscripcion_con_lote(lista_estudiantes):
     conn = None
-    registrados = []
+    exitosos = []
     fallidos = []
+    id_rol = 3
     try:
         conn = get_connection()
         cursor = conn.cursor()
-        id_rol = 3
-
         for est in lista_estudiantes:
             try:
-
+                conn.rollback()  # limpio posibles restos
+                conn.autocommit = False
                 # 1) Buscar id_curso por nombre (case‐insensitive)
                 cursor.execute(
                     "SELECT id_curso FROM cursos WHERE LOWER(nombre) = LOWER(%s)",
@@ -258,6 +257,7 @@ def crear_estudiantes_con_inscripcion_con_lote(lista_estudiantes):
                 )
                 row = cursor.fetchone()
                 if not row:
+                    conn.rollback()
                     fallidos.append({
                         "usuario": est,
                         "error": "Curso no encontrado"
@@ -265,11 +265,23 @@ def crear_estudiantes_con_inscripcion_con_lote(lista_estudiantes):
                     continue    
                 id_curso = row[0]
 
+                # 2) Verificar duplicados (email o documento)
+                cursor.execute("SELECT 1 FROM usuarios WHERE email = %s OR documento = %s",
+                               (est["email"], est["documento"]))
+                if cursor.fetchone():
+                    conn.rollback()
+                    fallidos.append({"usuario": est, "error": "Usuario ya registrado"})
+                    continue
+
                 # Automatizacion contrasena
-                hashed = generate_password_hash(
-                    generar_contrasena(est["apellido"], est["documento"])
+                # hashed = generate_password_hash(
+                #     generar_contrasena(est["apellido"], est["documento"])
+                # )
+
+                hashed = generate_password_hash(est["email"]
                 )
-                # 2) Insertar usuario y obtener id_usuario
+
+                # 3) Insertar usuario y obtener id_usuario
                 cursor.execute(
                     """
                     INSERT INTO Usuarios (nombre, apellido, email, contrasena, documento, pais_origen, id_rol, fecha_nac, genero, pais_residencia, afiliacion_u, tipo_afiliacion, area_tematica, disciplina_cientifica)
@@ -294,7 +306,7 @@ def crear_estudiantes_con_inscripcion_con_lote(lista_estudiantes):
                     ),
                 )
                 id_usuario = cursor.fetchone()[0]
-                # 3) Crear inscripción
+                # 4) Crear inscripción
                 cursor.execute(
                     """
                     INSERT INTO inscripciones (id_usuario,id_curso,fecha_inscripcion,modalidad,certificado_generado) 
@@ -304,15 +316,16 @@ def crear_estudiantes_con_inscripcion_con_lote(lista_estudiantes):
                 )
                 id_insc = cursor.fetchone()[0]
 
-                # 4) Crear nota inicial
+                # 5) Crear nota inicial
                 cursor.execute(
                     """INSERT INTO notas (id_inscripcion, nota_final, nota_asistencia, nota_acumulada) 
                     VALUES (%s, %s, %s,%s)
                     """,
                     (id_insc, 0.00, 0.00, 0.00),
                 )
-                
-                registrados.append({
+                conn.commit()
+
+                exitosos.append({
                     "usuario": est,
                     "id_usuario": id_usuario,
                     "id_inscripcion": id_insc
@@ -325,15 +338,14 @@ def crear_estudiantes_con_inscripcion_con_lote(lista_estudiantes):
                         "error": str(e)
                 })
                 continue
-
-        conn.commit()  # confirmo todo lo que sí funcionó
-        return {"registrados": registrados, "fallidos": fallidos}
+        return {"exitosos": exitosos, "fallidos": fallidos}
     except Exception as e:
         if conn:
             conn.rollback()
         raise e
     finally:
         if conn:
+            cursor.close()
             conn.close()
 
 
@@ -682,7 +694,7 @@ def crear_ponentes_bulk(lista_expositores):
 
 def crear_ponentes_con_lote(lista_ponentes):
     conn = None
-    registrados = []
+    exitosos = []
     fallidos = []
     try:
         conn = get_connection()
@@ -725,8 +737,8 @@ def crear_ponentes_con_lote(lista_ponentes):
                 )
                 # Opcional: recoger id_usuario si necesitas usarlo
                 id_usuario  = cursor.fetchone()[0]
-
-                registrados.append({
+                conn.commit()
+                exitosos.append({
                     "usuario": p,
                     "id_usuario": id_usuario
                 })
@@ -738,8 +750,7 @@ def crear_ponentes_con_lote(lista_ponentes):
                 })
                 conn.rollback()  # rollback solo para esa query
                 cursor = conn.cursor()  # reset cursor para continuar con el siguiente
-            conn.commit()
-            return {"registrados": registrados, "fallidos": fallidos}
+        return {"exitosos": exitosos, "fallidos": fallidos}
 
     except Exception:
         if conn:
