@@ -58,8 +58,8 @@
                     <div class="ct-day-name i18n i18n-es">Lunes</div>
                     <div class="ct-day-name i18n i18n-en">Monday</div>
                     <div class="ct-event-preview">
-                      <div><span class="ct-event-time">08:30</span> <span class="i18n i18n-es">Registro</span><span class="i18n i18n-en">Registration</span></div>
-                      <div><span class="ct-event-time">09:00</span> <span class="i18n i18n-es">Inauguración</span><span class="i18n i18n-en">Opening</span></div>
+                        <div><span class="ct-event-time">09:00</span> <span class="i18n i18n-es">Palabras de las Autoridades</span><span class="i18n i18n-en">Team meeting</span></div>
+                        <div><span class="ct-event-time">10:30</span> <span class="i18n i18n-es">Inicio de TYAN Hands-on Schools</span><span class="i18n i18n-en">Lunch with clients</span></div>
                     </div>
                 </div>
                 
@@ -68,8 +68,8 @@
                     <div class="ct-day-name i18n i18n-es">Martes</div>
                     <div class="ct-day-name i18n i18n-en">Tuesday</div>
                     <div class="ct-event-preview">
-                      <div><span class="ct-event-time">09:00</span> <span class="i18n i18n-es">Presentaciones</span><span class="i18n i18n-en">Presentations</span></div>
-                      <div><span class="ct-event-time">14:00</span> <span class="i18n i18n-es">Prácticas</span><span class="i18n i18n-en">Practical</span></div>
+                        <div><span class="ct-event-time">10:30</span> <span class="i18n i18n-es">Presentación proyecto</span><span class="i18n i18n-en">Project presentation</span></div>
+                        <div><span class="ct-event-time">16:00</span> <span class="i18n i18n-es">Capacitación</span><span class="i18n i18n-en">Training</span></div>
                     </div>
                 </div>
                 
@@ -78,8 +78,8 @@
                     <div class="ct-day-name i18n i18n-es">Miércoles</div>
                     <div class="ct-day-name i18n i18n-en">Wednesday</div>
                     <div class="ct-event-preview">
-                      <div><span class="ct-event-time">09:00</span> <span class="i18n i18n-es">Presentaciones</span><span class="i18n i18n-en">Presentations</span></div>
-                      <div><span class="ct-event-time">14:00</span> <span class="i18n i18n-es">Prácticas</span><span class="i18n i18n-en">Practical</span></div>
+                        <div><span class="ct-event-time">11:00</span> <span class="i18n i18n-es">Conferencia</span><span class="i18n i18n-en">Conference</span></div>
+                        <div><span class="ct-event-time">15:30</span> <span class="i18n i18n-es">Revisión documentos</span><span class="i18n i18n-en">Document review</span></div>
                     </div>
                 </div>
                 
@@ -88,8 +88,8 @@
                     <div class="ct-day-name i18n i18n-es">Jueves</div>
                     <div class="ct-day-name i18n i18n-en">Thursday</div>
                     <div class="ct-event-preview">
-                        <div><span class="ct-event-time">09:00</span> <span class="i18n i18n-es">Presentaciones</span><span class="i18n i18n-en">Presentations</span></div>
-                        <div><span class="ct-event-time">14:00</span> <span class="i18n i18n-es">Prácticas</span><span class="i18n i18n-en">Practical</span></div>
+                        <div><span class="ct-event-time">09:30</span> <span class="i18n i18n-es">Entrevistas</span><span class="i18n i18n-en">Interviews</span></div>
+                        <div><span class="ct-event-time">13:00</span> <span class="i18n i18n-es">Comité directivo</span><span class="i18n i18n-en">Steering committee</span></div>
                     </div>
                 </div>
                 
@@ -98,9 +98,27 @@
                     <div class="ct-day-name i18n i18n-es">Viernes</div>
                     <div class="ct-day-name i18n i18n-en">Friday</div>
                     <div class="ct-event-preview">
-                        <div><span class="ct-event-time">09:00</span> <span class="i18n i18n-es">Presentaciones</span><span class="i18n i18n-en">Presentations</span></div>
-                        <div><span class="ct-event-time">12:00</span> <span class="i18n i18n-es">Clausura</span><span class="i18n i18n-en">Closing</span></div>
+                        <div><span class="ct-event-time">10:00</span> <span class="i18n i18n-es">Revisión semanal</span><span class="i18n i18n-en">Weekly review</span></div>
+                        <div><span class="ct-event-time">17:00</span> <span class="i18n i18n-es">Cierre de semana</span><span class="i18n i18n-en">Week closing</span></div>
                     </div>
+                </div>
+            </div>
+
+            <div class="ct-agenda-view" id="ctAgendaView">
+                <div class="ct-agenda-header">
+                    <h2 class="ct-agenda-title" id="ctAgendaTitle">
+                      <span class="i18n i18n-es">Agenda del día</span>
+                      <span class="i18n i18n-en">Day's Agenda</span>
+                    </h2>
+                    <button class="ct-close-agenda" id="ctCloseAgenda">
+                        <i class="fas fa-times"></i> 
+                        <span class="i18n i18n-es">Cerrar</span>
+                        <span class="i18n i18n-en">Close</span>
+                    </button>
+                </div>
+                
+                <div class="ct-events-list" id="ctEventsList">
+                    <!-- Los eventos se cargarán dinámicamente con JavaScript -->
                 </div>
             </div>
         </div>
@@ -109,28 +127,22 @@
 </div>
 </section>
 
-<!-- Modal para el cronograma -->
-<div class="ct-modal" id="ctModal">
-  <div class="ct-modal-content">
-    <div class="ct-agenda-view" id="ctAgendaView">
-        <div class="ct-agenda-header">
-            <h2 class="ct-agenda-title" id="ctAgendaTitle">
-              <span class="i18n i18n-es">Agenda del día</span>
-              <span class="i18n i18n-en">Day's Agenda</span>
-            </h2>
-            <button class="ct-close-agenda" id="ctCloseAgenda">
-                <i class="fas fa-times"></i> 
-                <span class="i18n i18n-es">Cerrar</span>
-                <span class="i18n i18n-en">Close</span>
-            </button>
-        </div>
-        
-        <div class="ct-events-list" id="ctEventsList">
-            <!-- Los eventos se cargarán dinámicamente con JavaScript -->
-        </div>
+<!-- UBICACIÓN -->
+<section class="ubicacion py-5" id="ubicacionid">
+  <div class="container">
+    <h2 class="subtitulo text-primary fw-bold text-center mb-4">
+      <span class="i18n i18n-es">UBICACIÓN</span>
+      <span class="i18n i18n-en">LOCATION</span>
+    </h2>
+    <div class="ratio ratio-16x9 shadow-sm rounded-3">
+      <iframe
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1987.6002808428773!2d-68.06870843920794!3d-16.53885564579275!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x915f21b1d1b8b953%3A0x13bc56f9a856c85d!2sFacultad%20de%20Ciencias%20Puras%20y%20Naturales%20-%20Cota%20Cota!5e0!3m2!1ses!2sbo!4v1752639557865!5m2!1ses!2sbo"
+        allowfullscreen
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"></iframe>
     </div>
   </div>
-</div>
+</section>
 
 <!-- NOSOTROS -->
 <section class="nosotros py-5" id="nosotrosid">
@@ -157,12 +169,12 @@
       <div class="col">
         <div class="organizador h-100">
           <img src="/static/images/Dandeniya.webp" alt="Organizador 1">
-          <h4>Dra. Warshi Dandeniya</h4>
+          <h4>Dr Warshi Dandeniya</h4>
           <b>
             <span class="i18n i18n-es">Sri Lanka</span>
             <span class="i18n i18n-en">Sri Lanka</span>
           </b>
-          <p class="text-centro">
+          <p>
             <span class="i18n i18n-es">Biofertilizantes para la producción sostenible de cultivos</span>
             <span class="i18n i18n-en">Biofertilizers for Sustainable Crop Production</span>
           </p>
@@ -177,7 +189,7 @@
             <span class="i18n i18n-es">India</span>
             <span class="i18n i18n-en">India</span>
           </b>
-          <p class="text-centro">
+          <p>
             <span class="i18n i18n-es">Algas para la seguridad alimentaria y nutricional</span>
             <span class="i18n i18n-en">Algae for Food and Nutritional Security</span>
           </p>
@@ -192,7 +204,7 @@
             <span class="i18n i18n-es">Costa Rica</span>
             <span class="i18n i18n-en">Costa Rica</span>
           </b>
-          <p class="text-centro">
+          <p>
             <span class="i18n i18n-es">Biología de la reproducción vegetal para fitomejoradores</span>
             <span class="i18n i18n-en">Plant Reproduction Biology for Breeders</span>
           </p>
@@ -201,63 +213,86 @@
       <div class="col">
         <div class="organizador h-100">
           <img src="/static/images/MonicaGuevara.webp" alt="Organizador 4 ">
-          <h4>Dra. Mónica Izurieta Guavara</h4>
+          <h4>Dr. Mónica Izurieta Guavara</h4>
           <b>
             <span class="i18n i18n-es">Ecuador</span>
             <span class="i18n i18n-en">Ecuador</span>
           </b>
-          <p class="text-centro">
+          <p>
             <span class="i18n i18n-es">Agroinnovación para construir resiliencia: modelos gastronómicos sostenibles y saludables</span>
             <span class="i18n i18n-en">Agro-innovation for building resilience: sustainable and healthy gastronomic models</span>
           </p>
         </div>
       </div>
     </div>
-    <br>
-    <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-4">
-      <div class="col">
-        <div class="organizador h-100">
-          <img src="/static/images/Exp-Gloria.webp" alt="Dr. Gloria Rodrigo">
-          <h4>Dra. Gloria Rodrigo</h4>
-          <b>
-             <span class="i18n i18n-es">Bolivia</span>
-             <span class="i18n i18n-en">Bolivia</span>
-          </b>
-          <p class="text-centro">
-          <span class="i18n i18n-es">Modelos animales y aplicaciones en agroindustria y medio ambiente</span>
-          <span class="i18n i18n-en">Animal models and applications in agroindustry and environment</span>
-          </p>
-        </div>
-      </div>
-      <div class="col">
-        <div class="organizador h-100">
-          <img src="/static/images/federicoBrown.jpg" alt="Dr. Federico Brown">
-          <h4>Dr. Federico Brown</h4>
-            <b>
-              <span class="i18n i18n-es">Brasil</span>
-              <span class="i18n i18n-en">Brazil</span>
-            </b>
-            <p class="text-centro">
-             <span class="i18n i18n-es">Modelos animales y aplicaciones en agroindustria y medio ambiente</span>
-             <span class="i18n i18n-en">Animal models and applications in agroindustry and environment</span>
-            </p>
-        </div>
-      </div>
-      <div class="col">
-        <div class="organizador h-100">
-           <img src="/static/images/Exp-Sdenka.webp" alt="Dr. Sdenka Moscoso">
-          <h4>Dr. Sdenka Moscoso</h4>
-          <b>
-             <span class="i18n i18n-es">Bolivia</span>
-             <span class="i18n i18n-en">Bolivia</span>
-          </b>
-          <p class="text-centro">
-          <span class="i18n i18n-es">Modelos animales y aplicaciones en agroindustria y medio ambiente</span>
-          <span class="i18n i18n-en">Animal models and applications in agroindustry and environment</span>
-          </p>
+      <!-- Carrusel para el 5to perfil (3 expositores) -->
+  <div class="row mt-4">
+    <div class="col-12 d-flex justify-content-center">
+      <div class="organizador-carousel" style="max-width: 800px; width: 100%;">
+        <div id="quintoPerfilCarousel" class="carousel slide" data-bs-ride="carousel">
+          <div class="carousel-inner">
+            <!-- Expositor 1 -->
+            <div class="carousel-item active">
+              <div class="organizador h-100">
+                <img src="/static/images/Exp-Gloria.webp" alt="Dr. Gloria Rodrigo">
+                <h4>Dr. Gloria Rodrigo</h4>
+                <b>
+                  <span class="i18n i18n-es">Bolivia</span>
+                  <span class="i18n i18n-en">Bolivia</span>
+                </b>
+                <p>
+                  <span class="i18n i18n-es">Modelos animales y aplicaciones en agroindustria y medio ambiente</span>
+                  <span class="i18n i18n-en">Animal models and applications in agroindustry and environment</span>
+                </p>
+              </div>
+            </div>
+            
+            <!-- Expositor 2 -->
+            <div class="carousel-item">
+              <div class="organizador h-100">
+                <img src="/static/images/Exp-Sdenka.webp" alt="Dr. Sdenka Moscoso">
+                <h4>Dr. Sdenka Moscoso</h4>
+                <b>
+                  <span class="i18n i18n-es">Bolivia</span>
+                  <span class="i18n i18n-en">Bolivia</span>
+                </b>
+                <p>
+                  <span class="i18n i18n-es">Modelos animales y aplicaciones en agroindustria y medio ambiente</span>
+                  <span class="i18n i18n-en">Animal models and applications in agroindustry and environment</span>
+                </p>
+              </div>
+            </div>
+            
+            <!-- Expositor 3 -->
+            <div class="carousel-item">
+              <div class="organizador h-100">
+                <img src="/static/images/federicoBrown.jpg" alt="Dr. Federico Brown">
+                <h4>Dr. Federico Brown</h4>
+                <b>
+                  <span class="i18n i18n-es">Brasil-Ecuador</span>
+                  <span class="i18n i18n-en">Brazil-Ecuador</span>
+                </b>
+                <p>
+                  <span class="i18n i18n-es">Modelos animales y aplicaciones en agroindustria y medio ambiente</span>
+                  <span class="i18n i18n-en">Animal models and applications in agroindustry and environment</span>
+                </p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Controles del carrusel -->
+          <button class="carousel-control-prev" type="button" data-bs-target="#quintoPerfilCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon bg-primary rounded-circle p-3" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+          </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#quintoPerfilCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon bg-primary rounded-circle p-3" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+          </button>
         </div>
       </div>
     </div>
+  </div>
 
 <br><br>
 <br>
@@ -318,9 +353,9 @@
         }
     </style>
     
-    <button id="floatingButton" class="floating-btn" onclick="redirectToPage()">
+    <a href="https://www.youtube.com/watch?v=jUyeuGL5TKQ"><button id="floatingButton" class="floating-btn" onclick="redirectToPage()">
         <span>Ver Videos de Bienvenida</span>
-    </button>
+    </button></a>
 
     <script>
         // Obtener el botón flotante
@@ -438,20 +473,6 @@
       </div>
     </div>
     <!--FIN ORGANIZADORES-->
-  </div>
-</section>
-
-<!-- UBICACIÓN -->
-<section class="ubicacion py-5" id="ubicacionid">
-  <div class="container">
-    <h2 class="subtitulo text-primary fw-bold text-center mb-4">
-      <span class="i18n i18n-es">UBICACIÓN</span>
-      <span class="i18n i18n-en">LOCATION</span>
-    </h2>
-    <div class="ratio ratio-16x9 shadow-sm rounded-3">
-    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3795.0025404704757!2d-68.06758632194838!3d-16.538548376010045!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x915f214608a90edf%3A0x9efe37c02d950ed9!2sFacultad%20de%20Humanidades%20y%20Ciencias%20de%20la%20Educaci%C3%B3n%20-%20UMSA!5e1!3m2!1ses!2sbo!4v1756876023195!5m2!1ses!2sbo"
-     width="1300" height="350" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>  
-    </div>
   </div>
 </section>
 {% endblock %}
