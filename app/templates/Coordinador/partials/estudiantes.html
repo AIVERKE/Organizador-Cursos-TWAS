@@ -2,14 +2,16 @@
 
 
 <!-- 🔍 Buscador -->
-<input type="text" id="buscador-estudiante" placeholder="Buscar curso..." style="margin-bottom: 10px; padding: 5px; width: 250px;">
+<input type="text" id="buscador-estudiante" placeholder="Buscar estudiante..." style="margin-bottom: 10px; padding: 5px; width: 250px;">
 
 <!-- Funcionalidades -->
 <button onclick="" class="menu-btn-h create-btn">Agregar Usuarios</button>
 <button onclick="window.location.href='{{ url_for('rxls.index', tipo='estudiantes') }}'" class="menu-btn-h rxls-btn"> Agregar Estudiantes Excel </button>
 <button onclick="window.location.href='{{ url_for('certificate.generar_certificados', rol_boton=3) }}'" class="menu-btn-h">Descargar Certificados</button>
-<!-- <button onclick="window.location.href='{{ url_for('certificate.enviar_certificados_todos', rol_boton=3) }}'" class="menu-btn-h">Enviar Certificados</button> -->
 
+<button onclick="" class="menu-btn-h mail-btn">Confirmacion de inscripcion</button>
+
+<!-- <button onclick="window.location.href='{{ url_for('certificate.enviar_certificados_todos', rol_boton=3) }}'" class="menu-btn-h">Enviar Certificados</button> -->
 <table border="1" cellpadding="10" cellspacing="0" class="table table-bordered table-striped" id="tabla-estudiante">
   <thead>
     <tr>
@@ -157,6 +159,52 @@
     </form>
   </div>
 </div>
+
+
+
+
+<!--  Modal / Email de verificacion inscripcion -->
+<div id="modal-mail" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="cerrarModalMail()">&times;</span>
+    <h3>Mail de Verificacion</h3>
+    <form id="form-mail">
+      <label for="Asunto_cambio">Asunto:</label>
+      <input type="text" id="Asunto_cambio" name="asunto" required style="width: 98%; margin-bottom: 10px;"><br>
+      
+      <label for="Contenido_cambio">Contenido:</label>
+      <textarea id="Contenido_cambio" name="contenido" required rows="8" style="width: 98%; resize: vertical; margin-bottom: 10px;"></textarea><br>
+      
+      
+      <!-- <label>Email:</label>
+      <input type="email" id="email_crear" name="email" required><br>
+      <label>Contraseña:</label>
+      <input type="password" id="contrasena_crear" name="contrasena" required><br>
+      <label>Documento:</label>
+      <input type="text" id="documento_crear" name="documento" required><br>
+      <label>País de Origen:</label>
+      <input type="text" id="pais_origen_crear" name="pais_origen" required><br>
+      <input type="hidden" name="id_rol" value="3">
+      <label>Fecha de nacimiento:</label>
+      <input type="date" id="fecha_nac_crear" name="fecha_nac" required><br>
+      <label>Género:</label>
+      <input type="text" id="genero_crear" name="genero" required><br>
+      <label>País de residencia:</label>
+      <input type="text" id="pais_residencia_crear" name="pais_residencia" required><br>
+      <label>Afiliacion con una universidad:</label>
+      <input type="text" id="afiliacion_u_crear" name="afiliacion_u" required><br>
+      <label>Tipo de afiliacion:</label>
+      <input type="text" id="tipo_afiliacion_crear" name="tipo_afiliacion" required><br>
+      <label>Área tematica:</label>
+      <input type="text" id="area_tematica_crear" name="area_tematica" required><br>
+      <label>Disciplina cientifica:</label>
+      <input type="text" id="disciplina_cientifica_crear" name="disciplina_cientifica" required><br> -->
+
+      <button type="submit" style="width: 100%;">Enviar</button>
+    </form>
+  </div>
+</div>
+
 
 
 <!-- Modal Información Estudiante -->

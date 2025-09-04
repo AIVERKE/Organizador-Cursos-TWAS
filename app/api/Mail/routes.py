@@ -15,6 +15,7 @@ def send_email():
     sender = "alanarielmaldonadocarvajal1@gmail.com"
     app_password = "fhzy qcdf jvyw vqbk"
     recipients = ["alanmaldonadoc5@gmail.com", "alan.maldonado@ucb.edu.bo"]
+    #se puede enviar a dos por minuto en caso de 200 correos
 
     # Crear mensaje
     msg = EmailMessage()
@@ -40,3 +41,4 @@ def send_email():
         smtp.send_message(msg)
 
     return jsonify({"message": "Correo enviado con éxito ✅"})
+
