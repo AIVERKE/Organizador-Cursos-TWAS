@@ -353,55 +353,32 @@ if (formEditar) {
         if (formMailV) {
           formMailV.addEventListener("submit", async (e) => {
             e.preventDefault();
-            /*
-            const datos = {
-              nombre: document.getElementById("Asunto_cambio").value,
-              apellido: document.getElementById("apellido_crear").value,
-              email: document.getElementById("email_crear").value,
-              contrasena: document.getElementById("contrasena_crear").value,
-              documento: document.getElementById("documento_crear").value,
-              pais_origen: document.getElementById("pais_origen_crear").value,
-              id_rol: idRol,
-              fecha_nac: document.getElementById('fecha_nac_crear').value || null,
-              genero: document.getElementById('genero_crear').value,
-              pais_residencia: document.getElementById('pais_residencia_crear').value,
-              afiliacion_u: document.getElementById('afiliacion_u_crear').value,
-              tipo_afiliacion: document.getElementById('tipo_afiliacion_crear').value,
-              area_tematica: document.getElementById('area_tematica_crear').value,
-              disciplina_cientifica: document.getElementById('disciplina_cientifica_crear').value
-            };
-            */
-            const asunto = document.getElementById("Asunto_cambio").value || "Confirmación de inscripción";
+            // 🍔 const asunto = document.getElementById("Asunto_cambio").value || "Confirmación de inscripción";
             //const nombre = document.getElementById("nombre_crear").value;
             //const apellido = document.getElementById("apellido_crear").value;
             //const email = document.getElementById("email_crear").value;
-            const contenido = document.getElementById("Contenido_cambio").value || "Hola, te confirmamos tu inscripción al curso. ¡Bienvenido! Saludos, Equipo TWAS";
-            // Puedes personalizar el contenido aquí
-            /*const contenido = `Hola ${nombre} ${apellido},
-              <br><br>
-              Te confirmamos tu inscripción al curso. ¡Bienvenido!
-              <br><br>
-              Saludos,<br>
-              Equipo TWAS
-            `;*/
+            // 🍔 const contenido = document.getElementById("Contenido_cambio").value || "Hola, te confirmamos tu inscripción al curso. ¡Bienvenido! Saludos, Equipo TWAS";
+            
+            const formData = new FormData(formMailV);
 
             
             try {
         const res = await fetch("/mail/", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
+          //headers: { "Content-Type": "application/json" },
+          body: /*JSON.stringify({
             subject: asunto,
             body: contenido,
             //to: email 
-          })
+          })*/ formData,
+          credentials: 'include' // para enviar cookies si es necesario
         });
 
               const resultado = await res.json();
 
                   if (res.ok) {
               alert("Correo de confirmación enviado correctamente.");
-              cerrarModalCrear();
+              cerrarModalMail();
             } else {
               alert("Error al enviar el correo: " + resultado.error);
             }
