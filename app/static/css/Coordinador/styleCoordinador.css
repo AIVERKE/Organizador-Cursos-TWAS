@@ -467,3 +467,33 @@ button:hover,
 }
 
 
+
+
+
+/* ...existing code... */
+.modal-content {
+  max-width: 95vw;
+  width: 400px;
+  max-height: 90vh;
+  overflow-y: auto;
+  margin: auto;
+  border-radius: 8px;
+  background: #fff;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+@media (max-width: 500px) {
+  .modal-content {
+    width: 98vw;
+    padding: 10px;
+  }
+  .modal-content label,
+  .modal-content input,
+  .modal-content button {
+    font-size: 1em;
+    width: 100%;
+    box-sizing: border-box;
+  }
+}
+/* ...existing code... */

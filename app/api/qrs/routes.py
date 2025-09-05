@@ -16,6 +16,7 @@ from flask_login import login_user, logout_user, login_required, current_user
 from app.api.auth.utils import role_required
 from app.db_c import get_connection
 from app.controllers import i_controller as ins
+from datetime import datetime, timedelta
 
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../static/qrs"))
 
@@ -76,9 +77,10 @@ def generate_qr_by_id(id_usuario):
 
 @qrs_bp.route("/registrar", methods=["GET"])
 @login_required
-@role_required(2)
+@role_required(2, 3)
 def registrar():
     id_inscripcion = request.args.get("id_inscripcion", type=int)
+    hora_registro = datetime.now()
 
     if not id_inscripcion:
         return "Falta el parámetro 'id_inscripcion'", 400
@@ -87,8 +89,6 @@ def registrar():
         conn = get_connection()
         cursor = conn.cursor()
 
-        # Verificar si ya existe una asistencia para hoy
-        '''
         cursor.execute(
             """
             SELECT 1 FROM asistencias
@@ -100,14 +100,13 @@ def registrar():
         if cursor.fetchone():
             conn.close()
             return "Ya se registró asistencia para hoy.", 200
-        '''
-        # Insertar la asistencia
+
         cursor.execute(
             """
             INSERT INTO asistencias (id_inscripcion, fecha, presente)
-            VALUES (%s, CURRENT_DATE, TRUE)
-        """,
-            (id_inscripcion,),
+            VALUES (%s, %s, TRUE)
+            """,
+            (id_inscripcion, hora_registro),
         )
         conn.commit()
         conn.close()
