@@ -541,6 +541,8 @@ def enviar_certificados_todos(rol_boton):
     return render_template("Certificados/SendMuchosCertificados.html", rol_boton=rol_boton)
 
 @certificate_bp.route("/verificar/<string:search>")
+@login_required
+@role_required(1, 4)
 def verificar(search):
     partes = search.split('-')
     id_principal = int(partes[0])
