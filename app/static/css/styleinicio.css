@@ -1,200 +1,210 @@
 /* Reset + tipografía */
-* { 
-  box-sizing: border-box; 
+
+* {
+box-sizing: border-box;
+margin: 0;
+padding: 0;
 }
 
-html { 
-  scroll-behavior: smooth; 
-  scroll-padding-top: 100px; 
+html {
+scroll-behavior: smooth;
+scroll-padding-top: 100px;
 }
 
 body {
-  font-family: 'Montserrat Alternates', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  line-height: 1.6;
-  padding-top: 84px; /* espacio para navbar fixed-top */
+font-family: 'Montserrat Alternates', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+line-height: 1.6;
+padding-top: 84px;
+color: #333;
+background-color: #f8f9fa;
+overflow-x: hidden;
 }
+
 p {
-  text-align: justify;
+text-align: justify;
 }
+
 .text-centro{
-  text-align: center;
+text-align: center;
 }
+
 /* I18N: mostrar/ocultar según idioma */
-.lang-es .i18n-en, 
-.lang-en .i18n-es { 
-  display: none !important; 
+.lang-es .i18n-en,
+.lang-en .i18n-es {
+display: none !important;
 }
 
 .lang-en .i18n-en,
 .lang-es .i18n-es {
-  display: inline !important;
+display: inline !important;
 }
 
 /* Encabezados y textos principales */
-.titulo { 
-  font-size: clamp(28px, 4vw, 48px); 
+.titulo {
+font-size: clamp(28px, 4vw, 48px);
 }
 
-.subtitulo { 
-  font-size: clamp(18px, 2.6vw, 24px); 
+.subtitulo {
+font-size: clamp(18px, 2.6vw, 24px);
 }
 
-.texto { 
-  font-size: clamp(14px, 1.6vw, 16px); 
+.texto {
+font-size: clamp(14px, 1.6vw, 16px);
 }
 
 /* Logos */
-.logo { 
-  height: 65px;
-}   
-
-.logo-umsa, 
-.logo-fcpn { 
-  height: auto; 
-  width: auto; 
+.logo {
+height: 65px;
 }
 
-.logo-umsa { 
-  height: 60px; 
+.logo-umsa,
+.logo-fcpn {
+height: auto;
+width: auto;
 }
 
-.logo-fcpn { 
-  height: 50px; 
+.logo-umsa {
+height: 60px;
+}
+
+.logo-fcpn {
+height: 50px;
 }
 
 /* HERO */
 .inicio {
-  background-image: url('/static/images/Lapaz-city.webp');
-  background-size: cover;
-  background-position: center;
-  min-height: 90vh;
-  color: #fff;
-  position: relative;
-  display: flex;
+background-image: url('/static/images/Lapaz-city.webp');
+background-size: cover;
+background-position: center;
+min-height: 90vh;
+color: #fff;
+position: relative;
+display: flex;
 }
 
 .inicio .overlay {
-  background: rgba(0, 0, 0, 0.35);
+background: rgba(0, 0, 0, 0.35);
 }
 
 /* Información */
-.informacion { 
-  background: #fff; 
+.informacion {
+background: #fff;
 }
 
 /* Tablas - Estilos responsivos optimizados */
 .tabla-horario {
-  margin: 20px 0;
+margin: 20px 0;
+width: 100%;
+overflow: hidden;
 }
 
 .tabla-horario .table-responsive {
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  width: 100%;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
+overflow: hidden;
+width: 100%;
+overflow-x: auto;
+-webkit-overflow-scrolling: touch;
 }
 
 .tabla-horario .table {
-  margin-bottom: 0;
-  min-width: 600px;
-  width: 100%;
+margin-bottom: 0;
+width: 100%;
+border-collapse: collapse;
 }
 
 .tabla-horario .table th {
-  background-color: #4a6fdc;
-  color: white;
-  font-weight: 600;
-  vertical-align: middle;
-  white-space: nowrap;
-  padding: 0.75rem;
+background-color: #4a6fdc;
+color: white;
+font-weight: 600;
+vertical-align: middle;
+white-space: nowrap;
+padding: 0.75rem;
+border: 1px solid #dee2e6;
 }
 
 .tabla-horario .table td {
-  transition: background-color 0.2s;
-  padding: 0.5rem;
+transition: background-color 0.2s;
+padding: 0.5rem;
+border: 1px solid #dee2e6;
 }
 
 .tabla-horario .table-striped tbody tr:nth-of-type(odd) td {
-  background-color: rgba(74, 111, 220, 0.05);
+background-color: rgba(74, 111, 220, 0.05);
 }
 
 .tabla-horario .table-hover tbody tr:hover td {
-  background-color: rgba(74, 111, 220, 0.1);
+background-color: rgba(74, 111, 220, 0.1);
 }
 
 .tabla-horario .table-sm {
-  font-size: 0.875rem;
-  margin: 0;
+font-size: 0.875rem;
+margin: 0;
 }
 
 .tabla-horario .table-sm td {
-  padding: 0.25rem;
+padding: 0.25rem;
 }
 
 .tabla-horario .btn-sm {
-  padding: 0.25rem 0.5rem;
-  font-size: 0.75rem;
+padding: 0.25rem 0.5rem;
+font-size: 0.75rem;
 }
 
 /* Columnas optimizadas para la tabla */
 .col-time {
-  width: 100px;
-  min-width: 100px;
+width: 100px;
+min-width: 100px;
 }
 
 .col-day {
-  width: 180px;
-  min-width: 180px;
+width: 180px;
+min-width: 180px;
 }
 
-/* Flat design improvements */
+/* Flat design improvements - SIN bordes redondeados */
 .tabla-horario .table-bordered {
-  border: 1px solid #dee2e6;
+border: 1px solid #dee2e6;
 }
 
 .tabla-horario .table-bordered th,
 .tabla-horario .table-bordered td {
-  border: 1px solid #dee2e6;
+border: 1px solid #dee2e6;
 }
 
 .tabla-horario .table-primary {
-  background-color: #4a6fdc;
+background-color: #4a6fdc;
 }
 
 .tabla-horario .btn-outline-primary {
-  color: #4a6fdc;
-  border-color: #4a6fdc;
+color: #4a6fdc;
+border-color: #4a6fdc;
 }
 
 .tabla-horario .btn-outline-primary:hover {
-  color: #fff;
-  background-color: #4a6fdc;
-  border-color: #4a6fdc;
+color: #fff;
+background-color: #4a6fdc;
+border-color: #4a6fdc;
 }
 
 /* Ubicación */
-.ubicacion { 
-  background: #ffffff; 
-  color: #0077b5; 
+.ubicacion {
+background: #ffffff;
+color: #0077b5;
 }
 
 /* Nosotros */
-.nosotros h2 { 
-  color: #0069B5; 
+.nosotros h2 {
+color: #0069B5;
 }
 
 .organizadores {
-  gap: 1rem;
+gap: 1rem;
 }
 
 .organizador {
-  background: #f9f9f9;
-  padding: 1rem;
-  border-radius: 12px;
-  text-align: center;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+background: #f9f9f9;
+padding: 1rem;
+text-align: center;
+transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .organizador img {
@@ -207,61 +217,19 @@ p {
   border: 4px solid #0069B5;
 }
 
-.organizador h4 { 
-  margin: 0.5rem 0 0.2rem; 
-  color: #0069B5; 
+.organizador h4 {
+margin: 0.5rem 0 0.2rem;
+color: #0069B5;
 }
 
-.organizador p { 
-  margin: 0; 
-  color: #333; 
+.organizador p {
+margin: 0;
+color: #333;
 }
 
 .organizador:hover {
-  transform: translateY(-6px) scale(1.02);
-  box-shadow: 0 10px 20px rgba(0,0,0,.15);
-}
-
-/* Estilos para el carrusel del 5to perfil */
-.organizador-carousel {
-  background: #f9f9f9;
-  padding: 1rem;
-  border-radius: 12px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.organizador-carousel:hover {
-  transform: translateY(-6px) scale(1.02);
-  box-shadow: 0 10px 20px rgba(0,0,0,.15);
-}
-
-.carousel-control-prev, 
-.carousel-control-next {
-  width: auto;
-}
-
-.carousel-control-prev-icon, 
-.carousel-control-next-icon {
-  background-size: 60%;
-}
-
-.carousel-indicators {
-  bottom: -40px;
-}
-
-.carousel-indicators [data-bs-target] {
-  background-color: #0069B5;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  margin: 0 5px;
-  border: none;
-}
-
-/* Asegurar que el carrusel tenga el mismo tamaño que los otros organizadores */
-.organizador-carousel .organizador {
-  padding: 1rem;
-  text-align: center;
+transform: translateY(-6px) scale(1.02);
+box-shadow: 0 10px 20px rgba(0,0,0,.15);
 }
 
 /* FOOTER */
@@ -270,6 +238,14 @@ p {
   color: #fff;
   padding: 2rem 0;
   font-family: 'Montserrat Alternates', sans-serif;
+  width: 100%;
+  overflow: hidden;
+}
+
+.footer .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 15px;
 }
 
 .footer-logo {
@@ -279,20 +255,52 @@ p {
   margin: 0.5rem;
 }
 
-.logo-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 5px;
-  justify-items: center;
+/* Contenedor principal de logos */
+.footer .logo-column {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
   align-items: center;
 }
 
-.logo-grid2 {
+/* Primera fila de logos (TWAS, TYAN, Embajada) */
+.logo-grid {
   display: grid;
-  grid-template-columns: repeat(4, 2fr);
-  gap: 42px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
   justify-items: center;
   align-items: center;
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+.logo-grid img {
+  max-height: 70px;
+  width: auto;
+  object-fit: contain;
+}
+
+/* Segunda fila de logos (UMSA, FCPN, Química) */
+.logo-grid2 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+  justify-items: center;
+  align-items: center;
+  width: 100%;
+}
+
+.logo-grid2 img {
+  max-height: 60px;
+  max-width: 100%;
+  width: auto;
+  object-fit: contain;
+}
+
+/* Ajuste específico para la imagen problemática */
+.logo-grid2 img[src*="ing-quimica.jpg"] {
+  max-height: 50px;
+  object-fit: cover;
 }
 
 /* Social buttons */
@@ -302,7 +310,6 @@ p {
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
   background-color: white;
   color: #333;
   border: 1px solid #e0e0e0;
@@ -317,12 +324,6 @@ p {
   box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
-/* Colores hover específicos 
-.social-btn-minimal:nth-child(1):hover { background-color: #3b5998; }
-.social-btn-minimal:nth-child(2):hover { background-color: #1DA1F2; }
-.social-btn-minimal:nth-child(3):hover { background-color: #0077B5; }
-.social-btn-minimal:nth-child(4):hover { background-color: #FF0000; }
-*/
 /* Footer text */
 .footer p {
   margin-bottom: 0.5rem;
@@ -337,6 +338,8 @@ p {
 .footer-bottom {
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   padding-top: 1.5rem;
+  margin-top: 1.5rem;
+  width: 100%;
 }
 
 .footer-bottom p.text-center {
@@ -349,6 +352,7 @@ p {
   font-size: 0.85rem;
   color: #ffffff;
   margin-top: 1rem;
+  text-align: center;
 }
 
 .dev-bba {
@@ -360,55 +364,443 @@ p {
 
 .dev-bba:hover {
   color: #e89209;
-  text-shadow: 0 0 10px rgba(219, 139, 11, 0.6);
+}
+
+/* Development credits */
+.dev-team {
+font-size: 0.85rem;
+color: #ffffff;
+margin-top: 1rem;
+}
+
+.dev-bba {
+color: #a0a4ab;
+text-decoration: none;
+transition: all 0.3s ease;
+font-weight: 600;
+}
+
+.dev-bba:hover {
+color: #e89209;
+text-shadow: 0 0 10px rgba(219, 139, 11, 0.6);
 }
 
 /* Asegurar consistencia en botones */
 .btn-sm {
-  padding: 0.375rem 0.75rem;
-  font-size: 0.875rem;
-  line-height: 1.5;
-  border-radius: 0.25rem;
-  min-width: 100px;
-  text-align: center;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
+padding: 0.375rem 0.75rem;
+font-size: 0.875rem;
+line-height: 1.5;
+min-width: 100px;
+text-align: center;
+display: inline-flex;
+align-items: center;
+justify-content: center;
+gap: 0.5rem;
 }
 
 /* Específico para botón de globo (traductor) */
 #btnLang {
-  min-width: 110px;
+min-width: 110px;
 }
 
 /* Asegurar que los botones outline tengan el mismo estilo */
-.btn-outline-primary, 
+.btn-outline-primary,
 .btn-outline-secondary {
-  border-width: 1px;
-  transition: all 0.2s ease;
+border-width: 1px;
+transition: all 0.2s ease;
 }
 
 /* Hover states consistentes */
 .btn-outline-primary:hover,
 .btn-outline-secondary:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+transform: translateY(-1px);
+box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-/* Responsive adjustments */
+/* Estilos para el cronograma con prefijo ct- */
+.ct-container {
+max-width: 1200px;
+margin: 0 auto;
+padding: 20px;
+}
+
+.ct-subtitle {
+color: #7f8c8d;
+font-size: 18px;
+text-align: center;
+margin-bottom: 20px;
+}
+
+.ct-calendar-container {
+display: flex;
+flex-direction: column;
+gap: 30px;
+}
+
+.ct-week-days {
+display: grid;
+grid-template-columns: repeat(5, 1fr);
+gap: 15px;
+}
+
+.ct-day {
+background: white;
+padding: 20px;
+box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+cursor: pointer;
+transition: all 0.3s ease;
+position: relative;
+overflow: hidden;
+}
+
+.ct-day:hover {
+transform: translateY(-5px);
+box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+.ct-day.active {
+background: #3498db;
+color: white;
+}
+
+.ct-day-number {
+font-size: 24px;
+font-weight: 700;
+margin-bottom: 5px;
+color: #2c3e50;
+}
+
+.ct-day.active .ct-day-number {
+color: white;
+}
+
+.ct-day-name {
+font-size: 16px;
+color: #7f8c8d;
+margin-bottom: 15px;
+}
+
+.ct-day.active .ct-day-name {
+color: rgba(255, 255, 255, 0.9);
+}
+
+.ct-event-preview {
+font-size: 14px;
+margin-top: 10px;
+padding-top: 10px;
+border-top: 1px solid #eee;
+}
+
+.ct-day.active .ct-event-preview {
+border-top: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.ct-event-preview div {
+margin-bottom: 5px;
+display: flex;
+align-items: center;
+}
+
+.ct-event-time {
+background: #f1f8ff;
+padding: 2px 6px;
+font-size: 12px;
+margin-right: 8px;
+color: #3498db;
+}
+
+.ct-day.active .ct-event-time {
+background: rgba(255, 255, 255, 0.2);
+color: white;
+}
+
+/* Estilos para el modal */
+.ct-modal {
+display: none;
+position: fixed;
+z-index: 1000;
+left: 0;
+top: 0;
+width: 100%;
+height: 100%;
+overflow: auto;
+background-color: rgba(0, 0, 0, 0.5);
+animation: ctFadeIn 0.3s ease;
+}
+
+.ct-modal-content {
+position: relative;
+background-color: #fefefe;
+margin: 5% auto;
+padding: 0;
+width: 90%;
+max-width: 800px;
+box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.ct-agenda-view {
+padding: 30px;
+}
+
+.ct-agenda-header {
+display: flex;
+justify-content: space-between;
+align-items: center;
+margin-bottom: 25px;
+padding-bottom: 15px;
+border-bottom: 1px solid #eee;
+}
+
+.ct-agenda-title {
+font-size: 24px;
+color: #2c3e50;
+font-weight: 600;
+}
+
+.ct-close-agenda {
+background: #e74c3c;
+color: white;
+border: none;
+padding: 8px 16px;
+cursor: pointer;
+font-weight: 500;
+transition: background 0.3s;
+display: flex;
+align-items: center;
+gap: 5px;
+}
+
+.ct-close-agenda:hover {
+background: #c0392b;
+}
+
+.ct-events-list {
+display: flex;
+flex-direction: column;
+gap: 20px;
+}
+
+.ct-event-item {
+display: flex;
+gap: 20px;
+padding: 20px;
+background: #f9f9f9;
+transition: transform 0.3s;
+}
+
+.ct-event-item:hover {
+transform: translateX(5px);
+background: #f1f8ff;
+}
+
+.ct-event-time-large {
+min-width: 100px;
+text-align: center;
+}
+
+.ct-event-hour {
+font-size: 18px;
+font-weight: 700;
+color: #3498db;
+}
+
+.ct-event-duration {
+font-size: 14px;
+color: #7f8c8d;
+}
+
+.ct-event-details {
+flex: 1;
+}
+
+.ct-event-title {
+font-size: 18px;
+font-weight: 600;
+margin-bottom: 8px;
+color: #2c3e50;
+}
+
+.ct-event-description {
+color: #7f8c8d;
+margin-bottom: 10px;
+}
+
+.ct-event-location {
+display: flex;
+align-items: center;
+color: #3498db;
+font-size: 14px;
+}
+
+.ct-event-location i {
+margin-right: 5px;
+}
+
+@keyframes ctFadeIn {
+from { opacity: 0; }
+to { opacity: 1; }
+}
+
+/* RESPONSIVE ADJUSTMENTS - UNIFICADO */
+@media (max-width: 1200px) {
+.tabla-horario .table {
+min-width: 100%;
+}
+
+.col-time {
+width: 120px;
+min-width: 120px;
+}
+
+.col-day {
+width: 200px;
+min-width: 200px;
+}
+}
+
+@media (max-width: 900px) {
+.ct-week-days {
+grid-template-columns: repeat(2, 1fr);
+}
+
+.ct-modal-content {
+width: 95%;
+margin: 10% auto;
+}
+
+.logo-container {
+flex-direction: column;
+}
+}
+
 @media (max-width: 600px) {
-  .logo-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  
-  .social-buttons {
-    justify-content: center !important;
+.logo-grid {
+grid-template-columns: repeat(2, 1fr);
+}
+
+.social-buttons {
+justify-content: center !important;
+}
+
+.footer [class^="col-"] {
+text-align: center;
+margin-bottom: 1.5rem;
+}
+
+.dev-team,
+.footer-bottom p.text-center {
+text-align: center !important;
+}
+
+.footer .social-btn-minimal {
+width: 36px;
+height: 36px;
+font-size: 1rem;
+}
+
+/* Optimización para tablas en móviles */
+.tabla-horario .table {
+min-width: 100%;
+}
+
+.tabla-horario .table td,
+.tabla-horario .table th {
+padding: 0.4rem;
+}
+
+.col-time {
+width: 90px;
+min-width: 90px;
+}
+
+.col-day {
+width: 150px;
+min-width: 150px;
+}
+
+.ct-week-days {
+grid-template-columns: 1fr;
+}
+
+.ct-agenda-header {
+flex-direction: column;
+align-items: flex-start;
+gap: 15px;
+}
+
+.ct-event-item {
+flex-direction: column;
+gap: 10px;
+}
+
+.ct-event-time-large {
+text-align: left;
+display: flex;
+gap: 15px;
+align-items: center;
+}
+
+.ct-modal-content {
+margin: 15% auto;
+width: 98%;
+}
+
+.main-title {
+font-size: 1.5rem;
+}
+
+.subtitle {
+font-size: 1rem;
+}
+
+.footer-section {
+min-width: 100%;
+}
+}
+
+/* AJUSTES RESPONSIVOS PARA EL FOOTER - UNIFICADO */
+@media (max-width: 900px) {
+  .footer .row {
+    flex-direction: column;
+    text-align: center;
   }
   
   .footer [class^="col-"] {
-    text-align: center;
     margin-bottom: 1.5rem;
+    text-align: center;
+  }
+  
+  .logo-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+  
+  .logo-grid2 {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+  
+  .logo-grid img,
+  .logo-grid2 img {
+    max-height: 60px;
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 600px) {
+  .logo-grid,
+  .logo-grid2 {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+  }
+  
+  .footer-logo {
+    height: 60px;
+  }
+  
+  .logo-grid2 img[src*="ing-quimica.jpg"] {
+    max-height: 45px;
   }
   
   .dev-team,
@@ -420,42 +812,5 @@ p {
     width: 36px;
     height: 36px;
     font-size: 1rem;
-  }
-  
-  /* Optimización para tablas en móviles */
-  .tabla-horario .table {
-    min-width: 500px;
-  }
-  
-  .tabla-horario .table td, 
-  .tabla-horario .table th {
-    padding: 0.4rem;
-  }
-  
-  .col-time {
-    width: 90px;
-    min-width: 90px;
-  }
-  
-  .col-day {
-    width: 150px;
-    min-width: 150px;
-  }
-}
-
-/* Mejoras para pantallas grandes */
-@media (min-width: 1200px) {
-  .tabla-horario .table {
-    min-width: 100%;
-  }
-  
-  .col-time {
-    width: 120px;
-    min-width: 120px;
-  }
-  
-  .col-day {
-    width: 200px;
-    min-width: 200px;
   }
 }
