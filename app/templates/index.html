@@ -352,7 +352,7 @@
    // Función para redirigir a la página de videos/expositores
 function redirectToPage() {
     // Redirige a la ruta de Flask, no al archivo HTML directo
-    window.location.href = "{{ url_for('videos') }}";
+    window.location.href = "{{ url_for('home.videos') }}";
 }
     
     // Escuchar el evento de scroll
