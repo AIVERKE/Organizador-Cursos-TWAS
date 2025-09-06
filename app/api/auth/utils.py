@@ -46,6 +46,7 @@ def role_required(*roles):
                 return render_template("Answers/no-found403.html")
             return f(*args, **kwargs)
 
+        decorated_function._required_roles = roles
         return decorated_function
 
     return wrapper

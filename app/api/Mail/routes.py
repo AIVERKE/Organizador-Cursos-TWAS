@@ -5,8 +5,12 @@ import os
 from app.controllers import u_controller as usu #para el traer todos los correos
 from . import mail_bp as email_bp
 import time
+from flask_login import login_required
+from app.api.auth.utils import role_required
 
 @email_bp.route("/", methods=["POST"])
+@login_required
+@role_required(1,4)
 def send_email():
     data = request.json
     subject = data.get("subject")
@@ -42,20 +46,3 @@ def send_email():
         print("Correo Enviado 👁👄👁💅") #imprime en consola cada que se envió un correo
         time.sleep(10)
     return jsonify({"message": "Correos enviados con éxito ✅"}) #se muestra al final de los envíos, de momento tardaria 20 segundos en aparecer ya que debe enviar dos correos con 10 segundos de diferencia entre ellos para completar de ejecutar la función.
-        
-
-
-
-    # Crear mensaje
-    
-
-    # ✅ Construir ruta absoluta al archivo en static
-    
-
-    
-
-    # Enviar
-    
-
-
-

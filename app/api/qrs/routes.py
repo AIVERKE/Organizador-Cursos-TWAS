@@ -23,6 +23,7 @@ BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../static
 
 @qrs_bp.route("/<path:filename>", methods=["GET"])
 @login_required
+@role_required(3)
 def serve_qr(filename):
     return send_from_directory(BASE_DIR, filename)
 
