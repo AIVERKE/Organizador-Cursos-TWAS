@@ -168,14 +168,19 @@
   <div class="modal-content">
     <span class="close" onclick="cerrarModalMail()">&times;</span>
     <h3>Mail de Verificacion</h3>
-    <form id="form-mail">
+    <form id="form-mail" enctype="multipart/form-data">
       <label for="Asunto_cambio">Asunto:</label>
       <input type="text" id="Asunto_cambio" name="asunto" required style="width: 98%; margin-bottom: 10px;"><br>
       
       <label for="Contenido_cambio">Contenido:</label>
       <textarea id="Contenido_cambio" name="contenido" required rows="8" style="width: 98%; resize: vertical; margin-bottom: 10px;"></textarea><br>
       
-      
+      <!-- 👇 campo para subir imagen -->
+      <label for="imagen">Adjuntar Imagen:</label>
+      <input type="file" id="imagen_cambio" name="imagen" accept="image/*" style="margin-bottom: 10px;"><br>
+
+
+
       <!-- <label>Email:</label>
       <input type="email" id="email_crear" name="email" required><br>
       <label>Contraseña:</label>
