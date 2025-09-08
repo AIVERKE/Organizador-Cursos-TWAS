@@ -622,7 +622,6 @@ def enviar_certificados_todos(rol_boton):
 
 
 @certificate_bp.route("/verificar/<string:search>")
-@login_required
 def verificar(search):
     partes = search.split("-")
     id_principal = int(partes[0])
