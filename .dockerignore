@@ -1,0 +1,28 @@
+# Entorno virtual
+venv/
+__pycache__/
+*.pyc
+*.pyo
+
+# Configuración local
+.vscode/
+.idea/
+*.log
+
+# Repositorios ocultos
+.git
+.gitignore
+
+# Archivos temporales
+*.swp
+*.bak
+*.tmp
+
+# Backups y dumps
+backups/
+db/init/*.sql
+*.dump
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db
