@@ -309,8 +309,6 @@ def descargar_certificado(user_id):
 
 
 @certificate_bp.route("/enviar-certificado/<int:user_id>", methods=["GET", "POST"])
-@login_required
-@role_required(1, 4)
 def enviar_certificado(user_id):
     base_dir = os.path.dirname(os.path.abspath(__file__))
     folder = os.path.join(base_dir, "temp_certificates")
