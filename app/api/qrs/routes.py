@@ -149,3 +149,68 @@ def perfil_estudiante(id_usuario):
 
     except Exception as e:
         return str(e), 500
+
+
+# Muestra las asistencias de un estudiante
+@qrs_bp.route("/asistencias/<int:id_usuario>", methods=["GET"])
+@login_required
+@role_required(3)  # estudiante
+def ver_asistencias(id_usuario):
+    try:
+        conn = get_connection()
+        cursor = conn.cursor()
+
+        cursor.execute(
+            """
+            SELECT a.id_asistencia, a.fecha, a.presente,
+                   c.nombre AS curso
+            FROM asistencias a
+            JOIN inscripciones i ON a.id_inscripcion = i.id_inscripcion
+            JOIN cursos c ON i.id_curso = c.id_curso
+            WHERE i.id_usuario = %s
+            ORDER BY a.fecha DESC
+            """,
+            (id_usuario,),
+        )
+
+        asistencias = cursor.fetchall()
+        cursor.close()
+        conn.close()
+
+        return render_template("Estudiante/asistencia.html", asistencias=asistencias)
+
+    except Exception as e:
+        return f"Error al obtener asistencias: {str(e)}", 500
+
+
+@qrs_bp.route("/asistencias_coordinador", methods=["GET"])
+@login_required
+@role_required(1)  # Coordinador
+def asistencias_coordinador():
+    try:
+        conn = get_connection()
+        cursor = conn.cursor()
+
+        cursor.execute(
+            """
+            SELECT a.id_asistencia,
+                   u.nombre AS estudiante,
+                   c.nombre AS curso,
+                   a.fecha,
+                   a.presente
+            FROM asistencias a
+            JOIN inscripciones i ON a.id_inscripcion = i.id_inscripcion
+            JOIN usuarios u ON i.id_usuario = u.id_usuario
+            JOIN cursos c ON i.id_curso = c.id_curso
+            ORDER BY u.nombre, c.nombre, a.fecha DESC
+        """
+        )
+        asistencias = cursor.fetchall()
+        conn.close()
+
+        return render_template(
+            "Coordinador/partials/asistencias_coordinador.html", asistencias=asistencias
+        )
+
+    except Exception as e:
+        return f"Error al obtener asistencias: {str(e)}", 500

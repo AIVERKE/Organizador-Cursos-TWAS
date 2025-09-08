@@ -270,3 +270,67 @@ body {
     height: 200px;
   }
 }
+
+
+/* ===================== */
+/* ESTILOS PARA ASISTENCIAS */
+/* ===================== */
+.asistencias-container {
+  padding: 2rem;
+  background: #fff;
+}
+
+.asistencias-title {
+  color: #0077c2;
+  font-size: 28px;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.asistencias-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 2rem;
+}
+
+.asistencias-table th,
+.asistencias-table td {
+  border: 1px solid #0077c2;
+  padding: 0.8rem;
+  text-align: center;
+  font-size: 14px;
+}
+
+.asistencias-table th {
+  background: #0077c2;
+  color: #fff;
+  font-weight: 600;
+}
+
+.asistencias-table tr:nth-child(even) {
+  background: #f4faff;
+}
+
+.asistencias-empty {
+  color: #777;
+  font-size: 16px;
+  text-align: center;
+  margin: 2rem 0;
+}
+
+.btn-volver {
+  display: inline-block;
+  text-decoration: none;
+  background: transparent;
+  border: 1px solid #0077c2;
+  color: #0077c2;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btn-volver:hover {
+  background: #0077c2;
+  color: #fff;
+}
