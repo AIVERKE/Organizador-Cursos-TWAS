@@ -49,7 +49,7 @@ def obtener_cursos():
 def obtener_curso_id(id_curso):
     try:
         conn = get_connection()
-        cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)#Real DictCursor para obtener diccionarios en vez de tuplas, de modo que es mas facil manejar los datos por nombre de columna por ejemplo: row['nombre'] en vez de row[0]
         cursor.execute(
             """SELECT c.*,v.*,u.nombre as NombreU, u.apellido as ApellidoU 
         FROM cursos c JOIN usuarios u ON c.id_ponente = u.id_usuario
@@ -92,7 +92,8 @@ def crear_cursos_con_lote(lista_cursos):
     try:
         conn = get_connection()
         cursor = conn.cursor()
-        for c in lista_cursos:
+        for c in lista_cursos: # Iterar sobre cada curso en la lista, es decir, un for each donde "c" es un objeto curso y ese objeto se llena en cada iteracion con el valor correspondiente a la iteracion, no acumula, sino que en cada vuelta agarra el siguiente valor de la lista de cursos para poder agregarlo o descartarlo
+        #Y para cada "c" (curso) se realiza un intento de inserción en la base de datos
             try:
                 cursor.execute(
                     """
@@ -115,6 +116,8 @@ def crear_cursos_con_lote(lista_cursos):
                 conn.rollback()  # rollback parcial para este curso
                 cursor = conn.cursor()  # reabrir cursor limpio
         conn.commit()
+
+
     except Exception as e:
         if conn:
             conn.rollback()

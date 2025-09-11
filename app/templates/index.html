@@ -329,37 +329,41 @@
     </button>
 
     <script>
-        // Obtener el botón flotante
-        const floatingButton = document.getElementById('floatingButton');
+    // Obtener el botón flotante
+    const floatingButton = document.getElementById('floatingButton');
+    
+    // Configurar los porcentajes de scroll (40% para aparecer, 85% para desaparecer)
+    const scrollAppearThreshold = 0.4;
+    const scrollDisappearThreshold = 0.85;
+    
+    // Función para comprobar la posición del scroll
+    function checkScroll() {
+        // Calcular el porcentaje de scroll
+        const scrollPercent = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight));
         
-        // Configurar a qué porcentaje de scroll debe aparecer el botón (60% en este caso)
-        const scrollThreshold = 0.6;
-        
-        // Función para comprobar la posición del scroll
-        function checkScroll() {
-            // Calcular el porcentaje de scroll
-            const scrollPercent = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight));
-            
-            // Si el scroll supera el threshold, mostrar el botón
-            if (scrollPercent > scrollThreshold) {
-                floatingButton.classList.add('visible');
-            } else {
-                floatingButton.classList.remove('visible');
-            }
+        // Si el scroll está entre 40% y 85%, mostrar el botón
+        if (scrollPercent > scrollAppearThreshold && scrollPercent < scrollDisappearThreshold) {
+            floatingButton.classList.add('visible');
+        } else {
+            floatingButton.classList.remove('visible');
         }
-        
-        // Función para redirigir a otra página
-        function redirectToPage() {
-            // Cambia esta URL por la que desees
-            window.location.href = 'https://www.ejemplo.com';
-        }
-        
-        // Escuchar el evento de scroll
-        window.addEventListener('scroll', checkScroll);
-        
-        // Comprobar el scroll al cargar la página (por si ya está scrolleado)
-        window.addEventListener('load', checkScroll);
-    </script>
+    }
+    
+   // Función para redirigir a la página de videos/expositores
+function redirectToPage() {
+    // Redirige a la ruta de Flask, no al archivo HTML directo
+    window.location.href = "{{ url_for('home.videos') }}";
+}
+    
+    // Escuchar el evento de scroll
+    window.addEventListener('scroll', checkScroll);
+    
+    // Comprobar el scroll al cargar la página (por si ya está scrolleado)
+    window.addEventListener('load', checkScroll);
+    
+    // También comprobar cuando se redimensiona la ventana
+    window.addEventListener('resize', checkScroll);
+</script>
 
 
 <br>
@@ -421,7 +425,7 @@
         <div class="organizador h-100">
           <img src="{{ url_for('static', filename='images/federicoBrown.jpg') }}" alt="Organizador 3">
           <h4>Dr. Federico Brown </h4>
-          <h5>Universidad de Sao Paulo</h5>
+          <h5>Universidad de Sao Paulo</h5>
           <b>
             <span class="i18n i18n-es"> Brasil-Ecuador</span>
             <span class="i18n i18n-en"> Brazil-Ecuador</span>

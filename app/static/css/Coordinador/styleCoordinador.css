@@ -467,3 +467,86 @@ button:hover,
 }
 
 
+
+
+
+/* ...existing code... */
+.modal-content {
+  max-width: 95vw;
+  width: 400px;
+  max-height: 90vh;
+  overflow-y: auto;
+  margin: auto;
+  border-radius: 8px;
+  background: #fff;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+@media (max-width: 500px) {
+  .modal-content {
+    width: 98vw;
+    padding: 10px;
+  }
+  .modal-content label,
+  .modal-content input,
+  .modal-content button {
+    font-size: 1em;
+    width: 100%;
+    box-sizing: border-box;
+  }
+}
+/* ...existing code... */
+
+
+/* ==================== */
+/* COMBOBOX (SELECT) ESTILO BONITO + RESPONSIVE */
+/* ==================== */
+.modal-content select {
+  width: 100%;
+  padding: 10px;
+  margin-top: 6px;
+  border: 1px solid #0077c2;
+  border-radius: 6px;
+  font-family: 'Montserrat Alternates', sans-serif;
+  font-size: 14px;
+  background-color: #fff;
+  color: #0077c2;
+  cursor: pointer;
+  appearance: none; /* quita el estilo nativo */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  transition: all 0.3s ease-in-out;
+}
+
+/* Hover igual que botones */
+.modal-content select:hover {
+  background-color: #eaf4fb;
+}
+
+/* Focus con borde azul brillante */
+.modal-content select:focus {
+  outline: none;
+  border-color: #005fa3;
+  box-shadow: 0 0 6px rgba(0, 119, 194, 0.4);
+}
+
+/* Flechita custom azul */
+.modal-content select {
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%230077c2' class='bi bi-chevron-down' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px 16px;
+  padding-right: 36px; /* espacio para la flecha */
+}
+
+/* ==================== */
+/* RESPONSIVE SELECTS */
+/* ==================== */
+@media (max-width: 768px) {
+  .modal-content select {
+    font-size: 16px;   /* texto más grande en móviles */
+    padding: 14px;     /* más espacio para tocar con el dedo */
+    border-radius: 8px;
+  }
+}

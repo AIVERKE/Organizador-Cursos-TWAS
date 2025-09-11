@@ -14,8 +14,8 @@
 
   <!-- CSS al final para poder sobrescribir -->
   <link rel="stylesheet" href="{{ url_for('static', filename='css/styleinicio.css') }}">
-  <!--CSS de la tabla-->
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/styleCronograma.css') }}">
+  <!--CSS de la tabla
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styleCronograma.css') }}">-->
   {% block extra_css %}{% endblock %}
 </head>
 <body>
@@ -91,6 +91,7 @@
 
   {% block footer %}
   <!-- FOOTER -->
+<!-- FOOTER -->
 <footer class="footer" id="footerid">
   <div class="container">
     <div class="row gy-4">
@@ -107,44 +108,21 @@
         <p>Email: lktejada@umsa.bo</p>
       </div>
       
-      <!-- Columna de diseño curricular 
-      <div class="col-12 col-md-3">
-        <strong><span class="i18n i18n-es">Diseño Curricular:</span><span class="i18n i18n-en">Curricular Design:</span></strong>
-        <p>Postgrado Carrera de Ciencias Quimicas<br>5to Piso - Aula 21<br>Cota Cota, Calle 27 #1995</p>
-      </div>-->
-
       <!-- Columna de logos (lado derecho) -->
-      <div class="col-12 col-md-3">
-        <class="logo-column">
-         <!-- Logos en 2 columnas de 2 -->
+      <div class="col-12 col-md-6">
+        <div class="logo-column">
+          <!-- Logos en 2 filas -->
           <div class="logo-grid">
             <img src="{{ url_for('static', filename='images/TWAS_Logo.webp') }}" alt="UNESCO-TWAS" class="footer-logo">
             <img src="{{ url_for('static', filename='images/TYAN.webp') }}" alt="TYAN" class="footer-logo">
-            <img src="{{ url_for('static', filename='images/EmbajadaBrasil.png') }}" alt="TYAN" class="footer-logo">
+            <img src="{{ url_for('static', filename='images/EmbajadaBrasil.png') }}" alt="Embajada de Brasil" class="footer-logo">
           </div>
           <div class="logo-grid2"> 
-              <img src="{{ url_for('static', filename='images/EscudoUMSA.png') }}" alt="Logo UMSA" class="logo-umsa">
-              <img src="{{ url_for('static', filename='images/EscudoFCPN.webp') }}" alt="Escudo FCPN" class="footer-logo">
-              <img src="{{ url_for('static', filename='images/CarreraQuimica.png') }}" alt="Logo UMSA" class="footer-logo">
-              <img src="{{ url_for('static', filename='images/ing-quimica.jpg') }}" alt="Logo UMSA" class="footer-logo">
+            <img src="{{ url_for('static', filename='images/EscudoUMSA.png') }}" alt="Logo UMSA" class="footer-logo">
+            <img src="{{ url_for('static', filename='images/EscudoFCPN.webp') }}" alt="Escudo FCPN" class="footer-logo">
+            <img src="{{ url_for('static', filename='images/CarreraQuimica.png') }}" alt="Carrera de Química" class="footer-logo">
+            <img src="{{ url_for('static', filename='images/ing-quimica.jpg') }}" alt="Ingeniería Química" class="footer-logo">
           </div>
-          
-          
-          <!-- Botones redes sociales 
-          <div class="social-buttons d-flex justify-content-center justify-content-md-end gap-2 mt-3">
-            <a href="#" class="social-btn-minimal">
-              <i class="fab fa-facebook-f"></i>
-            </a>
-            <a href="#" class="social-btn-minimal">
-              <i class="fab fa-twitter"></i>
-            </a>
-            <a href="#" class="social-btn-minimal">
-              <i class="fab fa-linkedin-in"></i>
-            </a>
-            <a href="#" class="social-btn-minimal">
-              <i class="fab fa-youtube"></i>
-            </a>
-          </div>-->
         </div>
       </div>
     </div>
@@ -155,8 +133,8 @@
       
       <!-- Créditos de desarrollo - Alineado a la derecha -->
       <div class="dev-team text-center text-md-end">
-        <span class="i18n i18n-es">Desarrollado por BattleBread Academy | <a class="dev-bba" href="https://www.instagram.com/thebattle_bread?igsh=ZHl3b29vcDN3OWhk">BattleBread Academy</a></span>
-        <span class="i18n i18n-en">Developed by BattleBread Academy | <a class="dev-bba" href="https://www.instagram.com/thebattle_bread?igsh=ZHl3b29vcDN3OWhk">BattleBread Academy</a></span>
+        <span class="i18n i18n-es">Desarrollado por BattleBread Academy | <a class="dev-bba" href="https://aiverke.github.io/BattleBread-Web-Site/">BattleBread Academy</a></span>
+        <span class="i18n i18n-en">Developed by BattleBread Academy | <a class="dev-bba" href="https://aiverke.github.io/BattleBread-Web-Site/">BattleBread Academy</a></span>
       </div>
     </div>
   </div>

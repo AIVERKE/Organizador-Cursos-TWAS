@@ -2,10 +2,13 @@ from flask import Blueprint, request, jsonify, render_template
 from . import ins_bp
 from app.controllers import i_controller as ins
 from app.controllers import c_controller as crs
+from flask_login import login_required
 from app.api.auth.utils import role_required
 
 
 @ins_bp.route("/", methods=["GET"])
+@login_required
+@role_required(1,4)
 def get_inscripciones():
     try:
         datos = ins.obtener_inscripciones()
@@ -29,6 +32,8 @@ def get_inscripciones():
 
 
 @ins_bp.route("/<int:id_inscripcion>", methods=["GET"])
+@login_required
+@role_required(1,4)
 def get_inscripcion(id_inscripcion):
     row = ins.obtener_inscripcion(id_inscripcion)
     if row:
@@ -43,6 +48,8 @@ def get_inscripcion(id_inscripcion):
 
 
 @ins_bp.route("/", methods=["POST"])
+@login_required
+@role_required(1,4)
 def post_inscripcion():
     data = request.json
     ins.crear_inscripcion(
@@ -52,6 +59,8 @@ def post_inscripcion():
 
 
 @ins_bp.route("/<int:id_inscripcion>", methods=["PUT"])
+@login_required
+@role_required(1,4)
 def put_curso(id_inscripcion):
     data = request.json
     ins.actualizar_inscripcion(
@@ -61,15 +70,15 @@ def put_curso(id_inscripcion):
 
 
 @ins_bp.route("/<int:id_inscripcion>", methods=["DELETE"])
+@login_required
+@role_required(1,4)
 def delete_inscripcion(id_inscripcion):
     ins.eliminar_inscripcion(id_inscripcion)
     return jsonify({"mensaje": "Inscripcion eliminada"})
 
 
-
-
-
 @ins_bp.route("/usuario/<int:id_usuario>", methods=["GET"])
+
 def get_inscripciones_por_usuario(id_usuario):
     try:
         datos = ins.obtener_inscripciones_por_usuario(id_usuario)

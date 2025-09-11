@@ -12,6 +12,7 @@ import psycopg2
 ## ---Estudiantes
 @usuario_bp.route("/coor/estudiantes", methods=["POST"])
 @login_required
+@role_required(1, 4)
 def crear_estudiante():
     data = request.json
     campos = ["nombre", "apellido", "email", "contrasena", "documento", "pais_origen","fecha_nac", "genero", "pais_residencia", "afiliacion_u", "tipo_afiliacion", "area_tematica", "disciplina_cientifica"]
@@ -36,10 +37,13 @@ def crear_estudiante():
 
 @usuario_bp.route("/coor/estudiantes", methods=["GET"])
 @login_required
+@role_required(1, 4)
 def obtener_estudiantes():
     return render_template("Coordinador/partials/estudiantes.html", estudiantes=usu.obtener_usuarios(rol=3))
 
 @usuario_bp.route('/coor/estudiantes/info/<int:id_u>',methods=['GET'])
+@login_required
+@role_required(1, 4)
 def obtener_datos_estudiante_json(id_u):
     estudiante = usu.obtener_usuarios_id(3,id_u)
     if estudiante:
@@ -48,6 +52,7 @@ def obtener_datos_estudiante_json(id_u):
 
 @usuario_bp.route("/coor/estudiantes/<int:id_usuario>", methods=["PUT"])
 @login_required
+@role_required(1, 4)
 def editar_estudiante(id_usuario):
     data = request.json
     campos_requeridos = ["nombre", "apellido", "email", "documento", "pais_origen", "id_rol", "fecha_nac", "genero", "pais_residencia", "afiliacion_u", "tipo_afiliacion", "area_tematica", "disciplina_cientifica"]
@@ -75,6 +80,7 @@ def editar_estudiante(id_usuario):
 
 @usuario_bp.route("/coor/estudiantes/<int:id_usuario>", methods=["DELETE"])
 @login_required
+@role_required(1, 4)
 def borrar_estudiante(id_usuario):
     try:
         usu.eliminar_estudiante(id_usuario)
@@ -85,19 +91,9 @@ def borrar_estudiante(id_usuario):
 #----------------------
 
 # Obtener materias + notas (JSON)
-# @usuario_bp.route('/coor/estudiantes/info_detalle/<int:id_u>', methods=['GET'])
-# @login_required
-# def detalle_estudiante(id_u):
-#     materias = usu.obtener_materias_estudiante(id_u)
-#     disponibles = usu.obtener_cursos_disponibles(id_u)
-#     return jsonify({
-#         "materias": materias,
-#         "disponibles": disponibles
-#     })
-
-# Obtener materias + notas (JSON)
 @usuario_bp.route('/coor/estudiantes/info_detalle/<int:id_u>', methods=['GET'])
 @login_required
+@role_required(1, 4)
 def detalle_estudiante(id_u):
     conn = get_connection()
     try:
@@ -120,6 +116,7 @@ def detalle_estudiante(id_u):
 # Añadir materia
 @usuario_bp.route('/coor/estudiantes/<int:id_u>/inscripciones', methods=['POST'])
 @login_required
+@role_required(1, 4)
 def agregar_materia(id_u):
     data = request.json
     id_curso = data.get("id_curso")
@@ -131,6 +128,7 @@ def agregar_materia(id_u):
 # Quitar materia
 @usuario_bp.route('/coor/estudiantes/inscripciones/<int:id_insc>/<int:id_not>', methods=['DELETE'])
 @login_required
+@role_required(1, 4)
 def quitar_materia(id_insc,id_not):
     usu.eliminar_inscripcion(id_insc,id_not)
     return jsonify({"mensaje": "Inscripción eliminada"}), 200
@@ -139,11 +137,13 @@ def quitar_materia(id_insc,id_not):
 ## ---Ponentes
 @usuario_bp.route("coor/expositores", methods=["GET"])
 @login_required
+@role_required(1,4)
 def expositores():
     return render_template("Coordinador/partials/expositores.html",expositores=est.obtener_usuarios(2))
 
 @usuario_bp.route("/coor/expositores", methods=["POST"])
 @login_required
+@role_required(1,4)
 def crear_expositor():
     data = request.json
     campos = ["nombre", "apellido", "email", "contrasena", "documento", "pais_origen", "fecha_nac", "genero", "pais_residencia", "afiliacion_u", "tipo_afiliacion", "area_tematica", "disciplina_cientifica"]
@@ -169,6 +169,7 @@ def crear_expositor():
 
 @usuario_bp.route("/coor/expositores", methods=["GET"])
 @login_required
+@role_required(1,4)
 def obtener_ponente():
     return render_template("Coordinador/partials/expositores.html", expositores=usu.obtener_usuarios(rol=2))
 
@@ -181,6 +182,7 @@ def obtener_datos_ponente_json(id_u):
 
 @usuario_bp.route("/coor/expositores/<int:id_usuario>", methods=["PUT"])
 @login_required
+@role_required(1,4)
 def editar_ponente(id_usuario):
     data = request.json
     campos_requeridos = ["nombre", "apellido", "email", "documento", "pais_origen", "id_rol","fecha_nac", "genero", "pais_residencia", "afiliacion_u", "tipo_afiliacion", "area_tematica", "disciplina_cientifica"]
@@ -209,6 +211,7 @@ def editar_ponente(id_usuario):
 
 @usuario_bp.route("/coor/expositores/<int:id_usuario>", methods=["DELETE"])
 @login_required
+@role_required(1,4)
 def borrar_ponente(id_usuario):
     try:
         usu.eliminar_ponente(id_usuario)
@@ -220,14 +223,20 @@ def borrar_ponente(id_usuario):
 
 # Rutas para ponentes
 @usuario_bp.route('/coor/expositores/<int:id_u>/dictados', methods=['GET'])
+@login_required
+@role_required(1,4)
 def cursos_del_ponente(id_u):
     return usu.get_cursos_ponente(id_u)
 
 @usuario_bp.route('/coor/expositores/disponibles', methods=['GET'])
+@login_required
+@role_required(1,4)
 def cursos_disponibles():
     return usu.get_cursos_disponibles_para_ponente()
 
 @usuario_bp.route('/coor/expositores/<int:id_u>/dictados', methods=['POST'])
+@login_required
+@role_required(1,4)
 def asignar_dictado(id_u):
     data = request.get_json()
     id_curso = data.get('id_curso')
@@ -235,6 +244,8 @@ def asignar_dictado(id_u):
     return jsonify({"mensaje": "Curso correctamente asignado"}), 201
 
 @usuario_bp.route('/coor/expositores/dictados/<int:id_curso>', methods=['DELETE'])
+@login_required
+@role_required(1,4)
 def eliminar_dictado(id_curso):
     usu.quitar_curso_a_ponente(id_curso)
     return jsonify({"mensaje": "Curso correctamente deasignado"}), 201
@@ -245,6 +256,7 @@ def eliminar_dictado(id_curso):
 
 @usuario_bp.route("/estudiantes/<int:id_usuario>", methods=["PUT"])
 @login_required
+@role_required(1,4)
 def put_estudiante(id_usuario):
     data = request.json
     est.actualizar_estudiante(
@@ -266,39 +278,9 @@ def put_estudiante(id_usuario):
     )
     return jsonify({"mensaje": "Estudiante actualizado"})
 
-
-"""@usuario_bp.route('/estudiantes', methods=['POST'])
-def post_estudiante():
-    data = request.json
-    est.crear_estudiante(data['nombre'], data['apellido'], data['email'], data['contrasena'], data['documento'], data['pais_origen'])
-    return jsonify({"mensaje": "Estudiante creado"}), 201"""
-
-
-# @usuario_bp.route("/estudiantes", methods=["POST"])
-# @login_required
-# def post_estudiante():
-#     data = request.json
-#     est.crear_estudiante(
-#         data["nombre"],
-#         data["apellido"],
-#         data["email"],
-#         data["contrasena"],
-#         data["documento"],
-#         data["pais_origen"],
-#         data["id_rol"],
-#     )
-#     return jsonify({"mensaje": "Estudiante creado"}), 201
-
-
-"""@usuario_bp.route('/estudiantes/<int:id_usuario>', methods=['PUT'])
-def put_estudiante(id_usuario):
-    data = request.json
-    est.actualizar_estudiante(id_usuario, data['nombre'], data['apellido'], data['email'], data['contrasena'], data['documento'], data['pais_origen'])
-    return jsonify({"mensaje": "Estudiante actualizado"})
-"""
-
 @usuario_bp.route("/estudiantes/<int:id_usuario>", methods=["DELETE"])
 @login_required
+@role_required(1,4)
 def delete_estudiante(id_usuario):
     est.eliminar_estudiante(id_usuario)
     return jsonify({"mensaje": "Estudiante eliminado"})
@@ -309,6 +291,7 @@ def delete_estudiante(id_usuario):
 
 @usuario_bp.route("/vista-estudiante", methods=["GET"])
 @login_required
+@role_required(3)
 def vista_estudiante():
     from app.controllers import u_controller as est
     user_data = est.obtener_estudiante(current_user.id_usuario)

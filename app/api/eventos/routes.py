@@ -7,10 +7,13 @@ from app.api.auth.utils import role_required
 # ----- PARA COORDINADOR -----
 @evento_bp.route("/coor/eventos", methods=["GET"])
 @login_required
+@role_required(1, 4)
 def obtener_eventos_completo():
     return render_template("Coordinador/partials/eventos.html", eventos=evt.obtener_eventos_full())
 
 @evento_bp.route('/coor/eventos/info/<int:id_evento>',methods=['GET'])
+@login_required
+@role_required(1, 4)
 def obtener_datos_evento_json(id_evento):
     evento = evt.obtener_evento(id_evento)
     if evento:
@@ -18,16 +21,17 @@ def obtener_datos_evento_json(id_evento):
     return jsonify({}), 404
 
 @evento_bp.route('/coor/version/info/<int:id_version>',methods=['GET'])
+@login_required
+@role_required(1, 4)
 def obtener_datos_version_json(id_version):
     version = evt.obtener_eventoVs(id_version)
     if version:
         return jsonify(version[0])
     return jsonify({}), 404
 
-
-
 @evento_bp.route("/coor/eventos/<int:id_evento>", methods=["PUT"])
 @login_required
+@role_required(1, 4)
 def editar_evento(id_evento):
     data = request.json
     campos_requeridos = ["nombre"]
@@ -37,6 +41,7 @@ def editar_evento(id_evento):
 
 @evento_bp.route("/coor/version/<int:id_version>", methods=["PUT"])
 @login_required
+@role_required(1, 4)
 def editar_version_evento(id_version):
     data = request.json
     campos_requeridos = ["nombre_version","anio","lugar","fecha_inicio","fecha_fin","lugar"]
@@ -54,6 +59,7 @@ def editar_version_evento(id_version):
 
 @evento_bp.route("/coor/eventos", methods=["POST"])
 @login_required
+@role_required(1, 4)
 def crear_evento():
     data = request.json
     campos = ["nombre"]
@@ -66,6 +72,7 @@ def crear_evento():
 
 @evento_bp.route("/coor/version", methods=["POST"])
 @login_required
+@role_required(1, 4)
 def crear_version_evento():
     data = request.json
     campos = ["id_evento","nombre_version","anio","fecha_inicio","fecha_fin","lugar"]
@@ -81,28 +88,10 @@ def crear_version_evento():
     )
     return jsonify({"mensaje": "Version de evento creado"}), 201
 
-
-
-
-# @evento_bp.route("/", methods=["GET"])
-# @login_required
-# def get_eventos():
-#     try:
-#         datos = evt.obtener_eventos()
-#         eventos = []
-#         for row in datos:
-#             eventos.append({"id_evento": row[0], "nombre_base": row[1]})
-#         return jsonify(eventos)
-#     except Exception as e:
-#         print("Error al obtener eventos:", e)
-#         return (
-#             jsonify({"error": str(e)}),
-#             500,
-#         )  # cambié el [] que seria una coleccion vacia
-
-
+# Ruta no utilizada
 @evento_bp.route("/<int:id_evento>", methods=["GET"])
 @login_required
+@role_required(1, 4)
 def get_evento(id_evento):
     row = evt.obtener_evento(id_evento)
     if row:
@@ -110,25 +99,28 @@ def get_evento(id_evento):
         return jsonify(evento)
     return jsonify({"mensaje": "Evento no encontrado"}), 404
 
-
+# Ruta no utilizada
 @evento_bp.route("/", methods=["POST"])
 @login_required
+@role_required(1, 4)
 def post_evento():
     data = request.json
     evt.crear_evento(data["nombre_base"])
     return jsonify({"mensaje": "Evento creado"}), 201
 
-
+# Ruta no utilizada
 @evento_bp.route("/<int:id_evento>", methods=["PUT"])
 @login_required
+@role_required(1, 4)
 def put_evento(id_evento):
     data = request.json
     evt.actualizar_evento(id_evento, data["nombre_base"])
     return jsonify({"mensaje": "Evento actualizado"})
 
-
+# Ruta no utilizada
 @evento_bp.route("/<int:id_evento>", methods=["DELETE"])
 @login_required
+@role_required(1, 4)
 def delete_evento(id_evento):
     evt.eliminar_evento(id_evento)
     return jsonify({"mensaje": "Evento eliminado"})
@@ -136,9 +128,10 @@ def delete_evento(id_evento):
 
 # version evento
 
-
+# Ruta no utilizada
 @evento_bp.route("/version", methods=["GET"])
 @login_required
+@role_required(1, 4)
 def get_eventosVs():
     try:
         datos = evt.obtener_eventosVs()
@@ -163,9 +156,10 @@ def get_eventosVs():
             500,
         )  # cambié el [] que seria una coleccion vacia
 
-
+# Ruta no utilizada
 @evento_bp.route("/version/<int:id_version>", methods=["GET"])
 @login_required
+@role_required(1, 4)
 def get_eventoVs(id_version):
     row = evt.obtener_eventoVs(id_version)
     if row:
@@ -181,9 +175,10 @@ def get_eventoVs(id_version):
         return jsonify(eventoVs)
     return jsonify({"mensaje": "Version de evento no encontrado"}), 404
 
-
+# Ruta no utilizada
 @evento_bp.route("/version", methods=["POST"])
 @login_required
+@role_required(1, 4)
 def post_eventoVs():
     data = request.json
     evt.crear_eventoVs(
@@ -196,9 +191,10 @@ def post_eventoVs():
     )
     return jsonify({"mensaje": "Version de evento creado"}), 201
 
-
+# Ruta no utilizada
 @evento_bp.route("/version/<int:id_version>", methods=["PUT"])
 @login_required
+@role_required(1, 4)
 def put_eventoVs(id_version):
     data = request.json
     evt.actualizar_eventoVs(
@@ -213,9 +209,10 @@ def put_eventoVs(id_version):
 
     return jsonify({"mensaje": "Version de evento actualizado"})
 
-
+# Ruta no utilizada
 @evento_bp.route("/version/<int:id_version>", methods=["DELETE"])
 @login_required
+@role_required(1, 4)
 def delete_eventoVs(id_version):
     evt.eliminar_eventoVs(id_version)
     return jsonify({"mensaje": "Version de evento eliminado"})

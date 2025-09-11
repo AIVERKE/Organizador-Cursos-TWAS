@@ -48,11 +48,6 @@ def create_app(config_class=DevConfig):
 
     safe_register(usuario_bp, "/usuarios")
 
-    print("\n=== URL MAP ===")
-    for rule in app.url_map.iter_rules():
-        print(rule, "->", sorted(list(rule.methods)))
-    print("===============\n")
-
     from app.api.eventos import evento_bp
 
     safe_register(evento_bp, "/eventos")
@@ -120,10 +115,26 @@ def create_app(config_class=DevConfig):
             app.logger.info(f"{request.method} {request.path} {total_time:.4f}s")
         return response
 
-    # --- Listar rutas registradas (solo una vez) ---
-    print("\n[RUTAS REGISTRADAS EN FLASK]:")
+
+    print("\n=== RUTAS REGISTRADAS EN FLASK ===\n")
+
+    # Encabezados
+    print(f"{'Ruta':<70} | {'Métodos':<20} | Roles")
+    print("-" * 120)
+
     for rule in app.url_map.iter_rules():
-        print(rule)
+        view_func = app.view_functions[rule.endpoint]
+        roles = getattr(view_func, "_required_roles", None)
+        methods = ", ".join(sorted(list(rule.methods - {"HEAD", "OPTIONS"})))
+        roles_str = ", ".join(str(r) for r in roles) if roles else "Sin roles asignados"
+
+        # 👇 columnas alineadas
+        print(f"{rule.rule:<70} | {methods:<20} | {roles_str}")
+
+    print("\n" + "=" * 120 + "\n")
+
+    
+
 
     logging.basicConfig(
         level=logging.INFO, format="[%(asctime)s] %(message)s", datefmt="%H:%M:%S"

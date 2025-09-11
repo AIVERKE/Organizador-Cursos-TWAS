@@ -47,6 +47,16 @@
           class="menu-btn" onclick="showSection('eventos/coor/eventos')">Eventos</button> -->
           <button 
           class="menu-btn" onclick="showSection('cursos/coor/cursos')">Cursos</button>
+
+          <button 
+          class="menu-btn" onclick="showSection('cursos/coor/cursos')">Cursos</button>
+
+          <button 
+            class="menu-btn" 
+            onclick="showSection('qrs/asistencias_coordinador')">
+            Asistencias
+          </button>
+
         </div>
 
         <!-- Contenido -->
@@ -335,6 +345,61 @@ if (formEditar) {
             }
           });
         }
+
+
+
+//******************************************************************************************************************************************************************************************************
+//Aca el modal para la modificacion del correo electronico de confirmacion de inscripcion al curso
+
+// Modal email de verificacion
+        document.querySelectorAll('.mail-btn').forEach(btn => {
+          btn.addEventListener("click", function () {
+            const modal = document.getElementById("modal-mail");
+            if (modal) modal.classList.add("activo");
+          });
+        });
+
+        const formMailV = document.getElementById("form-mail");
+        if (formMailV) {
+          formMailV.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            // 🍔 const asunto = document.getElementById("Asunto_cambio").value || "Confirmación de inscripción";
+            //const nombre = document.getElementById("nombre_crear").value;
+            //const apellido = document.getElementById("apellido_crear").value;
+            //const email = document.getElementById("email_crear").value;
+            // 🍔 const contenido = document.getElementById("Contenido_cambio").value || "Hola, te confirmamos tu inscripción al curso. ¡Bienvenido! Saludos, Equipo TWAS";
+            
+            const formData = new FormData(formMailV);
+
+            
+            try {
+        const res = await fetch("/mail/", {
+          method: "POST",
+          //headers: { "Content-Type": "application/json" },
+          body: /*JSON.stringify({
+            subject: asunto,
+            body: contenido,
+            //to: email 
+          })*/ formData,
+          credentials: 'include' // para enviar cookies si es necesario
+        });
+
+              const resultado = await res.json();
+
+                  if (res.ok) {
+              alert("Correo de confirmación enviado correctamente.");
+              cerrarModalMail();
+            } else {
+              alert("Error al enviar el correo: " + resultado.error);
+            }
+          } catch (err) {
+            alert("Error al enviar el correo.");
+          }
+        });
+        }
+
+
+//******************************************************************************************************************************************************************************************************
 
         // Eliminar
         document.querySelectorAll('.del-btn').forEach(btn => {
@@ -782,6 +847,10 @@ if (formEditar) {
         if (modal) modal.classList.remove("activo");
       }
 
+      function cerrarModalMail() {
+        const modal = document.getElementById("modal-mail");
+        if (modal) modal.classList.remove("activo");
+      }
       document.addEventListener("DOMContentLoaded", () => { 
         inicializarEventos();
         inicializarEventosCursos();    

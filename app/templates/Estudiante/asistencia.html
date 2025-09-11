@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Mis Asistencias</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/Estudiante/styleEstudiantes.css') }}">
+</head>
+<body>
+  <div class="asistencias-container">
+    <h1 class="asistencias-title">Mis asistencias</h1>
+
+    {% if asistencias and asistencias|length > 0 %}
+      <table class="asistencias-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Curso</th>
+            <th>Fecha y Hora</th>
+            <th>Presente</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for a in asistencias %}
+            <tr>
+              <td>{{ a[0] }}</td>
+              <td>{{ a[3] }}</td>
+              <td>{{ a[1] }}</td>
+              <td>{{ "✔️" if a[2] else "❌" }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p class="asistencias-empty">⚠️ No tienes asistencias registradas todavía.</p>
+    {% endif %}
+  </div>
+</body>
+</html>

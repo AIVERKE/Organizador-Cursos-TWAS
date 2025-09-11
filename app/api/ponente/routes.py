@@ -16,9 +16,9 @@ from .utils import (
 
 # ------------------- VISTAS PRINCIPALES -------------------
 
-
 @ponente_bp.route("/")
 @login_required
+@role_required(2)
 def index():
     return render_template(
         "Expositor/expositor.html",
@@ -29,6 +29,7 @@ def index():
 
 @ponente_bp.route("/datos")
 @login_required
+@role_required(2)
 def datos():
     return render_template(
         "Expositor/datosPersonalesExp.html",
@@ -42,6 +43,7 @@ def datos():
 
 @ponente_bp.route("/curso")
 @login_required
+@role_required(2)
 def curso():
     id_curso = obtener_id_curso(current_user.id_usuario)
     if not id_curso:
@@ -60,6 +62,7 @@ def curso():
 
 @ponente_bp.route("/estudiantes_curso/<int:id_ponente>", methods=["GET"])
 @login_required
+@role_required(2)
 def estudiantes_curso(id_ponente):
     id_curso = obtener_id_curso(id_ponente)
     if not id_curso:
@@ -85,6 +88,7 @@ def estudiantes_curso(id_ponente):
 
 @ponente_bp.route("/calificacion")
 @login_required
+@role_required(2)
 def calificacion():
     id_curso = obtener_id_curso(current_user.id_usuario)
     if not id_curso:
@@ -101,6 +105,8 @@ def calificacion():
 
 
 @ponente_bp.route("/actualizar_nota", methods=["POST"])
+@login_required
+@role_required(2)
 def actualizar_nota():
     """
     Actualiza la nota acumulada o de asistencia y recalcula la nota final.
@@ -132,6 +138,8 @@ def actualizar_nota():
 
 
 @ponente_bp.route("/nota_asistencia", methods=["POST"])
+@login_required
+@role_required(2)
 def nota_asistencia():
     """
     Actualiza únicamente la nota de asistencia de un estudiante.
@@ -152,6 +160,8 @@ def nota_asistencia():
 
 
 @ponente_bp.route("/nota_acumulada", methods=["POST"])
+@login_required
+@role_required(2)
 def nota_acumulada():
     """
     Actualiza únicamente la nota acumulada de un estudiante.

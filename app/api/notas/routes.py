@@ -9,6 +9,8 @@ import psycopg2
 
 
 @notas_bp.route("/", methods=["GET"])
+@login_required
+@role_required(1,4)
 def get_notas():
     try:
         datos = notas.obtener_notas()
@@ -33,6 +35,8 @@ def get_notas():
 
 
 @notas_bp.route("/<int:id_nota>", methods=["GET"])
+@login_required
+@role_required(1,4)
 def get_nota(id_nota):
     row = notas.obtener_nota(id_nota)
     if row:
@@ -48,6 +52,8 @@ def get_nota(id_nota):
 
 
 @notas_bp.route("/", methods=["POST"])
+@login_required
+@role_required(1,4)
 def post_nota():
     data = request.json
     notas.crear_nota(
@@ -57,6 +63,8 @@ def post_nota():
 
 
 @notas_bp.route("/<int:id_nota>", methods=["PUT"])
+@login_required
+@role_required(1, 4)
 def put_nota(id_nota):
     data = request.json
     notas.actualizar_nota(
@@ -66,6 +74,8 @@ def put_nota(id_nota):
 
 
 @notas_bp.route("/<int:id_nota>", methods=["DELETE"])
+@login_required
+@role_required(1,4)
 def delete_nota(id_nota):
     notas.eliminar_nota(id_nota)
     return jsonify({"mensaje": "Notas eliminadas"})
