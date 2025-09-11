@@ -77,7 +77,7 @@ def generate_qr_by_id(id_usuario):
 
 @qrs_bp.route("/registrar", methods=["GET"])
 @login_required
-@role_required(2, 3)
+@role_required(1, 2)
 def registrar():
     id_inscripcion = request.args.get("id_inscripcion", type=int)
     hora_registro = datetime.now()
@@ -92,14 +92,19 @@ def registrar():
         cursor.execute(
             """
             SELECT 1 FROM asistencias
-            WHERE id_inscripcion = %s AND fecha = CURRENT_DATE
-        """,
+            WHERE id_inscripcion = %s AND DATE(fecha) = CURRENT_DATE
+            """,
             (id_inscripcion,),
         )
 
         if cursor.fetchone():
             conn.close()
-            return "Ya se registró asistencia para hoy.", 200
+            return (
+                render_template(
+                    "Answers/asistencia_registrada.html", fecha=hora_registro
+                ),
+                200,
+            )
 
         cursor.execute(
             """
