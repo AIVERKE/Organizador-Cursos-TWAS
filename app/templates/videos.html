@@ -9,6 +9,7 @@
         border: none;
         overflow: hidden;
         height: 100%;
+        cursor: pointer;
     }
     .expositor-card:hover {
         transform: translateY(-5px);
@@ -53,6 +54,41 @@
         padding: 0;
         margin-bottom: 2rem;
     }
+    
+    /* Estilos para el modal */
+    .modal-backdrop {
+        background-color: rgba(0, 0, 0, 0.8);
+    }
+    .modal-content {
+        border: none;
+        border-radius: 12px;
+        overflow: hidden;
+    }
+    .modal-header {
+        border-bottom: 1px solid #e9ecef;
+        background-color: #f8f9fa;
+    }
+    .modal-title {
+        color: #2c3e50;
+        font-weight: 600;
+    }
+    .btn-close {
+        font-size: 0.8rem;
+    }
+    .video-container {
+        position: relative;
+        padding-bottom: 56.25%; /* Relación de aspecto 16:9 */
+        height: 0;
+        overflow: hidden;
+    }
+    .video-container iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: 0;
+    }
 </style>
 {% endblock %}
 
@@ -87,7 +123,7 @@
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
         <!-- Expositor 1 -->
         <div class="col">
-            <div class="card expositor-card h-100">
+            <div class="card expositor-card h-100" data-bs-toggle="modal" data-bs-target="#videoModal" data-video-id="VIDEO_ID_1" data-expositor-name="Dr. Ana García">
                 <div class="card-body">
                     <h5 class="expositor-title">Dr. Ana García</h5>
                     <p class="expositor-text">
@@ -96,7 +132,7 @@
                     </p>
                 </div>
                 <div class="card-footer bg-transparent border-0">
-                    <button class="btn btn-primary btn-expositor w-100" onclick="window.open('https://www.youtube.com/watch?v=VIDEO_ID_1', '_blank')">
+                    <button class="btn btn-primary btn-expositor w-100">
                         <span class="i18n i18n-es">Ver Presentación</span>
                         <span class="i18n i18n-en">View Presentation</span>
                     </button>
@@ -106,7 +142,7 @@
 
         <!-- Expositor 2 -->
         <div class="col">
-            <div class="card expositor-card h-100">
+            <div class="card expositor-card h-100" data-bs-toggle="modal" data-bs-target="#videoModal" data-video-id="VIDEO_ID_2" data-expositor-name="Prof. Carlos López">
                 <div class="card-body">
                     <h5 class="expositor-title">Prof. Carlos López</h5>
                     <p class="expositor-text">
@@ -115,7 +151,7 @@
                     </p>
                 </div>
                 <div class="card-footer bg-transparent border-0">
-                    <button class="btn btn-primary btn-expositor w-100" onclick="window.open('https://www.youtube.com/watch?v=VIDEO_ID_2', '_blank')">
+                    <button class="btn btn-primary btn-expositor w-100">
                         <span class="i18n i18n-es">Ver Presentación</span>
                         <span class="i18n i18n-en">View Presentation</span>
                     </button>
@@ -125,7 +161,7 @@
 
         <!-- Expositor 3 -->
         <div class="col">
-            <div class="card expositor-card h-100">
+            <div class="card expositor-card h-100" data-bs-toggle="modal" data-bs-target="#videoModal" data-video-id="VIDEO_ID_3" data-expositor-name="Dra. Maria Rodriguez">
                 <div class="card-body">
                     <h5 class="expositor-title">Dra. Maria Rodriguez</h5>
                     <p class="expositor-text">
@@ -134,7 +170,7 @@
                     </p>
                 </div>
                 <div class="card-footer bg-transparent border-0">
-                    <button class="btn btn-primary btn-expositor w-100" onclick="window.open('https://www.youtube.com/watch?v=VIDEO_ID_3', '_blank')">
+                    <button class="btn btn-primary btn-expositor w-100">
                         <span class="i18n i18n-es">Ver Presentación</span>
                         <span class="i18n i18n-en">View Presentation</span>
                     </button>
@@ -144,7 +180,7 @@
 
         <!-- Expositor 4 -->
         <div class="col">
-            <div class="card expositor-card h-100">
+            <div class="card expositor-card h-100" data-bs-toggle="modal" data-bs-target="#videoModal" data-video-id="VIDEO_ID_4" data-expositor-name="Dr. Roberto Silva">
                 <div class="card-body">
                     <h5 class="expositor-title">Dr. Roberto Silva</h5>
                     <p class="expositor-text">
@@ -153,7 +189,7 @@
                     </p>
                 </div>
                 <div class="card-footer bg-transparent border-0">
-                    <button class="btn btn-primary btn-expositor w-100" onclick="window.open('https://www.youtube.com/watch?v=VIDEO_ID_4', '_blank')">
+                    <button class="btn btn-primary btn-expositor w-100">
                         <span class="i18n i18n-es">Ver Presentación</span>
                         <span class="i18n i18n-en">View Presentation</span>
                     </button>
@@ -163,7 +199,7 @@
 
         <!-- Expositor 5 -->
         <div class="col">
-            <div class="card expositor-card h-100">
+            <div class="card expositor-card h-100" data-bs-toggle="modal" data-bs-target="#videoModal" data-video-id="VIDEO_ID_5" data-expositor-name="Dra. Laura Martinez">
                 <div class="card-body">
                     <h5 class="expositor-title">Dra. Laura Martinez</h5>
                     <p class="expositor-text">
@@ -172,7 +208,7 @@
                     </p>
                 </div>
                 <div class="card-footer bg-transparent border-0">
-                    <button class="btn btn-primary btn-expositor w-100" onclick="window.open('https://www.youtube.com/watch?v=VIDEO_ID_5', '_blank')">
+                    <button class="btn btn-primary btn-expositor w-100">
                         <span class="i18n i18n-es">Ver Presentación</span>
                         <span class="i18n i18n-en">View Presentation</span>
                     </button>
@@ -182,7 +218,7 @@
 
         <!-- Expositor 6 -->
         <div class="col">
-            <div class="card expositor-card h-100">
+            <div class="card expositor-card h-100" data-bs-toggle="modal" data-bs-target="#videoModal" data-video-id="VIDEO_ID_6" data-expositor-name="Prof. Javier Hernandez">
                 <div class="card-body">
                     <h5 class="expositor-title">Prof. Javier Hernandez</h5>
                     <p class="expositor-text">
@@ -191,10 +227,27 @@
                     </p>
                 </div>
                 <div class="card-footer bg-transparent border-0">
-                    <button class="btn btn-primary btn-expositor w-100" onclick="window.open('https://www.youtube.com/watch?v=VIDEO_ID_6', '_blank')">
+                    <button class="btn btn-primary btn-expositor w-100">
                         <span class="i18n i18n-es">Ver Presentación</span>
                         <span class="i18n i18n-en">View Presentation</span>
                     </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para videos -->
+<div class="modal fade" id="videoModal" tabindex="-1" aria-labelledby="videoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="videoModalLabel">Presentación del Expositor</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-0">
+                <div class="video-container">
+                    <iframe id="youtubeVideo" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                 </div>
             </div>
         </div>
@@ -204,9 +257,30 @@
 
 {% block extra_js %}
 <script>
-    // Script adicional si es necesario
     document.addEventListener('DOMContentLoaded', function() {
         console.log('Portal de expositores cargado correctamente');
+        
+        // Configurar el modal para mostrar el video correcto
+        const videoModal = document.getElementById('videoModal');
+        videoModal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget; // Botón que activó el modal
+            const videoId = button.getAttribute('data-video-id');
+            const expositorName = button.getAttribute('data-expositor-name');
+            
+            // Actualizar el título del modal
+            const modalTitle = videoModal.querySelector('.modal-title');
+            modalTitle.textContent = "Presentación: " + expositorName;
+            
+            // Actualizar el iframe con el video correcto
+            const iframe = videoModal.querySelector('#youtubeVideo');
+            iframe.src = "https://www.youtube.com/embed/" + videoId;
+        });
+        
+        // Limpiar el src del iframe cuando se cierra el modal para detener el video
+        videoModal.addEventListener('hidden.bs.modal', function () {
+            const iframe = videoModal.querySelector('#youtubeVideo');
+            iframe.src = "";
+        });
     });
 </script>
 {% endblock %}

@@ -1,23 +1,346 @@
-{% if existe %}
-  {% if tipo == "estudiante" %}
-    <h2>✅ Certificado encontrado (Estudiante)</h2>
-    <p><b>Nombre:</b> {{ certificado.nombre }} {{ certificado.apellido }}</p>
-    <p><b>Email:</b> {{ certificado.email }}</p>
-    <p><b>Documento:</b> {{ certificado.documento }}</p>
-    <p><b>Curso inscrito:</b> {{ certificado.curso_nombre }}</p>
-    <p><b>Modalidad:</b> {{ certificado.modalidad }}</p>
-    <p><b>Fecha de inscripción:</b> {{ certificado.fecha_inscripcion }}</p>
-    <p><b>Nota final:</b> {{ certificado.nota }}</p>
-    <p><b>Docente:</b> {{ certificado.docente }} {{ certificado.doc_ape }}</p>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verificación de Certificado</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #0066b3;
+            --primary-light: #4a90e2;
+            --success: #28a745;
+            --danger: #dc3545;
+            --gray: #6c757d;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --border-radius: 12px;
+            --box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            color: var(--dark);
+        }
+        
+        .certificate-container {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            width: 100%;
+            max-width: 800px;
+            overflow: hidden;
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        .certificate-header {
+            background: var(--primary);
+            color: white;
+            padding: 25px 30px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .certificate-header h1 {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .certificate-status {
+            display: inline-block;
+            background: var(--success);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            margin-top: 10px;
+            animation: pulse 2s infinite;
+        }
+        
+        .certificate-body {
+            padding: 30px;
+        }
+        
+        .certificate-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .info-item {
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+            background: var(--light);
+            border-radius: 10px;
+            transition: var(--transition);
+            animation: slideIn 0.5s ease-out;
+            animation-fill-mode: both;
+        }
+        
+        .info-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .info-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            color: var(--gray);
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        
+        .info-value {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--dark);
+        }
+        
+        .certificate-footer {
+            background: var(--light);
+            padding: 20px 30px;
+            text-align: center;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 25px;
+            background: var(--primary);
+            color: white;
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: 500;
+            transition: var(--transition);
+            border: none;
+            cursor: pointer;
+            margin: 0 10px;
+        }
+        
+        .btn:hover {
+            background: var(--primary-light);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 102, 179, 0.3);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+        
+        .btn-outline:hover {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .not-found {
+            text-align: center;
+            padding: 50px 30px;
+        }
+        
+        .not-found i {
+            font-size: 60px;
+            color: var(--danger);
+            margin-bottom: 20px;
+        }
+        
+        .not-found h2 {
+            color: var(--danger);
+            margin-bottom: 15px;
+        }
+        
+        .loading-bar {
+            height: 4px;
+            width: 100%;
+            background: #e9ecef;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+        
+        .loading-progress {
+            height: 100%;
+            width: 0%;
+            background: var(--primary);
+            animation: loading 1.5s ease-in-out forwards;
+        }
+        
+        /* Animaciones */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(40, 167, 69, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(40, 167, 69, 0); }
+        }
+        
+        @keyframes loading {
+            to { width: 100%; }
+        }
+        
+        /* Asignar delays a los items de información */
+        .info-item:nth-child(1) { animation-delay: 0.1s; }
+        .info-item:nth-child(2) { animation-delay: 0.2s; }
+        .info-item:nth-child(3) { animation-delay: 0.3s; }
+        .info-item:nth-child(4) { animation-delay: 0.4s; }
+        .info-item:nth-child(5) { animation-delay: 0.5s; }
+        .info-item:nth-child(6) { animation-delay: 0.6s; }
+        .info-item:nth-child(7) { animation-delay: 0.7s; }
+        .info-item:nth-child(8) { animation-delay: 0.8s; }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .certificate-info {
+                grid-template-columns: 1fr;
+            }
+            
+            .certificate-header h1 {
+                font-size: 24px;
+            }
+            
+            .btn {
+                display: block;
+                margin: 10px auto;
+                width: 80%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="certificate-container">
+        <div class="loading-bar">
+            <div class="loading-progress"></div>
+        </div>
+        
+        {% if existe %}
+            {% if tipo == "estudiante" %}
+            <div class="certificate-header">
+                <h1>Certificado Verificado</h1>
+                <p>Los datos del certificado han sido validados correctamente</p>
+                <div class="certificate-status">VÁLIDO</div>
+            </div>
+            
+            <div class="certificate-body">
+                <div class="certificate-info">
+                    <div class="info-item">
+                        <span class="info-label">Nombre completo</span>
+                        <span class="info-value">{{ certificado.nombre }} {{ certificado.apellido }}</span>
+                    </div>
+                    
+                    <div class="info-item">
+                        <span class="info-label">Email</span>
+                        <span class="info-value">{{ certificado.email }}</span>
+                    </div>
+                    
+                    <div class="info-item">
+                        <span class="info-label">Documento</span>
+                        <span class="info-value">{{ certificado.documento }}</span>
+                    </div>
+                    
+                    <div class="info-item">
+                        <span class="info-label">Curso inscrito</span>
+                        <span class="info-value">{{ certificado.curso_nombre }}</span>
+                    </div>
+                    
+                    <div class="info-item">
+                        <span class="info-label">Modalidad</span>
+                        <span class="info-value">{{ certificado.modalidad }}</span>
+                    </div>
+                    
+                    <div class="info-item">
+                        <span class="info-label">Fecha de inscripción</span>
+                        <span class="info-value">{{ certificado.fecha_inscripcion }}</span>
+                    </div>
+                    
+                    <div class="info-item">
+                        <span class="info-label">Nota final</span>
+                        <span class="info-value">{{ certificado.nota }}</span>
+                    </div>
+                    
+                    <div class="info-item">
+                        <span class="info-label">Docente</span>
+                        <span class="info-value">{{ certificado.docente }} {{ certificado.doc_ape }}</span>
+                    </div>
+                </div>
+            </div>
+            
+           <!-- <div class="certificate-footer">
+                <button class="btn"><i class="fas fa-print"></i> Imprimir</button>
+                <button class="btn btn-outline"><i class="fas fa-share-alt"></i> Compartir</button>
+            </div>-->
+            
+            {% elif tipo == "docente" %}
+            <div class="certificate-header">
+                <h1>Certificado Docente Verificado</h1>
+                <p>Los datos del certificado han sido validados correctamente</p>
+                <div class="certificate-status">VÁLIDO</div>
+            </div>
+            
+            <div class="certificate-body">
+                <div class="certificate-info">
+                    <div class="info-item">
+                        <span class="info-label">Docente</span>
+                        <span class="info-value">{{ certificado.docente }} {{ certificado.doc_ape }}</span>
+                    </div>
+                    
+                    <div class="info-item">
+                        <span class="info-label">Materia dictada</span>
+                        <span class="info-value">{{ certificado.curso_nombre }}</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!--<div class="certificate-footer">
+                <button class="btn"><i class="fas fa-print"></i> Imprimir</button>
+                <button class="btn btn-outline"><i class="fas fa-share-alt"></i> Compartir</button>
+            </div>-->
+            {% endif %}
+        
+        {% else %}
+            <div class="not-found">
+                <i class="fas fa-times-circle"></i>
+                <h2>Certificado No Encontrado</h2>
+                <p>El código QR escaneado no corresponde a un certificado válido en nuestro sistema.</p>
+                <p>Por favor, verifique el código e intente nuevamente.</p>
+                
+                <div style="margin-top: 30px;">
+                    <button class="btn" onclick="history.back()"> Volver atrás</button>
+                </div>
+            </div>
+        {% endif %}
+    </div>
 
-  {% elif tipo == "docente" %}
-    <h2>✅ Certificado encontrado (Docente)</h2>
-    <p><b>Docente:</b> {{ certificado.docente }} {{ certificado.doc_ape }}</p>
-    <!-- <p><b>Email:</b> {{ certificado.email }}</p>
-    <p><b>Documento:</b> {{ certificado.documento }}</p> -->
-    <p><b>Materia dictada:</b> {{ certificado.curso_nombre }}</p>
-    <!-- <p><b>ID curso:</b> {{ certificado.id_curso_doc }}</p> -->
-  {% endif %}
-{% else %}
-  <h2>❌ No existe certificado</h2>
-{% endif %}
+    <script>
+        // Simular carga de datos
+        document.addEventListener('DOMContentLoaded', function() {
+            // Todos los elementos con animación ya están configurados via CSS
+            // Aquí podrías añadir interacciones adicionales si es necesario
+        });
+    </script>
+</body>
+</html>
