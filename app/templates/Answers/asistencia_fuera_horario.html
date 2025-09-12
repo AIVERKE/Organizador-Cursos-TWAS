@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Asistencia fuera de horario</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      line-height: 1.6;
+      background-color: #f4f7fb;
+      color: #333;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 1rem;
+    }
+
+    .informacion {
+      text-align: center;
+      background: #fff;
+      max-width: 600px;
+      width: 100%;
+      padding: 3rem 2rem;
+      border-radius: 16px;
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+      animation: fadeIn 0.8s ease-in-out;
+    }
+
+    .icono {
+      font-size: 3rem;
+      color: #e63946;
+      margin-bottom: 1rem;
+    }
+
+    .informacion h1 {
+      font-size: 1.8rem;
+      font-weight: 600;
+      color: #e63946;
+      margin-bottom: 1rem;
+    }
+
+    .informacion p {
+      font-size: 1.1rem;
+      color: #555;
+      margin-bottom: 2rem;
+    }
+
+    .btn-volver {
+      display: inline-block;
+      padding: 0.9rem 2rem;
+      background: #0077c2;
+      color: white;
+      font-weight: bold;
+      font-size: 1rem;
+      text-decoration: none;
+      border-radius: 8px;
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+
+    .btn-volver:hover {
+      background: #005a91;
+      transform: translateY(-2px);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <section class="informacion">
+    <div class="icono">⏰</div>
+    <h1>Asistencia fuera de horario</h1>
+    <p>El registro de asistencia solo está disponible dentro del intervalo establecido para este curso.</p>
+    <a class="btn-volver" href="{{ url_for('auth.dashboard') }}">Volver al inicio</a>
+  </section>
+</body>
+</html>

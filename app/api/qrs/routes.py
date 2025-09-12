@@ -9,15 +9,15 @@ from flask import (
     redirect,
     url_for,
     make_response,
+    flash,
 )
-from datetime import datetime
 from . import qrs_bp
 from app.controllers import u_controller as est  # Importa el controlador de estudiantes
 from flask_login import login_user, logout_user, login_required, current_user
 from app.api.auth.utils import role_required
 from app.db_c import get_connection
 from app.controllers import i_controller as ins
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, time
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 from io import BytesIO
@@ -94,6 +94,40 @@ def registrar():
         conn = get_connection()
         cursor = conn.cursor()
 
+        # 📌 Obtener horario de asistencia del curso
+        cursor.execute(
+            """
+            SELECT c.hora_inicio_asistencia, c.hora_fin_asistencia
+            FROM inscripciones i
+            JOIN cursos c ON i.id_curso = c.id_curso
+            WHERE i.id_inscripcion = %s
+            """,
+            (id_inscripcion,),
+        )
+        horarios = cursor.fetchone()
+
+        if horarios:
+            hora_inicio, hora_fin = horarios
+
+            # Validar horario solo si existen valores
+            if hora_inicio and hora_fin:
+                fecha_hoy = hora_registro.date()
+                hora_inicio_dt = datetime.combine(fecha_hoy, hora_inicio)
+                hora_fin_dt = datetime.combine(fecha_hoy, hora_fin)
+
+                if not (hora_inicio_dt <= hora_registro <= hora_fin_dt):
+                    conn.close()
+                    return (
+                        render_template(
+                            "Answers/asistencia_fuera_horario.html",
+                            fecha=hora_registro,
+                            hora_inicio=hora_inicio,
+                            hora_fin=hora_fin,
+                        ),
+                        400,
+                    )
+
+        # 📌 Verificar duplicado en el mismo día
         cursor.execute(
             """
             SELECT 1 FROM asistencias
@@ -101,7 +135,6 @@ def registrar():
             """,
             (id_inscripcion,),
         )
-
         if cursor.fetchone():
             conn.close()
             return (
@@ -111,6 +144,7 @@ def registrar():
                 200,
             )
 
+        # 📌 Insertar asistencia
         cursor.execute(
             """
             INSERT INTO asistencias (id_inscripcion, fecha, presente)
@@ -121,10 +155,37 @@ def registrar():
         conn.commit()
         conn.close()
 
-        return render_template("Answers/asistencia.html"), 200
+        return render_template("Answers/asistencia.html", fecha=hora_registro), 200
 
     except Exception as e:
         return f"Error al registrar la asistencia: {str(e)}", 500
+
+
+@qrs_bp.route("/actualizar_horario_asistencia/<int:curso_id>", methods=["POST"])
+@login_required
+@role_required(1)  # Solo coordinador
+def actualizar_horario_asistencia(curso_id):
+    hora_inicio = request.form.get("hora_inicio")
+    hora_fin = request.form.get("hora_fin")
+
+    try:
+        conn = get_connection()
+        cursor = conn.cursor()
+        cursor.execute(
+            """
+            UPDATE cursos
+            SET hora_inicio_asistencia = %s, hora_fin_asistencia = %s
+            WHERE id_curso = %s
+            """,
+            (hora_inicio, hora_fin, curso_id),
+        )
+        conn.commit()
+        conn.close()
+        flash("Horario de asistencia actualizado correctamente", "success")
+    except Exception as e:
+        flash(f"Error al actualizar: {e}", "danger")
+
+    return redirect(url_for("auth.dashboard"))
 
 
 # Validación de existencia de qr para Estudiante.html

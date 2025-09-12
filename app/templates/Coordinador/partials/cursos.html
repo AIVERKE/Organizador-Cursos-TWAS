@@ -40,6 +40,7 @@
       <td data-label="Version">{{ curso.nombre_version }}</td>
       <!-- <td data-label="Ponente">{{ curso.id_ponente }}</td> -->
       <td data-label="Ponente">{{ curso.nombreu + " " + curso.apellidou}}</td>
+
       <td data-label="Acciones">
         <button class="btn btn-primary edit-curso-btn" 
         data-id="{{curso.id_curso}}" 
@@ -81,6 +82,19 @@
           Asistencias
         </button>
 
+        <div class="acciones-horario mt-2">
+          <form method="POST" action="{{ url_for('qrs.actualizar_horario_asistencia', curso_id=curso.id_curso) }}">
+            <label for="hora_inicio_{{curso.id_curso}}">Inicio:</label>
+            <input type="time" id="hora_inicio_{{curso.id_curso}}" name="hora_inicio"
+                   value="{{ curso.hora_inicio_asistencia or '' }}" required>
+
+            <label for="hora_fin_{{curso.id_curso}}">Fin:</label>
+            <input type="time" id="hora_fin_{{curso.id_curso}}" name="hora_fin"
+                   value="{{ curso.hora_fin_asistencia or '' }}" required>
+
+            <button type="submit" class="btn btn-success btn-sm">Guardar</button>
+          </form>
+        </div>
         {% endif %}
 
       </td>
