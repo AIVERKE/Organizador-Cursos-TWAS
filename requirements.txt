@@ -1,4 +1,5 @@
 blinker==1.9.0
+charset-normalizer==3.4.3
 click==8.1.8
 colorama==0.4.6
 dotenv==0.9.9
@@ -20,10 +21,12 @@ numpy==2.0.2
 openpyxl==3.1.5
 packaging==25.0
 pandas==2.3.1
-psycopg2-binary==2.9.10
+pillow==11.3.0
+psycopg2==2.9.10
 python-dateutil==2.9.0.post0
 python-dotenv==1.1.1
 pytz==2025.2
+reportlab==4.4.3
 segno==1.6.6
 six==1.17.0
 SQLAlchemy==2.0.43

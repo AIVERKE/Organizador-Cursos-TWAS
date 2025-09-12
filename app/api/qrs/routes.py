@@ -8,6 +8,7 @@ from flask import (
     render_template,
     redirect,
     url_for,
+    make_response,
 )
 from datetime import datetime
 from . import qrs_bp
@@ -17,6 +18,9 @@ from app.api.auth.utils import role_required
 from app.db_c import get_connection
 from app.controllers import i_controller as ins
 from datetime import datetime, timedelta
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
+from io import BytesIO
 
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../static/qrs"))
 
@@ -192,14 +196,69 @@ def ver_asistencias(id_usuario):
 @login_required
 @role_required(1)  # Coordinador
 def asistencias_coordinador():
+    curso_id = request.args.get("curso_id", type=int)
+    print(">>> curso_id recibido:", curso_id)
     try:
         conn = get_connection()
         cursor = conn.cursor()
 
+        if curso_id is not None:
+            cursor.execute(
+                """
+                SELECT a.id_asistencia,
+                       u.nombre AS estudiante,
+                       c.nombre AS curso,
+                       a.fecha,
+                       a.presente
+                FROM asistencias a
+                JOIN inscripciones i ON a.id_inscripcion = i.id_inscripcion
+                JOIN usuarios u ON i.id_usuario = u.id_usuario
+                JOIN cursos c ON i.id_curso = c.id_curso
+                WHERE c.id_curso = %s
+                ORDER BY u.nombre, a.fecha DESC
+                """,
+                (curso_id,),
+            )
+        else:
+            cursor.execute(
+                """
+                SELECT a.id_asistencia,
+                       u.nombre AS estudiante,
+                       c.nombre AS curso,
+                       a.fecha,
+                       a.presente
+                FROM asistencias a
+                JOIN inscripciones i ON a.id_inscripcion = i.id_inscripcion
+                JOIN usuarios u ON i.id_usuario = u.id_usuario
+                JOIN cursos c ON i.id_curso = c.id_curso
+                ORDER BY c.nombre, u.nombre, a.fecha DESC
+                """
+            )
+
+        asistencias = cursor.fetchall()
+        conn.close()
+
+        return render_template(
+            "Coordinador/partials/asistencias_coordinador.html",
+            asistencias=asistencias,
+            curso_id=curso_id,
+        )
+
+    except Exception as e:
+        return f"Error al obtener asistencias: {str(e)}", 500
+
+
+# -----------------PDF PARA ASISTENCIAS-----------------------
+@qrs_bp.route("/asistencias_pdf/<int:curso_id>")
+@login_required
+@role_required(1)  # solo coordinador
+def asistencias_pdf(curso_id):
+    try:
+        conn = get_connection()
+        cursor = conn.cursor()
         cursor.execute(
             """
-            SELECT a.id_asistencia,
-                   u.nombre AS estudiante,
+            SELECT u.nombre AS estudiante,
                    c.nombre AS curso,
                    a.fecha,
                    a.presente
@@ -207,15 +266,60 @@ def asistencias_coordinador():
             JOIN inscripciones i ON a.id_inscripcion = i.id_inscripcion
             JOIN usuarios u ON i.id_usuario = u.id_usuario
             JOIN cursos c ON i.id_curso = c.id_curso
-            ORDER BY u.nombre, c.nombre, a.fecha DESC
-        """
+            WHERE c.id_curso = %s
+            ORDER BY a.fecha DESC
+            """,
+            (curso_id,),
         )
         asistencias = cursor.fetchall()
         conn.close()
 
-        return render_template(
-            "Coordinador/partials/asistencias_coordinador.html", asistencias=asistencias
-        )
+        # Creamos un buffer en memoria
+        buffer = BytesIO()
+        pdf = canvas.Canvas(buffer, pagesize=letter)
+
+        # Título
+        pdf.setFont("Helvetica-Bold", 14)
+        pdf.drawString(200, 750, f"Reporte de Asistencias - Curso {curso_id}")
+
+        # Encabezados de tabla
+        pdf.setFont("Helvetica", 10)
+        y = 720
+        pdf.drawString(40, y, "N°")
+        pdf.drawString(70, y, "Estudiante")
+        pdf.drawString(220, y, "Fecha")
+        pdf.drawString(320, y, "Hora")
+        pdf.drawString(400, y, "Asistencia")
+
+        # Datos
+        y -= 20
+        for i, a in enumerate(asistencias, start=1):
+            fecha = a[2].strftime("%d/%m/%Y")
+            hora = a[2].strftime("%H:%M")
+            estado = "Presente" if a[3] else "Ausente"
+
+            pdf.drawString(40, y, str(i))
+            pdf.drawString(70, y, a[0])
+            pdf.drawString(220, y, fecha)
+            pdf.drawString(320, y, hora)
+            pdf.drawString(400, y, estado)
+
+            y -= 20
+            if y < 50:  # salto de página
+                pdf.showPage()
+                y = 750
+
+        pdf.save()
+
+        # Preparamos el response
+        buffer.seek(0)
+        response = make_response(buffer.read())
+        response.headers["Content-Type"] = "application/pdf"
+        response.headers[
+            "Content-Disposition"
+        ] = f"attachment; filename=asistencias_curso_{curso_id}.pdf"
+
+        return response
 
     except Exception as e:
-        return f"Error al obtener asistencias: {str(e)}", 500
+        return f"Error al generar PDF: {str(e)}", 500

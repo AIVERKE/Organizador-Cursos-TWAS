@@ -9,25 +9,56 @@
     body {
       font-family: 'Montserrat Alternates', sans-serif;
       padding: 20px;
-      background-color: #f9f9f9;
+      background-color: #f4f7fa;
+      color: #333;
     }
 
-    h2 {
-      color: #0074c7;
-      margin-bottom: 20px;
+    .container {
+      max-width: 1100px;
+      margin: auto;
+      background: #fff;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 6px 14px rgba(0,0,0,0.08);
+    }
+
+    .header {
       text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .header h2 {
+      color: #0074c7;
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+
+    .header p {
+      color: #555;
+      font-size: 15px;
+    }
+
+    .btn-volver {
+      display: inline-block;
+      margin-bottom: 20px;
+      background: #0074c7;
+      color: #fff;
+      padding: 8px 18px;
+      border-radius: 8px;
+      text-decoration: none;
       font-weight: 600;
+      transition: background 0.3s ease;
+    }
+
+    .btn-volver:hover {
+      background: #005fa3;
     }
 
     .tabla-asistencia {
       width: 100%;
       border-collapse: collapse;
-      margin: auto;
-      max-width: 1000px;
-      background-color: #fff;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-      border-radius: 8px;
       overflow: hidden;
+      border-radius: 10px;
     }
 
     .tabla-asistencia th {
@@ -35,43 +66,56 @@
       color: white;
       padding: 12px;
       text-transform: capitalize;
-      font-size: 16px;
+      font-size: 15px;
     }
 
     .tabla-asistencia td {
       padding: 12px;
       text-align: center;
-      font-size: 15px;
-      font-weight: 500;
-      border-bottom: 1px solid #ddd;
-      transition: background-color 0.3s ease;
+      font-size: 14px;
+      border-bottom: 1px solid #eee;
     }
 
-    .tabla-asistencia tr:hover td {
-      background-color: #f1faff;
+    .tabla-asistencia tr:nth-child(even) {
+      background-color: #f9fcff;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
     }
 
     .asistencia-si {
-      background-color: #d4f8d4;
-      color: green;
-      font-weight: bold;
-      border-radius: 6px;
-      padding: 4px 8px;
+      background-color: #e0f8e0;
+      color: #1e8e3e;
     }
 
     .asistencia-no {
-      background-color: #ffd9d9;
-      color: red;
-      font-weight: bold;
-      border-radius: 6px;
-      padding: 4px 8px;
+      background-color: #fde0e0;
+      color: #d93025;
     }
 
-    p {
+    p.no-data {
       text-align: center;
-      color: #444;
-      margin-top: 20px;
+      color: #666;
       font-size: 16px;
+      margin-top: 20px;
+    }
+
+    .btn-pdf {
+      padding: 10px 15px;
+      background-color: #0074c7;
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+      border-radius: 6px;
+      transition: 0.3s;
+    }
+      .btn-pdf:hover {
+        background-color: #005fa3;
     }
 
     /* 📱 Responsivo */
@@ -90,15 +134,13 @@
         border: 1px solid #0074c7;
         border-radius: 8px;
         background: #fff;
-        padding: 0.5rem;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        padding: 0.8rem;
       }
 
       td {
         text-align: right;
         padding-left: 50%;
         position: relative;
-        font-size: 14px;
         border-bottom: none;
       }
 
@@ -106,53 +148,70 @@
         content: attr(data-label);
         position: absolute;
         left: 1rem;
-        width: 45%;
         font-weight: bold;
-        text-align: left;
         color: #0074c7;
       }
-
-      h2 {
-        font-size: 20px;
-      }
     }
+
+
   </style>
 </head>
 
 <body>
+  <div class="container">
 
-  <h2>Reporte de Asistencias por Estudiante</h2>
+    <div class="header">
+      <h2>📊 Reporte de Asistencias</h2>
+      {% if asistencias and asistencias|length > 0 %}
+        <p>Curso: <strong>{{ asistencias[0][2] }}</strong></p>
+      {% endif %}
+    </div>
 
-  {% if asistencias and asistencias|length > 0 %}
-    <table class="tabla-asistencia">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Estudiante</th>
-          <th>Curso</th>
-          <th>Fecha</th>
-          <th>Presente</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for a in asistencias %}
+    <a href="{{ url_for('auth.dashboard') }}" class="btn-volver">⬅ Volver</a>
+    <div style="text-align: right; margin-bottom: 20px;">
+      <a href="{{ url_for('qrs.asistencias_pdf', curso_id=curso_id) }}" 
+         class="btn-pdf" target="_blank">📄 Descargar PDF</a>
+    </div>
+
+    {% if asistencias and asistencias|length > 0 %}
+      <table class="tabla-asistencia">
+        <thead>
           <tr>
-            <td data-label="ID">{{ a[0] }}</td>
-            <td data-label="Estudiante">{{ a[1] }}</td>
-            <td data-label="Curso">{{ a[2] }}</td>
-            <td data-label="Fecha">{{ a[3] }}</td>
-            <td data-label="Presente">
-              <span class="{{ 'asistencia-si' if a[4] else 'asistencia-no' }}">
-                {{ "✔️" if a[4] else "❌" }}
-              </span>
-            </td>
+            <th>#</th>
+            <th>Estudiante</th>
+            <th>Curso</th>
+            <th>Fecha</th>
+            <th>Hora</th>
+            <th>Asistencia</th>
           </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  {% else %}
-    <p>⚠️ No hay asistencias registradas aún.</p>
-  {% endif %}
+        </thead>
+        <tbody>
+          {% for a in asistencias %}
+            <tr>
+              <!-- Enumeración en lugar del ID -->
+              <td data-label="N°">{{ loop.index }}</td>
 
+              <td data-label="Estudiante">{{ a[1] }}</td>
+              <td data-label="Curso">{{ a[2] }}</td>
+
+              <!-- Formato fecha y hora separados -->
+              <td data-label="Fecha">{{ a[3].strftime("%d/%m/%Y") if a[3] else "" }}</td>
+              <td data-label="Hora">{{ a[3].strftime("%H:%M") if a[3] else "" }}</td>
+
+              <td data-label="Asistencia">
+                <span class="badge {{ 'asistencia-si' if a[4] else 'asistencia-no' }}">
+                  {{ "Presente" if a[4] else "Ausente" }}
+                </span>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+    {% else %}
+      <p class="no-data">⚠️ No hay asistencias registradas aún para este curso.</p>
+    {% endif %}
+
+  </div>
 </body>
 </html>
