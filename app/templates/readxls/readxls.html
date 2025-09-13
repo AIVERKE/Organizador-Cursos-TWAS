@@ -11,6 +11,46 @@
     .file-info { font-size: .85rem; margin-top: 5px; }
     .preview-note { font-size: .9rem; color: #555; margin-bottom: 10px; }
   </style>
+
+  <style>
+    /* Fondo oscuro del modal */
+    .modal-overlay {
+      position: fixed;
+      inset:0;
+      background: rgba(0,0,0,0.6);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    /* Caja del modal */
+    .modal-box {
+      background: #fff;
+      padding: 20px;
+      max-width: 600px;
+      max-height: 90vh; /* 🔑 limita altura al 90% de la ventana */
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      border: 1px solid #0077c2;
+      overflow-y: auto;
+      box-sizing: border-box; 
+      animation: fadeIn 0.3s ease;
+    }
+
+    /* Botón cerrar */
+    .close-btn {
+      float: right;
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    @keyframes fadeIn {
+      from {opacity: 0; transform: translateY(-20px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
+  </style>
+
 </head>
 
 <body class="container mt-4">
@@ -21,6 +61,59 @@
   </div>
 
   <h2>Subir archivo Excel o CSV para {{ titulo }}</h2>
+
+
+  <!-- Botón para abrir la guía -->
+  <button onclick="openModal()" class="btn btn-info">Guía de uso</button>
+
+  <!-- Modal -->
+  <div id="userGuideModal" class="modal-overlay">
+    <div class="modal-box ">
+
+      <div class="modal-header bg-info text-white">
+          <h5 class="modal-title" id="guiaModalLabel">Guía de usuario - Carga por lote</h5>
+          <span class="close-btn" onclick="closeModal()">&times;</span>
+        
+      </div>
+
+      <h3>Guía de usuario</h3>
+      <p>Antes de subir un archivo, <b>asegúrate de descargar y usar la plantilla oficial</b> para evitar errores de formato.</p>
+          <p>La plantilla incluye todas las columnas obligatorias y ejemplos de valores correctos.</p>
+
+      <p>
+        1. Descarga la plantilla modelo según el tipo de datos.<br>
+        2. Llena la plantilla respetando las columnas obligatorias.<br>
+        3. Sube el archivo y revisa la vista previa (máx. 200 filas mostradas).<br>
+        4. Si todo está correcto, confirma y guarda.<br>
+        5. Puedes descargar los registros exitosos o fallidos luego de la carga.
+      </p>
+      <h6>Paso 1: Descargar plantilla</h6>
+          <p>Siempre usa la plantilla oficial descargable desde el botón <b>"Descargar plantilla"</b>.</p>
+
+          <h6>Paso 2: Completar datos</h6>
+          <ul>
+            <li><b>nombre / apellido</b>: solo letras, sin números ni símbolos.</li>
+            <li><b>email</b>: correo válido, en minúsculas.</li>
+            <li><b>fecha_nac</b>: formato recomendado <code>YYYY-MM-DD / (Año,més,día)</code>, ej: 1999-02-21.</li>
+            <li>Rellena todas las columnas obligatorias según la plantilla.</li>
+          </ul>
+
+          <h6>Paso 3: Subir archivo</h6>
+          <p>Selecciona el archivo en el formulario y haz clic en <b>"Ver contenido"</b> para previsualizar los registros.</p>
+
+          <h6>Paso 4: Confirmar carga</h6>
+          <p>Si todo está correcto, haz clic en <b>"Confirmar y guardar"</b>. Los registros inválidos se mostrarán en rojo y podrás descargar un listado de errores.</p>
+
+          <h6>Notas importantes</h6>
+          <ul>
+            <li>Los registros duplicados o con errores de formato no se guardarán.</li>
+          </ul>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-info" onclick="closeModal()">Cerrar;</button>
+          </div>
+    </div>
+  </div>
 
   {% if columnas_recomendadas %}
     <h4 class="mt-4">Columnas recomendadas para {{ titulo }}:</h4>
@@ -188,5 +281,25 @@
     })();
   </script>
 
+  <!-- Bootstrap JS + Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+
+  <script>
+    function openModal() {
+      document.getElementById("userGuideModal").style.display = "flex";
+    }
+    function closeModal() {
+      document.getElementById("userGuideModal").style.display = "none";
+    }
+
+    // Cerrar si clickea fuera del modal
+    window.onclick = function(event) {
+      const modal = document.getElementById("userGuideModal");
+      if (event.target === modal) {
+        closeModal();
+      }
+    }
+  </script>
 </body>
 </html>

@@ -704,8 +704,7 @@ def crear_ponentes_con_lote(lista_ponentes):
         for p in lista_ponentes:
             try:
                 # 1) Generar y hashear contraseña
-                hashed = generate_password_hash(
-                    generar_contrasena(p["apellido"], p["documento"])
+                hashed = generate_password_hash(est["email"]
                 )
 
                 # 2) Insertar usuario

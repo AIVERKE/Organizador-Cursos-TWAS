@@ -66,10 +66,7 @@ def remove_temp_file(path):
     except Exception:
         pass
 def leer_y_normalizar(file, tipo):
-    """
-    Lee un FileStorage (CSV/XLSX), normaliza cabeceras y valores críticos.
-    Devuelve (df, errores_list).
-    """
+
     if not file or not getattr(file, "filename", None):
         return None, ["No se envió archivo"]
 
@@ -105,16 +102,8 @@ def leer_y_normalizar(file, tipo):
     # Normalizar cabeceras: strip, lower, quitar tildes
     df.columns = df.columns.str.strip().str.lower().map(unidecode.unidecode)
 
-    # Forzar columnas críticas a string (evita pérdida de ceros)
-    for c in ("documento", "email"):
-        if c in df.columns:
-            df[c] = df[c].astype(str).str.strip()
-
     # Trim general de strings
     df = df.applymap(lambda v: v.strip() if isinstance(v, str) else v)
-
-    # Reemplazar valores NaN por None para evitar problemas al serializar
-    df = df.where(pd.notnull(df), None)
 
     # Validar columnas obligatorias
     required = PLANTILLAS[tipo]["columnas"]
@@ -122,19 +111,26 @@ def leer_y_normalizar(file, tipo):
     if faltantes:
         return None, [f"Faltan columnas: {', '.join(faltantes)}"]
 
-    # Normalizaciones específicas
-    if "fecha_nac" in df.columns:
-        # intenta parsear con dayfirst=True (dd/mm/yyyy)
-        df["fecha_nac"] = pd.to_datetime(df["fecha_nac"], errors="coerce", dayfirst=True)
 
-    if "genero" in df.columns:
-        df["genero"] = df["genero"].astype(str).str.strip().str.lower().map({
-            "masculino": "male", "m": "male", "male": "male",
-            "femenino": "female", "f": "female", "female": "female"
-        }).where(df["genero"].notnull(), None)
+    # ---- Normalizaciones según tipo ----
+    if tipo in ("estudiantes", "ponentes"):
+        if "documento" in df.columns:
+            df["documento"] = df["documento"].astype(str).str.strip()
+        if "email" in df.columns:
+            df["email"] = df["email"].astype(str).str.strip().str.lower()
+        if "fecha_nac" in df.columns:
+            df["fecha_nac"] = pd.to_datetime(df["fecha_nac"], errors="coerce", dayfirst=True)
+            df["fecha_nac"] = df["fecha_nac"].dt.strftime("%Y-%m-%d")
+        if "genero" in df.columns:
+            df["genero"] = df["genero"].astype(str).str.strip().str.lower().map({
+                "masculino": "male", "m": "male", "male": "male",
+                "femenino": "female", "f": "female", "female": "female"
+            }).where(df["genero"].notnull(), None)
 
-    if "email" in df.columns:
-        df["email"] = df["email"].astype(str).str.strip().str.lower()
+    elif tipo == "cursos":
+        if "modalidad" in df.columns:
+            df["modalidad"] = df["modalidad"].astype(str).str.strip().str.lower()
+            # ejemplo: "virtual", "presencial" → "Virtual", "Presencial"
 
     return df, []
 
