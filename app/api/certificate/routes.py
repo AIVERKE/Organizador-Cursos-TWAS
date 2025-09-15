@@ -92,7 +92,7 @@ def generar_certificados(rol_boton):
 
         if rol_boton == 3:
             # 1. Generar QR con la URL de validación
-            url = f"https://organizador-cursos-twas.onrender.com/cert/verificar/{row['id_inscripcion']}-0"
+            url = f"{os.getenv("URL_APP")}/cert/verificar/{row['id_inscripcion']}-0"
             qr_img = segno.make(url)
 
             # 2. Guardar QR en archivo temporal (FPDF no acepta BytesIO directamente)
@@ -102,7 +102,7 @@ def generar_certificados(rol_boton):
             # 3. Insertar QR en el PDF
             pdf.image(qr_path, x=740, y=500, w=80, h=80)  # ajusta x,y,w,h a tu diseño
         elif rol_boton == 2:
-            url = f"https://organizador-cursos-twas.onrender.com/cert/verificar/{row['id_usuario'] or ''}-{row['id_curso_doc']}"
+            url = f"{os.getenv("URL_APP")}/cert/verificar/{row['id_usuario'] or ''}-{row['id_curso_doc']}"
             qr_img = segno.make(url)
 
             # 2. Guardar QR en archivo temporal (FPDF no acepta BytesIO directamente)
@@ -262,7 +262,7 @@ def descargar_certificado(user_id):
         pdf.multi_cell(600, 14, docente + " \nDocente de Materia", 0, "C")
 
         # 1. Generar QR con la URL de validación
-        url = f"https://organizador-cursos-twas.onrender.com/cert/verificar/{result.id_inscripcion}-0"
+        url = f"{os.getenv("URL_APP")}/cert/verificar/{result.id_inscripcion}-0"
         qr_img = segno.make(url)
 
         # 2. Guardar QR en archivo temporal (FPDF no acepta BytesIO directamente)
@@ -273,7 +273,7 @@ def descargar_certificado(user_id):
         pdf.image(qr_path, x=740, y=500, w=80, h=80)  # ajusta x,y,w,h a tu diseño
 
     elif rol == 2:
-        url = f"https://organizador-cursos-twas.onrender.com/cert/verificar/{result.id_usuario or ''}-{result.id_curso_doc}"
+        url = f"{os.getenv("URL_APP")}/cert/verificar/{result.id_usuario or ''}-{result.id_curso_doc}"
         qr_img = segno.make(url)
 
         # 2. Guardar QR en archivo temporal (FPDF no acepta BytesIO directamente)
@@ -421,7 +421,7 @@ def enviar_certificado(user_id):
             pdf.multi_cell(600, 14, docente + " \nDocente de Materia", 0, "C")
 
             # 1. Generar QR con la URL de validación
-            url = f"https://organizador-cursos-twas.onrender.com/cert/verificar/{id_inscripcion}-0"
+            url = f"{os.getenv("URL_APP")}/cert/verificar/{id_inscripcion}-0"
             qr_img = segno.make(url)
 
             # 2. Guardar QR en archivo temporal (FPDF no acepta BytesIO directamente)
@@ -432,7 +432,7 @@ def enviar_certificado(user_id):
             pdf.image(qr_path, x=740, y=500, w=80, h=80)  # ajusta x,y,w,h a tu diseño
 
         elif rol == 2:
-            url = f"https://organizador-cursos-twas.onrender.com/cert/verificar/{id_usuario or ''}-{id_curso_doc}"
+            url = f"{os.getenv("URL_APP")}/cert/verificar/{id_usuario or ''}-{id_curso_doc}"
             qr_img = segno.make(url)
 
             # 2. Guardar QR en archivo temporal (FPDF no acepta BytesIO directamente)
@@ -482,9 +482,7 @@ def enviar_certificado(user_id):
     )
 
 
-@certificate_bp.route(
-    "/enviar-certificados-todos/<int:rol_boton>", methods=["GET", "POST"]
-)
+@certificate_bp.route("/enviar-certificados-todos/<int:rol_boton>", methods=["GET", "POST"])
 @login_required
 @role_required(1, 4)
 def enviar_certificados_todos(rol_boton):
@@ -494,131 +492,158 @@ def enviar_certificados_todos(rol_boton):
 
         base_dir = os.path.dirname(os.path.abspath(__file__))
         folder = os.path.join(base_dir, "temp_certificates")
-        os.makedirs(folder, exist_ok=True)
+        if os.path.exists(folder):
+            shutil.rmtree(folder)
+        os.makedirs(folder)
 
         with db.engine.connect() as conn:
             query = text(
                 """
                 SELECT 
                     u.id_usuario,
-                    u.nombre,
-                    u.apellido,
-                    u.documento,
-                    u.email,
-                    i.modalidad,
-                    i.fecha_inscripcion,
+                    i.id_inscripcion,
+                    p.nombre as docente,
+                    p.apellido as doc_ape,
+                    u.nombre as nombre, 
+                    u.apellido as apellido, 
+                    u.email as email,
+                    u.documento as documento,
+                    i.modalidad as modalidad, 
+                    i.fecha_inscripcion as fecha_inscripcion,
                     c.nombre as curso_nombre,
-                    n.nota_final as nota
+                    n.nota_final as nota,
+                    u.id_rol as rol,
+                    cur.nombre as materia_dada,
+                    cur.id_curso as id_curso_doc
                 FROM usuarios u
-                JOIN inscripciones i ON i.id_usuario = u.id_usuario
-                JOIN cursos c ON c.id_curso = i.id_curso
+                LEFT JOIN inscripciones i ON i.id_usuario = u.id_usuario
+                LEFT JOIN cursos c ON c.id_curso = i.id_curso
                 LEFT JOIN notas n ON n.id_inscripcion = i.id_inscripcion
-                WHERE u.id_rol = :rol_boton
-                AND (n.nota_final > 51 OR n.nota_final IS NULL);
+                LEFT JOIN usuarios p ON p.id_usuario = c.id_ponente
+                LEFT JOIN cursos cur ON cur.id_ponente = u.id_usuario
+                WHERE u.id_rol = :rol_boton;
             """
             )
             usuarios = conn.execute(query, {"rol_boton": rol_boton}).fetchall()
 
         if not usuarios:
             flash("No hay usuarios para este rol.", "warning")
-            return redirect(
-                url_for("certificate.enviar_certificados_todos", rol_boton=rol_boton)
-            )
+            return redirect(url_for("certificate.enviar_certificados_todos", rol_boton=rol_boton))
 
-        errores_envio = []
-        exitos_envio = []
+        errores_envio, exitos_envio = [], []
 
         for user in usuarios:
             (
-                user_id,
+                id_usuario,
+                id_inscripcion,
+                docente,
+                doc_ape,
                 nombre,
                 apellido,
-                documento,
                 email,
+                documento,
                 modalidad,
                 fecha_inscripcion,
                 curso_nombre,
                 nota,
+                rol,
+                materia_dada,
+                id_curso_doc,
             ) = user
 
             participante = f"{nombre} {apellido}"
+            curso = curso_nombre or ""
+            docente_full = f"Dr(a). {docente or ''} {doc_ape or ''}".strip()
 
-            curso = ""
-            if rol_boton == 3:
-                # Para estudiantes: 'aprobado' o 'participado'
-                if modalidad == "catedra-laboratorio" and (
-                    nota is not None and int(nota) > 51
-                ):
-                    curso = f"{curso_nombre} aprobado"
+            # Definir título y mensaje
+            titulo = "CERTIFICADO\nIII TYAN Hands-on Schools en Bolivia 2025"
+            if rol == 3:  # Estudiante
+                if modalidad == "catedra-laboratorio" and nota and int(nota) > 64:
+                    titulo = "CERTIFICADO DE APROBACION\nIII TYAN Hands-on Schools en Bolivia 2025"
+                    mssg = f"""Ha completado exitosamente el curso de "{curso}" dictado por {docente_full}, inaugurado dentro del postgrado de Ciencias Químicas de la Facultad de Ciencias Puras y Naturales, de la Universidad Mayor de San Andrés. Realizado en la ciudad La Paz del '11 al 15 de Marzo del 2024', con una duración de 30 hrs. académicas equivalente a 1 CLAR (Crédito Latinoamericano de Referencia)."""
                 else:
-                    curso = f"{curso_nombre} participado"
-            elif rol_boton == 2:
-                # Para expositores
-                curso = f"{curso_nombre} (Expositor)"
-            else:
-                curso = curso_nombre or ""
-
-            fecha = datetime.today().strftime("%Y-%m-%d")
+                    mssg = f"""Ha participado del curso de "{curso}" dictado por {docente_full}, inaugurado dentro del postgrado de Ciencias Químicas de la Facultad de Ciencias Puras y Naturales, de la Universidad Mayor de San Andrés. Realizado en la ciudad La Paz del '11 al 15 de Marzo del 2024'."""
+            elif rol == 2:  # Expositor
+                curso = materia_dada or ""
+                mssg = f"""Por su colaboración como ponente en el tema "{curso}". Realizado en la ciudad La Paz del 11 al 15 de Marzo del 2024, auspiciado y organizado por la red internacional TYAN-TWAS y la Universidad Mayor de San Andrés."""
 
             # Crear PDF
             pdf = FPDF(orientation="L", unit="pt", format="A4")
             pdf.add_page()
-            template_path = os.path.join(base_dir, "input", "certificate_template.jpg")
+            template_path = os.path.join(base_dir, "Input", "certificate_template.jpg")
             pdf.image(template_path, 0, 0, w=842, h=595)
 
-            pdf.set_font("Helvetica", "B", 50)
-            pdf.set_text_color(139, 119, 40)
-            pdf.set_xy(0, 230)
+            pdf.set_font("Arial", "B", 50)
+            pdf.set_text_color(0, 20, 60)
+            pdf.set_xy(0, 20)
+            pdf.multi_cell(842, 60, titulo, 0, "C")
+
+            pdf.set_font("Helvetica", "I", 30)
+            pdf.set_text_color(60, 60, 60)
+            pdf.set_xy(0, 210)
             pdf.cell(w=842, h=60, txt=participante, align="C")
 
-            pdf.set_font("Helvetica", "", 25)
-            pdf.set_xy(0, 360)
-            pdf.cell(w=842, h=30, txt=curso, align="C")
+            pdf.set_font("Arial", "", 12)
+            pdf.set_text_color(250, 250, 250)
+            pdf.set_xy(150, 260)
+            pdf.multi_cell(600, 15, mssg, 0, "C")
 
-            pdf.set_font("Helvetica", "I", 16)
-            pdf.set_text_color(1, 1, 1)
-            pdf.set_xy(155, 500)
-            pdf.cell(w=842, h=20, txt=fecha, align="C")
+            if rol == 3:
+                pdf.set_font("Arial", "I", 14)
+                pdf.set_text_color(0, 0, 0)
+                pdf.set_xy(0, 510)
+                pdf.multi_cell(600, 14, docente_full + " \nDocente de Materia", 0, "C")
 
-            file_name = f"{documento.replace(' ', '_')}_{participante.replace(' ', '_')}_{curso.replace(' ', '_')}.pdf"
+                # Generar QR estudiante
+                url = f"{os.getenv("URL_APP")}/cert/verificar/{id_inscripcion}-0"
+                qr_img = segno.make(url)
+                qr_path = os.path.join(folder, f"qr_{id_inscripcion}.png")
+                qr_img.save(qr_path, scale=5)
+                pdf.image(qr_path, x=740, y=500, w=80, h=80)
+
+            elif rol == 2:
+                # Generar QR expositor
+                url = f"{os.getenv("URL_APP")}/cert/verificar/{id_usuario}-{id_curso_doc}"
+                qr_img = segno.make(url)
+                qr_path = os.path.join(folder, f"qr_{id_usuario}-{id_curso_doc}.png")
+                qr_img.save(qr_path, scale=5)
+                pdf.image(qr_path, x=740, y=500, w=80, h=80)
+
+            file_name = f"{documento.replace(' ', '_')}_{participante.replace(' ', '_')}_{curso.replace(' ', '_')}_certificate.pdf"
             output_path = os.path.join(folder, file_name)
             pdf.output(output_path)
 
             # Enviar correo
-            msg = Message(
-                subject=asunto, sender=os.getenv("MAIL_USERNAME"), recipients=[email]
-            )
+            msg = Message(subject=asunto, sender=os.getenv("MAIL_USERNAME"), recipients=[email])
             msg.body = mensaje
 
             try:
                 with open(output_path, "rb") as f:
-                    msg.attach(
-                        filename=file_name,
-                        content_type="application/pdf",
-                        data=f.read(),
-                    )
-                mail.send(msg)
+                    msg.attach(filename=file_name, content_type="application/pdf", data=f.read())
+                # mail.send(msg)
+                print('mensaje enviado a ', email)
                 exitos_envio.append(email)
             except Exception as e:
                 errores_envio.append((email, str(e)))
+
+            if rol == 3:
+                with db.engine.begin() as conn:
+                    conn.execute(
+                        text("UPDATE inscripciones SET certificado_generado = TRUE WHERE id_inscripcion = :id"),
+                        {"id": id_inscripcion},
+                    )
 
         shutil.rmtree(folder)
 
         flash(f"Certificados enviados a {len(exitos_envio)} usuarios.", "success")
         if errores_envio:
-            flash(
-                f"Errores al enviar a: {', '.join(e[0] for e in errores_envio)}",
-                "error",
-            )
+            flash(f"Errores al enviar a: {', '.join(e[0] for e in errores_envio)}", "error")
 
-        return redirect(
-            url_for("certificate.enviar_certificados_todos", rol_boton=rol_boton)
-        )
+        return redirect(url_for("certificate.enviar_certificados_todos", rol_boton=rol_boton))
 
     # GET: mostrar formulario
-    return render_template(
-        "Certificados/SendMuchosCertificados.html", rol_boton=rol_boton
-    )
+    return render_template("Certificados/SendMuchosCertificados.html", rol_boton=rol_boton)
+
 
 
 @certificate_bp.route("/verificar/<string:search>")
