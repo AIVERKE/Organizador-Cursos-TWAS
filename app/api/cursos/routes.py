@@ -194,17 +194,3 @@ def obtener_participantes_curso(id_curso):
         return jsonify({"mensaje": "Curso no encontrado o sin estudiantes"}), 404
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-# graficas
-
-@curso_bp.route("/estadisticas/inscritos", methods=["GET"])
-@login_required
-@role_required(1, 4)
-def inscritos_por_curso():
-    try:
-        ok,data = crs.generar_graf_barra()
-        if ok:
-            return jsonify({"success": True, "data": data})
-        else: 
-            return jsonify({"success": False, "error": data}), 500
-    except Exception as e:
-        return jsonify({"success": False, "error": str(e)}), 500

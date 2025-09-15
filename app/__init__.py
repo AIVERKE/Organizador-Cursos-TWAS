@@ -84,6 +84,10 @@ def create_app(config_class=DevConfig):
 
     safe_register(ponente_bp, "/ponente")
 
+    from app.api.estadisticos import estg_bp
+
+    safe_register(estg_bp, "/est_graf")
+
 #Envio por Gmail
     from app.api.Mail import mail_bp
 

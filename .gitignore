@@ -10,8 +10,8 @@ __pycache__/
 
 insertar_usuarios.py
 # Archivos QR generados
-static/qrs/*
-!static/qrs/.gitkeep
+app/static/qrs/*
+!app/static/qrs/.gitkeep
 temp_certificates
 # === Entornos virtuales ===
 .venv/

@@ -2,6 +2,7 @@ import psycopg2
 from app.db_c import get_connection
 from werkzeug.security import generate_password_hash
 from datetime import datetime, timedelta, date
+from flask import jsonify
 
 # --- Usuarios General
 def obtener_usuarios(rol):
@@ -266,8 +267,8 @@ def crear_estudiantes_con_inscripcion_con_lote(lista_estudiantes):
                 id_curso = row[0]
 
                 # 2) Verificar duplicados (email o documento)
-                cursor.execute("SELECT 1 FROM usuarios WHERE email = %s OR documento = %s",
-                               (est["email"], est["documento"]))
+                cursor.execute("SELECT 1 FROM usuarios WHERE email = %s",
+                               (est["email"],))
                 if cursor.fetchone():
                     conn.rollback()
                     fallidos.append({"usuario": est, "error": "Usuario ya registrado"})
@@ -325,10 +326,18 @@ def crear_estudiantes_con_inscripcion_con_lote(lista_estudiantes):
                 )
                 conn.commit()
 
+                # 6) Generar QR automáticamente
+                try:
+                    qr_filename = generar_qr_estudiante(id_usuario, id_insc, id_curso)
+                except Exception as e:
+                    qr_filename = None
+                    print(f"Error generando QR para usuario {id_usuario}: {e}")
+
                 exitosos.append({
                     "usuario": est,
                     "id_usuario": id_usuario,
-                    "id_inscripcion": id_insc
+                    "id_inscripcion": id_insc,
+                    "qr_path": qr_filename
                 })
 
             except Exception as e:
@@ -348,18 +357,87 @@ def crear_estudiantes_con_inscripcion_con_lote(lista_estudiantes):
             cursor.close()
             conn.close()
 
+### Funcion logica de qr
+import os
+from datetime import datetime
+import segno
+
+BASE_DIR = "app/static/qrs"  # ejemplo, donde guardas los QR
+
+def generar_qr_estudiante(id_usuario, id_inscripcion, id_curso):
+    os.makedirs(BASE_DIR, exist_ok=True)
+
+    # Evita generar QR duplicados
+    existing_files = [
+        fname for fname in os.listdir(BASE_DIR)
+        if fname.startswith(f"qr_{id_inscripcion}_") and fname.endswith(".png")
+    ]
+    if existing_files:
+        return existing_files[0]  # si ya existe, retornamos el archivo existente
+
+    horario = datetime.now().strftime("%Y-%m-%d %H:%M")
+    contenido = (
+        f"https://organizador-cursos-twas.onrender.com/qrs/registrar?"
+        f"id_inscripcion={id_inscripcion}&id_curso={id_curso}"
+        f"&id_usuario={id_usuario}&horario={horario}"
+    )
+
+    qr = segno.make(contenido)
+    filename = f"qr_{id_inscripcion}_{datetime.now().strftime('%Y%m%d%H%M%S')}.png"
+    output_file = os.path.join(BASE_DIR, filename)
+    qr.save(output_file, scale=10)
+
+    return filename
+
 
 def eliminar_estudiante(id_usuario):
     try:
         conn = get_connection()
         cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-        cursor.execute("DELETE FROM Usuarios WHERE id_usuario = %s", (id_usuario,))
-        conn.commit()
-        conn.close()
-    except psycopg2.Error as e:
-        conn.rollback()
-        return {"status": "error", "mensaje": "Error al eliminar: " + str(e)}
+            
+        cursor.execute(
+            "SELECT id_inscripcion, id_nota FROM inscripciones "
+            "JOIN notas USING(id_inscripcion) "
+            "WHERE id_usuario = %s",
+            (id_usuario,)
+        )
+        inscripciones = cursor.fetchall()
 
+        for ins in inscripciones:
+            id_inscripcion = ins["id_inscripcion"]
+            id_nota = ins["id_nota"]
+            cursor.execute(
+                "DELETE FROM notas WHERE id_inscripcion = %s AND id_nota = %s",
+                (id_inscripcion, id_nota)
+            )
+            if cursor.rowcount == 0:
+                conn.rollback()
+                return jsonify({"status": "error", "mensaje": f"No se encontró nota {id_nota}"}), 404
+
+            cursor.execute(
+                "DELETE FROM inscripciones WHERE id_inscripcion = %s", (id_inscripcion,)
+            )
+            if cursor.rowcount == 0:
+                conn.rollback()
+                return jsonify({"status": "error", "mensaje": f"No se encontró inscripcion {id_inscripcion}"}), 404
+
+        # --- 3) Borrar usuario ---
+        cursor.execute("DELETE FROM usuarios WHERE id_usuario = %s", (id_usuario,))
+        if cursor.rowcount == 0:
+            conn.rollback()
+            return jsonify({"status": "error", "mensaje": "No se encontró el usuario"}), 404
+
+        conn.commit()
+        return jsonify({"status": "ok", "mensaje": "Usuario, inscripciones y notas eliminadas correctamente"})
+
+    except psycopg2.Error as e:
+        if conn:
+            conn.rollback()
+        return jsonify({"status": "error", "mensaje": f"Error al eliminar: {e}"}), 500
+    finally:
+        if conn:
+            cursor.close()
+            conn.close()
 
 # ------------------------
 # def obtener_materias_estudiante(id_usuario):
@@ -450,6 +528,7 @@ def crear_inscripcion(id_usuario, id_curso):
 def eliminar_inscripcion(id_inscripcion, id_nota):
     conn = get_connection()
     cursor = conn.cursor()
+
     cursor.execute(
         "DELETE FROM notas WHERE id_inscripcion = %s AND id_nota = %s",
         (id_inscripcion, id_nota),
@@ -704,8 +783,7 @@ def crear_ponentes_con_lote(lista_ponentes):
         for p in lista_ponentes:
             try:
                 # 1) Generar y hashear contraseña
-                hashed = generate_password_hash(
-                    generar_contrasena(p["apellido"], p["documento"])
+                hashed = generate_password_hash(est["email"]
                 )
 
                 # 2) Insertar usuario
