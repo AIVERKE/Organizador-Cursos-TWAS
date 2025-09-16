@@ -70,7 +70,6 @@
       </div>
     </main>
 
-
   <script>
   function verEstudiantes(idPonente) {
       fetch(`/ponente/estudiantes_curso/${idPonente}`)
@@ -109,8 +108,6 @@
     document.getElementById("modal-estudiantes").style.display = "none";
   }
   </script>
-
-
     <script>
 
 
@@ -189,65 +186,103 @@
               .catch(err => alert("Error al obtener los datos: " + err.message));
           });
         });
-        
-        // Envío editar
-        const formEditar = document.getElementById('form-editar');
-        if (formEditar) {
-          formEditar.addEventListener('submit', async function (e) {
-            e.preventDefault();
 
-            const id = document.getElementById('id_usuario').value;
-            const idRol = document.getElementById('id_rol').value; // ya lo pones en 3
+        // // Envío editar
+        // const formEditar = document.getElementById('form-editar');
+        // if (formEditar) {
+        //   formEditar.addEventListener('submit', function (e) {
+        //     e.preventDefault();
+        //     const id = document.getElementById('id_usuario').value;
+        //     const data = {
+        //       nombre: document.getElementById('nombre').value,
+        //       apellido: document.getElementById('apellido').value,
+        //       email: document.getElementById('email').value,
+        //       contrasena: document.getElementById('contrasena').value,
+        //       documento: document.getElementById('documento').value,
+        //       pais_origen: document.getElementById('pais_origen').value,
+        //       id_rol: idRol
+        //     };
 
-            const payload = {
-              nombre: document.getElementById('nombre').value.trim(),
-              apellido: document.getElementById('apellido').value.trim(),
-              email: document.getElementById('email').value.trim(),
-              contrasena: (document.getElementById('contrasena').value || '').trim() || null,
-              documento: document.getElementById('documento').value.trim(),
-              pais_origen: document.getElementById('pais_origen').value.trim(),
-              id_rol: idRol,
-              // ---- campos que pedía el backend ----
-              fecha_nac: document.getElementById('fecha_nac').value || null,
-              genero: document.getElementById('genero').value.trim(),
-              pais_residencia: document.getElementById('pais_residencia').value.trim(),
-              afiliacion_u: document.getElementById('afiliacion_u').value.trim(),
-              tipo_afiliacion: document.getElementById('tipo_afiliacion').value.trim(),
-              area_tematica: document.getElementById('area_tematica').value.trim(),
-              disciplina_cientifica: document.getElementById('disciplina_cientifica').value.trim()
-            };
+        //     fetch(`${endpointBase}/${id}`, {
+        //       method: 'PUT',
+        //       headers: { 'Content-Type': 'application/json' },
+        //       body: JSON.stringify(data)
+        //     })
+        //     .then(response => {
+        //       if (response.ok) {
+        //         alert(`${tipo === 'estudiantes' ? 'Estudiante' : 'Expositor'} actualizado correctamente.`);
+        //         cerrarModalEdit();
+        //         showSection(`usuarios/coor/${tipo}`);
+        //       } else {
+        //         return response.json().then(err => {
+        //           throw new Error(err.error || "Error desconocido");
+        //         });
+        //       }
+        //     })
+        //     .catch(err => alert("Error al actualizar: " + err.message));
+        //   });
+        // }
 
-            try {
-              const resp = await fetch(`/usuarios/coor/estudiantes/${id}`, {
-                method: 'PUT',                       // tu ruta acepta PUT
-                headers: { 'Content-Type': 'application/json' },
-                credentials: 'include',              // manda cookie de sesión
-                body: JSON.stringify(payload)
-              });
+//Modifique estas vistas qlias y ahora estoy escuchando sabrina carpenter
 
-              const ct = resp.headers.get('content-type') || '';
-              const raw = await resp.text();
+// Envío editar
+const formEditar = document.getElementById('form-editar');
+if (formEditar) {
+  formEditar.addEventListener('submit', async function (e) {
+    e.preventDefault();
 
-              if (!ct.includes('application/json')) {
-                // HTML => seguramente error/redirect
-                alert(`Respuesta no JSON (${resp.status}).\n` + raw.slice(0,200));
-                return;
-              }
+    const id = document.getElementById('id_usuario').value;
+    const idRol = document.getElementById('id_rol').value; // ya lo pones en 3
 
-              const data = JSON.parse(raw);
-              if (!resp.ok) {
-                alert(data.error || `Error ${resp.status}`);
-                return;
-              }
+    const payload = {
+      nombre: document.getElementById('nombre').value.trim(),
+      apellido: document.getElementById('apellido').value.trim(),
+      email: document.getElementById('email').value.trim(),
+      contrasena: (document.getElementById('contrasena').value || '').trim() || null,
+      documento: document.getElementById('documento').value.trim(),
+      pais_origen: document.getElementById('pais_origen').value.trim(),
+      id_rol: idRol,
+      // ---- campos que pedía el backend ----
+      fecha_nac: document.getElementById('fecha_nac').value || null,
+      genero: document.getElementById('genero').value.trim(),
+      pais_residencia: document.getElementById('pais_residencia').value.trim(),
+      afiliacion_u: document.getElementById('afiliacion_u').value.trim(),
+      tipo_afiliacion: document.getElementById('tipo_afiliacion').value.trim(),
+      area_tematica: document.getElementById('area_tematica').value.trim(),
+      disciplina_cientifica: document.getElementById('disciplina_cientifica').value.trim()
+    };
 
-              alert('Estudiante actualizado correctamente.');
-              cerrarModalEdit();
-              showSection('usuarios/coor/estudiantes');
-            } catch (err) {
-              alert('Error al actualizar: ' + err.message);
-            }
-          });
-        }
+    try {
+      const resp = await fetch(`/usuarios/coor/estudiantes/${id}`, {
+        method: 'PUT',                       // tu ruta acepta PUT
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',              // manda cookie de sesión
+        body: JSON.stringify(payload)
+      });
+
+      const ct = resp.headers.get('content-type') || '';
+      const raw = await resp.text();
+
+      if (!ct.includes('application/json')) {
+        // HTML => seguramente error/redirect
+        alert(`Respuesta no JSON (${resp.status}).\n` + raw.slice(0,200));
+        return;
+      }
+
+      const data = JSON.parse(raw);
+      if (!resp.ok) {
+        alert(data.error || `Error ${resp.status}`);
+        return;
+      }
+
+      alert('Estudiante actualizado correctamente.');
+      cerrarModalEdit();
+      showSection('usuarios/coor/estudiantes');
+    } catch (err) {
+      alert('Error al actualizar: ' + err.message);
+    }
+  });
+}
         // Crear usuario
         document.querySelectorAll('.create-btn').forEach(btn => {
           btn.addEventListener("click", function () {
@@ -808,7 +843,7 @@
         inicializarEventos();
         inicializarEventosCursos();    
         // Mostrar gráfico inicial
-        fetch("/est_graf/estadisticas/inscritos")
+        fetch("/cursos/estadisticas/inscritos")
         .then(res => res.json())
         .then(data => {
           if (data.success) {
@@ -964,11 +999,6 @@
           }
         });
       })();
-      window.addEventListener("click", function(e) {
-        if (e.target.classList.contains("modal")) {
-          e.target.classList.remove("activo");
-        }
-      });
     </script>
 
   </body>
