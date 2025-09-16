@@ -60,9 +60,12 @@ def crear_curso():
 @login_required
 @role_required(1, 4)
 def eliminar_curso(id_curso):
-    crs.eliminar_curso(id_curso)
-    return jsonify({"mensaje": "Curso eliminado"})
-
+    try:
+        crs.eliminar_curso(id_curso)
+        return jsonify({"mensaje": "Curso eliminado"})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+        
 # Ruta no utilizada
 @curso_bp.route("/<int:id_curso>", methods=["GET"])
 @login_required

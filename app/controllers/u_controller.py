@@ -3,6 +3,7 @@ from app.db_c import get_connection
 from werkzeug.security import generate_password_hash
 from datetime import datetime, timedelta, date
 from flask import jsonify
+import pandas as pd
 
 # --- Usuarios General
 def obtener_usuarios(rol):
@@ -254,7 +255,7 @@ def crear_estudiantes_con_inscripcion_con_lote(lista_estudiantes):
                 # 1) Buscar id_curso por nombre (case‐insensitive)
                 cursor.execute(
                     "SELECT id_curso FROM cursos WHERE LOWER(nombre) = LOWER(%s)",
-                    (est.get("nombre_curso", "").strip(),),
+                    (est.get("curso_interes", "").strip(),),
                 )
                 row = cursor.fetchone()
                 if not row:
@@ -282,11 +283,27 @@ def crear_estudiantes_con_inscripcion_con_lote(lista_estudiantes):
                 hashed = generate_password_hash(est["email"]
                 )
 
+                from datetime import datetime
+
+                fecha_nac = est.get("fecha_nac")
+                if pd.isna(fecha_nac):
+                    fecha_nac = None   # se inserta como NULL en la BD
+                else:
+                    # si viene como Timestamp de pandas
+                    if isinstance(fecha_nac, pd.Timestamp):
+                        fecha_nac = fecha_nac.date()
+                    # si viene como string
+                    elif isinstance(fecha_nac, str):
+                        try:
+                            fecha_nac = datetime.strptime(fecha_nac.strip(), "%Y-%m-%d").date()
+                        except:
+                            fecha_nac = None
+
                 # 3) Insertar usuario y obtener id_usuario
                 cursor.execute(
                     """
-                    INSERT INTO Usuarios (nombre, apellido, email, contrasena, documento, pais_origen, id_rol, fecha_nac, genero, pais_residencia, afiliacion_u, tipo_afiliacion, area_tematica, disciplina_cientifica)
-                    VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+                    INSERT INTO Usuarios (nombre, apellido, email, contrasena, pais_origen, id_rol, fecha_nac, genero, pais_residencia, afiliacion_u, tipo_afiliacion, area_tematica, disciplina_cientifica)
+                    VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
                     RETURNING id_usuario
                     """,
                     (
@@ -294,10 +311,9 @@ def crear_estudiantes_con_inscripcion_con_lote(lista_estudiantes):
                         est["apellido"],
                         est["email"],
                         hashed,
-                        est["documento"],
                         est["pais_origen"],
                         id_rol,
-                        est["fecha_nac"],
+                        fecha_nac,
                         est["genero"],
                         est["pais_residencia"],
                         est["afiliacion_u"],
@@ -310,10 +326,10 @@ def crear_estudiantes_con_inscripcion_con_lote(lista_estudiantes):
                 # 4) Crear inscripción
                 cursor.execute(
                     """
-                    INSERT INTO inscripciones (id_usuario,id_curso,fecha_inscripcion,modalidad,certificado_generado) 
-                    VALUES (%s,%s,%s,%s,%s) RETURNING id_inscripcion
+                    INSERT INTO inscripciones (id_usuario,id_curso,fecha_inscripcion,certificado_generado) 
+                    VALUES (%s,%s,%s,%s) RETURNING id_inscripcion
                     """,
-                    (id_usuario, id_curso,date.today(),est["modalidad"],False),
+                    (id_usuario, id_curso,date.today(),False),
                 )
                 id_insc = cursor.fetchone()[0]
 
@@ -333,19 +349,20 @@ def crear_estudiantes_con_inscripcion_con_lote(lista_estudiantes):
                     qr_filename = None
                     print(f"Error generando QR para usuario {id_usuario}: {e}")
 
-                exitosos.append({
-                    "usuario": est,
+                registro = est.copy()
+                registro.update({
                     "id_usuario": id_usuario,
                     "id_inscripcion": id_insc,
                     "qr_path": qr_filename
                 })
+                exitosos.append(registro)
 
             except Exception as e:
                 conn.rollback()
-                fallidos.append({
-                        "usuario": est,
-                        "error": str(e)
-                })
+                registro = est.copy()
+                registro["error"] = str(e)
+                fallidos.append(registro)
+
                 continue
         return {"exitosos": exitosos, "fallidos": fallidos}
     except Exception as e:
