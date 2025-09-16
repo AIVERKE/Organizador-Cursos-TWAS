@@ -620,8 +620,7 @@ def enviar_certificados_todos(rol_boton):
             try:
                 with open(output_path, "rb") as f:
                     msg.attach(filename=file_name, content_type="application/pdf", data=f.read())
-                # mail.send(msg)
-                print('mensaje enviado a ', email)
+                mail.send(msg)
                 exitos_envio.append(email)
             except Exception as e:
                 errores_envio.append((email, str(e)))
