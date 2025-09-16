@@ -20,7 +20,7 @@ import os, shutil, zipfile
 from flask_login import login_user, logout_user, login_required, current_user
 from app.api.auth.utils import role_required
 from datetime import date
-
+from . import utils
 
 @certificate_bp.route("/generar-certificados/<int:rol_boton>")
 @login_required
@@ -166,7 +166,7 @@ def generar_certificados(rol_boton):
 
 @certificate_bp.route("/descargar-certificado/<int:user_id>")
 @login_required
-@role_required(1, 4)
+@role_required(1, 3, 4)
 def descargar_certificado(user_id):
     base_dir = os.path.dirname(os.path.abspath(__file__))
     folder = os.path.join(base_dir, "temp_certificates")
@@ -730,3 +730,9 @@ def verificar(search):
         certificado=result,
         tipo=tipo,
     )
+
+
+@certificate_bp.route("/listar-certificados/<int:id_usuario>")
+def listar_certificados_estudiantes(id_usuario):
+    inscripciones = utils.get_inscripciones(id_usuario)        
+    return  render_template("Estudiante/certificados.html", inscripciones = inscripciones, id_usuario=id_usuario)
