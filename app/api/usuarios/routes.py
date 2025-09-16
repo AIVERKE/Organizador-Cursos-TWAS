@@ -52,7 +52,7 @@ def obtener_datos_estudiante_json(id_u):
 
 @usuario_bp.route("/coor/estudiantes/<int:id_usuario>", methods=["PUT"])
 @login_required
-@role_required(1, 4)
+@role_required(1, 3, 4)
 def editar_estudiante(id_usuario):
     data = request.json
     campos_requeridos = ["nombre", "apellido", "email", "documento", "pais_origen", "id_rol", "fecha_nac", "genero", "pais_residencia", "afiliacion_u", "tipo_afiliacion", "area_tematica", "disciplina_cientifica"]
