@@ -923,3 +923,20 @@ def quitar_curso_a_ponente(id_curso):
 
 
 # ------------------------
+
+#PARA USAR EN MAIL
+def obtener_estudiantes_i():
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute("""
+        SELECT u.email, i.id_inscripcion
+        FROM usuarios u
+        JOIN inscripciones i ON u.id_usuario = i.id_usuario
+    """)
+    rows = cur.fetchall()
+    cur.close()
+    conn.close()
+
+    # Retornar lista de diccionarios
+    estudiantes = [{"email": r[0], "id_inscripcion": r[1]} for r in rows]
+    return estudiantes
