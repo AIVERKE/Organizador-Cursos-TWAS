@@ -1,35 +1,41 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Gestión Estudiante</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/Estudiante/styleEstudiantes.css') }}"> <!--pendiente a editar si es necesario-->
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/Estudiante/styleEstudiantes.css') }}">
+  <!--pendiente a editar si es necesario-->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;600&display=swap"
+    rel="stylesheet">
+  <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/Coordinador/styleRxls.css') }}"> -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/Coordinador/styleCoordinador.css') }}">
 </head>
+
 <body>
 
-<!-- DEBUG -->
-<!-- <p>{{ url_for('auth.cursos_estudiante') }}</p> -->
+  <!-- DEBUG -->
+  <!-- <p>{{ url_for('auth.cursos_estudiante') }}</p> -->
 
   <!-- Top bar -->
- <div class="top-bar">
-  <div class="logo-back">
-    <img class="logo" src="{{ url_for('static', filename='images/TWAS_Logo.webp') }}"/>
-  </div>
-
-  <h1 class="titulo">GESTION ESTUDIANTE</h1>
-
-  <div class="acciones-derecha">
-    <div class="top-actions">
-      <button onclick="location.href='/estudiante'">Estudiante</button>
-      <button onclick="location.href='/auth/logout'">Cerrar Sesión</button>
+  <div class="top-bar">
+    <div class="logo-back">
+      <img class="logo" src="{{ url_for('static', filename='images/TWAS_Logo.webp') }}" />
     </div>
-    <div class="logou">
-      <img class="logo-umsa" src="{{ url_for('static', filename='images/EscudoUMSA.png') }}" alt="Logo UMSA"/>
+
+    <h1 class="titulo">GESTION ESTUDIANTE</h1>
+
+    <div class="acciones-derecha">
+      <div class="top-actions">
+        <button onclick="location.href='/estudiante'">Estudiante</button>
+        <button onclick="location.href='/auth/logout'">Cerrar Sesión</button>
+      </div>
+      <div class="logou">
+        <img class="logo-umsa" src="{{ url_for('static', filename='images/EscudoUMSA.png') }}" alt="Logo UMSA" />
+      </div>
     </div>
   </div>
-</div>
 
   <!-- Contenedor principal -->
   <div class="container">
@@ -38,11 +44,11 @@
       <h2>BIENVENIDO</h2>
       <h3>
 
-<!--
+        <!--
   {{ estudiante[1] | upper }}<br>
   {{ estudiante[2] | upper }}
         -->
-</h3>
+      </h3>
       <p>Funciones</p>
       <ul class="menu">
         <li><a href="#" class="activo" onclick="mostrarSeccion('datos')">Datos Personales</a></li>
@@ -55,10 +61,14 @@
         <!-- <li>
           <a href="#" onclick="mostrarIframe('{{ url_for('auth.cursos_estudiante')}}', this)">Curso</a> 
         </li> -->
-         
 
-        <li><a href="#" onclick="mostrarIframe('{{ url_for('qrs.ver_asistencias', id_usuario=estudiante[0]) }}', this)">Mis Asistencias</a></li>
-        <li><a href="#" onclick="mostrarIframe('{{ url_for('certificate.listar_certificados_estudiantes', id_usuario=estudiante[0] ) }}', this)">Mis Certificados</a></li>
+
+        <li><a href="#"
+            onclick="mostrarIframe('{{ url_for('qrs.ver_asistencias', id_usuario=estudiante[0]) }}', this)">Mis
+            Asistencias</a></li>
+        <li><a href="#"
+            onclick="mostrarIframe('{{ url_for('certificate.listar_certificados_estudiantes', id_usuario=estudiante[0] ) }}', this)">Mis
+            Certificados</a></li>
       </ul>
     </aside>
 
@@ -67,6 +77,13 @@
       <!-- Datos personales por defecto -->
       <div id="seccion-datos" class="datos-container">
         <div class="datos-content">
+          <form method="GET" action="">
+            <button type="button" class="btn-generar-qr" data-estudiante='{{ estudiante|tojson|safe }}'
+              onclick="abrirModalEdit(this.dataset.estudiante)">
+              Editar Datos
+            </button>
+
+          </form>
           <div class="info-estudiante">
             <!-- <input class="input-info" value="Nombre" readonly />
             <input class="input-info" value="Identificación" readonly />
@@ -74,21 +91,22 @@
             <input class="input-info" value="Edad" readonly />
             <input class="input-info" value="Nacionalidad" readonly /> -->
 
-            <input class="input-info" value="{{ estudiante[1]}} {{ estudiante[2]}}" readonly />
-            <input class="input-info" value="{{ estudiante[5] }}" readonly />
+            <input class="input-info" value="Nombre Completo: {{ estudiante[1]}} {{ estudiante[2]}}" readonly />
+            <input class="input-info" value="Documento: {{ estudiante[5] }}" readonly />
+            <input class="input-info" value="Email: {{ estudiante[3]}}" readonly>
             <!-- <input class="input-info" value="(coloca género aquí)" readonly />
             <input class="input-info" value="(edad o calcula)" readonly /> -->
-            <input class="input-info" value="{{ estudiante[6] }}" readonly />
-
+            <input class="input-info" value="Pais Origen: {{ estudiante[6] }}" readonly />
+            <input class="input-info" value="Pais Residencia: {{ estudiante[11] }}" readonly />
           </div>
           <div class="qr-container">
             {% if qr_path %}
-              <img src="{{ qr_path }}" id="qr-estudiante" class="qr-img" alt="QR Estudiante" />
+            <img src="{{ qr_path }}" id="qr-estudiante" class="qr-img" alt="QR Estudiante" />
             {% else %}
-              <p>No se ha generado un código QR para este estudiante.</p>
-              <form method="GET" action="{{ url_for('qrs.generate_qr_by_id', id_usuario=estudiante[0]) }}">
-                <button type="submit" class="btn-generar-qr">Generar QR</button>
-              </form>
+            <p>No se ha generado un código QR para este estudiante.</p>
+            <form method="GET" action="{{ url_for('qrs.generate_qr_by_id', id_usuario=estudiante[0]) }}">
+              <button type="submit" class="btn-generar-qr">Generar QR</button>
+            </form>
             {% endif %}
           </div>
         </div>
@@ -101,6 +119,170 @@
 
   <script src="{{ url_for('static', filename='js/estudianteControl.js') }}"></script>
 
-</body>
-</html>
+  <!--  Modal / Tabla Emergente Actualizar Estudiantes -->
+  <div id="modal-editar" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="cerrarModalEdit()">&times;</span>
+      <h3>Editar Estudiante</h3>
+      <form id="form-editar">
+        <input type="hidden" id="id_usuario" name="id_usuario">
+        <label>Nombre:</label>
+        <input type="text" id="nombre" name="nombre"><br>
+        <label>Apellido:</label>
+        <input type="text" id="apellido" name="apellido"><br>
+        <label>Email:</label>
+        <input type="email" id="email" name="email"><br>
+        <label>Contraseña:</label>
+        <input type="password" id="contrasena" name="contrasena" placeholder="Nueva contraseña (opcional)"><br>
+        <label>Documento:</label>
+        <input type="text" id="documento" name="documento"><br>
+        <label>País de Origen:</label>
+        <input type="text" id="pais_origen" name="pais_origen"><br>
+        <input type="hidden" id="id_rol" name="id_rol" value="3">
+        <label>Fecha de nacimiento:</label>
+        <input type="date" id="fecha_nac" name="fecha_nac"><br>
 
+        <!-- 👇 Cambiado a combobox -->
+        <!-- <label>Género:</label>
+      <input type="text" id="genero" name="genero"><br> -->
+
+        <label>Género:</label>
+        <select id="genero" name="genero">
+          <option value="" disabled selected>Seleccione género</option>
+          <option value="male">Masculino</option>
+          <option value="female">Femenino</option>
+          <option value="other">Otro</option>
+        </select><br>
+
+
+        <label>País de residencia:</label>
+        <input type="text" id="pais_residencia" name="pais_residencia"><br>
+
+
+        <!-- 👇 Cambiado a combobox -->
+        <!-- <label>Afiliacion con una universidad:</label>
+      <input type="text" id="afiliacion_u" name="afiliacion_u"><br> -->
+
+        <label>Tipo de afiliacion:</label>
+        <select id="tipo_afiliacion" name="tipo_afiliacion">
+          <option value="" disabled selected>Seleccione tipo</option>
+          <option value="public">Pública</option>
+          <option value="private">Privada</option>
+        </select><br>
+
+        <label>Afiliacion U:</label>
+        <input type="text" id="afiliacion_u" name="afiliacion_u"><br>
+        <label>Área tematica:</label>
+        <input type="text" id="area_tematica" name="area_tematica"><br>
+        <label>Disciplina cientifica:</label>
+        <input type="text" id="disciplina_cientifica" name="disciplina_cientifica"><br>
+
+        <button type="submit" id="guardarBtn">Guardar</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+
+    function formatDate(fecha) {
+      if (!fecha) return "";
+      const d = new Date(fecha);
+      if (isNaN(d)) return ""; // si no es parseable
+      return d.toISOString().split("T")[0];
+    }
+    // Abrir modal y cargar datos
+    function abrirModalEdit(estudianteJson) {
+
+      if (!estudianteJson) {
+        console.error("⚠️ No se recibieron datos del estudiante");
+        return;
+      }
+      const estudiante = JSON.parse(estudianteJson); // ahora sí un array bien formado
+      const modal = document.getElementById("modal-editar");
+
+      // Llenar inputs con datos
+      document.getElementById("id_usuario").value = estudiante[0];
+      document.getElementById("nombre").value = estudiante[1];
+      document.getElementById("apellido").value = estudiante[2];
+      document.getElementById("email").value = estudiante[3];
+      document.getElementById("contrasena").value = ""; // vacío para seguridad
+      document.getElementById("documento").value = estudiante[5];
+      document.getElementById("pais_origen").value = estudiante[6];
+      document.getElementById("id_rol").value = estudiante[7] || 3;
+      document.getElementById("fecha_nac").value = formatDate(estudiante[9]) || "";
+      document.getElementById("genero").value = estudiante[10] || "";
+      document.getElementById("pais_residencia").value = estudiante[11] || "";
+      document.getElementById("afiliacion_u").value = estudiante[12] || "";
+      document.getElementById("tipo_afiliacion").value = estudiante[13] || "";
+      document.getElementById("area_tematica").value = estudiante[14] || "";
+      document.getElementById("disciplina_cientifica").value = estudiante[15] || "";
+
+      // Mostrar modal
+      modal.style.display = "flex";
+    }
+
+    // Cerrar modal
+    function cerrarModalEdit() {
+      document.getElementById("modal-editar").style.display = "none";
+    }
+
+    // Cerrar al hacer click fuera
+    window.onclick = function (event) {
+      const modal = document.getElementById("modal-editar");
+      if (event.target === modal) {
+        modal.style.display = "none";
+      }
+    }
+
+  </script>
+
+  <script>
+    const formEditar = document.getElementById("form-editar");
+
+    if (formEditar) {
+      formEditar.addEventListener("submit", function (e) {
+        e.preventDefault(); // evita que recargue la página
+
+        const payload = {
+          nombre: document.getElementById("nombre").value,
+          apellido: document.getElementById("apellido").value,
+          email: document.getElementById("email").value,
+          documento: document.getElementById("documento").value,
+          pais_origen: document.getElementById("pais_origen").value,
+          id_rol: document.getElementById("id_rol").value,
+          fecha_nac: document.getElementById("fecha_nac").value,
+          genero: document.getElementById("genero").value,
+          pais_residencia: document.getElementById("pais_residencia").value,
+          afiliacion_u: document.getElementById("afiliacion_u").value,
+          tipo_afiliacion: document.getElementById("tipo_afiliacion").value,
+          area_tematica: document.getElementById("area_tematica").value,
+          disciplina_cientifica: document.getElementById("disciplina_cientifica").value,
+          contrasena: document.getElementById("contrasena").value || null
+        };
+
+        const id_usuario = document.getElementById("id_usuario").value;
+
+        fetch(`/usuarios/coor/estudiantes/${id_usuario}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(payload)
+        })
+          .then(res => res.json())
+          .then(data => {
+            alert(data.mensaje);
+            cerrarModalEdit();
+            location.reload();
+          })
+          .catch(err => console.error(err));
+      });
+    }
+
+
+  </script>
+
+
+</body>
+
+</html>
