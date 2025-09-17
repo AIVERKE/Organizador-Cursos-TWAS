@@ -49,18 +49,16 @@
         <!-- <li><a href="#" onclick="mostrarIframe('Curso.html', this)">Curso</a></li>     de momento agrego otro similar abajo para no arruinar esta linea xd-->
 
 
-        <!-- la wbda de aca arriba dice tener un error, pero no tiene ningno, el programa funciona de todas formas
+        <!-- la wbda de aca arriba dice tener un error, pero no tiene ningno, el programa funciona de todas formas -->
 
-        Curso oculto porque no muestra información relevante de las plantillas
-      <li>
-        <a href="#" onclick="mostrarIframe('{{ url_for('auth.cursos_estudiante')}}', this)">Curso</a> 
-      </li>
-         -->
+        <!-- Curso oculto porque no muestra información relevante de las plantillas -->
+        <!-- <li>
+          <a href="#" onclick="mostrarIframe('{{ url_for('auth.cursos_estudiante')}}', this)">Curso</a> 
+        </li> -->
+         
 
-      <li>
-        <a href="#" onclick="mostrarIframe('{{ url_for('qrs.ver_asistencias', id_usuario=estudiante[0]) }}', this)">Mis Asistencias</a>
-      </li>
-
+        <li><a href="#" onclick="mostrarIframe('{{ url_for('qrs.ver_asistencias', id_usuario=estudiante[0]) }}', this)">Mis Asistencias</a></li>
+        <li><a href="#" onclick="mostrarIframe('{{ url_for('certificate.listar_certificados_estudiantes', id_usuario=estudiante[0] ) }}', this)">Mis Certificados</a></li>
       </ul>
     </aside>
 
@@ -77,10 +75,10 @@
             <input class="input-info" value="Nacionalidad" readonly /> -->
 
             <input class="input-info" value="{{ estudiante[1]}} {{ estudiante[2]}}" readonly />
-<input class="input-info" value="{{ estudiante[5] }}" readonly />
-<!-- <input class="input-info" value="(coloca género aquí)" readonly />
-<input class="input-info" value="(edad o calcula)" readonly /> -->
-<input class="input-info" value="{{ estudiante[6] }}" readonly />
+            <input class="input-info" value="{{ estudiante[5] }}" readonly />
+            <!-- <input class="input-info" value="(coloca género aquí)" readonly />
+            <input class="input-info" value="(edad o calcula)" readonly /> -->
+            <input class="input-info" value="{{ estudiante[6] }}" readonly />
 
           </div>
           <div class="qr-container">
