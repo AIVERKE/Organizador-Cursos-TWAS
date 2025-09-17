@@ -1,6 +1,7 @@
 import psycopg2
 from app.db_c import get_connection
 from datetime import date
+from flask import jsonify
 
 def obtener_cursos_full():
     conn = get_connection() 
@@ -128,22 +129,36 @@ def crear_cursos_con_lote(lista_cursos):
             conn.close()
     return {"registrados": registrados, "fallidos": fallidos}
 
-
 def actualizar_curso_base(id_curso, nombre, descripcion, modalidad):
     try:
-        with get_connection() as conn:
-            with conn.cursor() as cursor:
-                cursor.execute(
-                    """
-                    UPDATE cursos
-                    SET nombre = %s, descripcion = %s, modalidad = %s
-                    WHERE id_curso = %s
-                    """,
-                    (nombre, descripcion, modalidad, id_curso),
-                )
-                conn.commit()
+        conn = get_connection()
+        cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+
+        cursor.execute(
+            """
+            UPDATE cursos
+            SET nombre = %s, descripcion = %s, modalidad = %s
+            WHERE id_curso = %s
+            """,
+            (nombre, descripcion, modalidad, id_curso),
+        )
+
+        if cursor.rowcount == 0:
+            conn.rollback()
+            return jsonify({"status": "error", "mensaje": "No se encontró el curso"}), 404
+
+        conn.commit()
+        return jsonify({"status": "ok", "mensaje": "Curso actualizado correctamente"})
+
     except psycopg2.Error as e:
-        print(f"[ERROR] actualizar_curso: {e}")
+        if conn:
+            conn.rollback()
+        return jsonify({"status": "error", "mensaje": f"Error al actualizar: {e}"}), 500
+
+    finally:
+        if conn:
+            cursor.close()
+            conn.close()
 
 
 def actualizar_curso(id_curso, nombre, descripcion, modalidad, id_version, id_ponente):
