@@ -394,7 +394,7 @@ def generar_qr_estudiante(id_usuario, id_inscripcion, id_curso):
 
     horario = datetime.now().strftime("%Y-%m-%d %H:%M")
     contenido = (
-        f"https://organizador-cursos-twas.onrender.com/qrs/registrar?"
+        f"{os.getenv("URL_APP")}/qrs/registrar?"
         f"id_inscripcion={id_inscripcion}&id_curso={id_curso}"
         f"&id_usuario={id_usuario}&horario={horario}"
     )
