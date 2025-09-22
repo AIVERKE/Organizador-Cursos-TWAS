@@ -27,10 +27,6 @@ def send_email():
     if not subject or not body:
         return jsonify({"error": "Faltan asunto o contenido"}), 400 
     
-    # 🍔data = request.json
-    # 🍔subject = data.get("subject")
-    # 🍔body = data.get("body")
-
     # Configuración
     sender = os.environ.get("MAIL_USERNAME")  #correo en .env
     app_password = os.environ.get("MAIL_PASSWORD")  # contraseña de aplicación en .env
@@ -109,6 +105,6 @@ def send_email():
         with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
             smtp.login(sender, app_password)
             smtp.send_message(msg)
-        print(f"Correo Enviado a {batch} 📨👁👄👁💅 con QR de inscripcion {insc_id}") #imprime en consola cada que se envia un correo
+        print(f"Correo Enviado a {batch} con QR de inscripcion {insc_id}") #imprime en consola cada que se envia un correo
         time.sleep(10)
-    return jsonify({"message": "Correos enviados con éxito ✅"}) #se muestra al final de los envíos, de momento tardaria 20 segundos en aparecer ya que debe enviar dos correos con 10 segundos de diferencia entre ellos para completar de ejecutar la función.
+    return jsonify({"message": "Correos enviados con éxito"}) #se muestra al final de los envíos, de momento tardaria 20 segundos en aparecer ya que debe enviar dos correos con 10 segundos de diferencia entre ellos para completar de ejecutar la función.
