@@ -63,7 +63,7 @@ def generate_qr_by_id(id_usuario):
             return redirect(url_for("qrs.perfil_estudiante", id_usuario=id_usuario))
 
         contenido = (
-            f"{os.getenv("URL_APP")}/qrs/registrar?"
+            f"{os.getenv('URL_APP')}/qrs/registrar?"
             f"id_inscripcion={id_inscripcion}&id_curso={id_curso}"
             f"&id_usuario={id_usuario}&horario={horario}"
         )

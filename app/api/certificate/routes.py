@@ -92,7 +92,7 @@ def generar_certificados(rol_boton):
 
         if rol_boton == 3:
             # 1. Generar QR con la URL de validación
-            url = f"{os.getenv("URL_APP")}/cert/verificar/{row['id_inscripcion']}-0"
+            url = f"{os.getenv('URL_APP')}/cert/verificar/{row['id_inscripcion']}-0"
             qr_img = segno.make(url)
 
             # 2. Guardar QR en archivo temporal (FPDF no acepta BytesIO directamente)
@@ -102,7 +102,7 @@ def generar_certificados(rol_boton):
             # 3. Insertar QR en el PDF
             pdf.image(qr_path, x=740, y=500, w=80, h=80)  # ajusta x,y,w,h a tu diseño
         elif rol_boton == 2:
-            url = f"{os.getenv("URL_APP")}/cert/verificar/{row['id_usuario'] or ''}-{row['id_curso_doc']}"
+            url = f"{os.getenv('URL_APP')}/cert/verificar/{row['id_usuario'] or ''}-{row['id_curso_doc']}"
             qr_img = segno.make(url)
 
             # 2. Guardar QR en archivo temporal (FPDF no acepta BytesIO directamente)
@@ -262,7 +262,7 @@ def descargar_certificado(user_id):
         pdf.multi_cell(600, 14, docente + " \nDocente de Materia", 0, "C")
 
         # 1. Generar QR con la URL de validación
-        url = f"{os.getenv("URL_APP")}/cert/verificar/{result.id_inscripcion}-0"
+        url = f"{os.getenv('URL_APP')}/cert/verificar/{result.id_inscripcion}-0"
         qr_img = segno.make(url)
 
         # 2. Guardar QR en archivo temporal (FPDF no acepta BytesIO directamente)
@@ -273,7 +273,7 @@ def descargar_certificado(user_id):
         pdf.image(qr_path, x=740, y=500, w=80, h=80)  # ajusta x,y,w,h a tu diseño
 
     elif rol == 2:
-        url = f"{os.getenv("URL_APP")}/cert/verificar/{result.id_usuario or ''}-{result.id_curso_doc}"
+        url = f"{os.getenv('URL_APP')}/cert/verificar/{result.id_usuario or ''}-{result.id_curso_doc}"
         qr_img = segno.make(url)
 
         # 2. Guardar QR en archivo temporal (FPDF no acepta BytesIO directamente)
@@ -421,7 +421,7 @@ def enviar_certificado(user_id):
             pdf.multi_cell(600, 14, docente + " \nDocente de Materia", 0, "C")
 
             # 1. Generar QR con la URL de validación
-            url = f"{os.getenv("URL_APP")}/cert/verificar/{id_inscripcion}-0"
+            url = f"{os.getenv('URL_APP')}/cert/verificar/{id_inscripcion}-0"
             qr_img = segno.make(url)
 
             # 2. Guardar QR en archivo temporal (FPDF no acepta BytesIO directamente)
@@ -432,7 +432,7 @@ def enviar_certificado(user_id):
             pdf.image(qr_path, x=740, y=500, w=80, h=80)  # ajusta x,y,w,h a tu diseño
 
         elif rol == 2:
-            url = f"{os.getenv("URL_APP")}/cert/verificar/{id_usuario or ''}-{id_curso_doc}"
+            url = f"{os.getenv('URL_APP')}/cert/verificar/{id_usuario or ''}-{id_curso_doc}"
             qr_img = segno.make(url)
 
             # 2. Guardar QR en archivo temporal (FPDF no acepta BytesIO directamente)
@@ -595,7 +595,7 @@ def enviar_certificados_todos(rol_boton):
                 pdf.multi_cell(600, 14, docente_full + " \nDocente de Materia", 0, "C")
 
                 # Generar QR estudiante
-                url = f"{os.getenv("URL_APP")}/cert/verificar/{id_inscripcion}-0"
+                url = f"{os.getenv('URL_APP')}/cert/verificar/{id_inscripcion}-0"
                 qr_img = segno.make(url)
                 qr_path = os.path.join(folder, f"qr_{id_inscripcion}.png")
                 qr_img.save(qr_path, scale=5)
@@ -603,7 +603,7 @@ def enviar_certificados_todos(rol_boton):
 
             elif rol == 2:
                 # Generar QR expositor
-                url = f"{os.getenv("URL_APP")}/cert/verificar/{id_usuario}-{id_curso_doc}"
+                url = f"{os.getenv('URL_APP')}/cert/verificar/{id_usuario}-{id_curso_doc}"
                 qr_img = segno.make(url)
                 qr_path = os.path.join(folder, f"qr_{id_usuario}-{id_curso_doc}.png")
                 qr_img.save(qr_path, scale=5)
