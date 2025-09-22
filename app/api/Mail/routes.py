@@ -106,5 +106,4 @@ def send_email():
         with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
             smtp.login(sender, app_password)
             smtp.send_message(msg)
-        time.sleep(10)
     return jsonify({"message": "Correos enviados con éxito"}) #se muestra al final de los envíos, de momento tardaria 20 segundos en aparecer ya que debe enviar dos correos con 10 segundos de diferencia entre ellos para completar de ejecutar la función.
