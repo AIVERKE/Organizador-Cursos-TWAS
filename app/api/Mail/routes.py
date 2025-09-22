@@ -51,7 +51,8 @@ def send_email():
             insc_id = est["id_inscripcion"]
 
             msg = EmailMessage()
-            msg["From"] = sender
+            nombre_emisor = "TYAN"
+            msg["From"] = f"{nombre_emisor} <{sender}>"
             msg["To"] = email
             msg["Subject"] = subject
             msg.set_content(body)
