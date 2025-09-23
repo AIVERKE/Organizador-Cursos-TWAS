@@ -55,8 +55,9 @@ def send_emails_in_background(subject, body, file, estudiantes, sender, app_pass
 
 @email_bp.route("/", methods=["POST"])
 @login_required
-@role_required(1,4)
+@role_required(1, 4)
 def send_email():
+    # Determinar si el request es form-data o JSON
     if request.content_type and "multipart/form-data" in request.content_type.lower():
         subject = request.form.get("asunto")
         body = request.form.get("contenido")
@@ -72,12 +73,21 @@ def send_email():
 
     sender = os.environ.get("MAIL_USERNAME")
     app_password = os.environ.get("MAIL_PASSWORD")
+
+    # Traer estudiantes pendientes de notificación
     estudiantes = [e for e in usu.obtener_estudiantes_i() if e.get("email")]
+
+    if not estudiantes:
+        return jsonify({"message": "No hay estudiantes pendientes de notificación"}), 200
+
     qr_folder = os.path.join(current_app.root_path, "static", "qrs")
 
-    # Crear un hilo para enviar los correos en background
-    thread = Thread(target=send_emails_in_background, args=(subject, body, file, estudiantes, sender, app_password, qr_folder))
-    thread.start()
+    # Enviar correos de manera sincrónica
+    send_emails_in_background(subject, body, file, estudiantes, sender, app_password, qr_folder)
 
-    # Respuesta inmediata al usuario
-    return jsonify({"message": "Los correos están en proceso de envío"})
+    # Marcar estudiantes como notificados
+    ids = [e["id_usuario"] for e in estudiantes]
+    usu.marcar_notificados(ids)
+
+    # Respuesta al usuario
+    return jsonify({"message": "Los correos se enviaron correctamente y los estudiantes fueron notificados"})

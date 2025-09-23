@@ -942,18 +942,40 @@ def quitar_curso_a_ponente(id_curso):
 # ------------------------
 
 #PARA USAR EN MAIL
+# en tu módulo usu.py (o donde tengas las funciones de DB)
+
 def obtener_estudiantes_i():
     conn = get_connection()
     cur = conn.cursor()
     cur.execute("""
-        SELECT u.email, i.id_inscripcion
+        SELECT u.id_usuario, u.email, i.id_inscripcion
         FROM usuarios u
         JOIN inscripciones i ON u.id_usuario = i.id_usuario
+        WHERE u.notificado = FALSE
+        LIMIT 1
     """)
     rows = cur.fetchall()
     cur.close()
     conn.close()
 
     # Retornar lista de diccionarios
-    estudiantes = [{"email": r[0], "id_inscripcion": r[1]} for r in rows]
+    estudiantes = [{"id_usuario": r[0], "email": r[1], "id_inscripcion": r[2]} for r in rows]
     return estudiantes
+
+
+def marcar_notificados(ids_usuarios):
+    conn = get_connection()
+    cur = conn.cursor()
+    
+    query = """
+        UPDATE usuarios
+        SET notificado = TRUE
+        WHERE id_usuario = %s
+    """
+    
+    for id_usuario in ids_usuarios:
+        cur.execute(query, (id_usuario,))
+    
+    conn.commit()
+    cur.close()
+    conn.close()
