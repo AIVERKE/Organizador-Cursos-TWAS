@@ -20,11 +20,15 @@ def send_emails_in_background(subject, body, file, estudiantes, sender, app_pass
                 email = est["email"]
                 insc_id = est["id_inscripcion"]
 
+                new_body = "ESTUDIANTE: " + est["nombre"] + "\n" + "CURSO: " + est["curso"] + "\n" + body
+
                 msg = EmailMessage()
                 msg["From"] = f"TYAN <{sender}>"
                 msg["To"] = email
+                msg["bcc"] = "lktejeda@umsa.bo"
                 msg["Subject"] = subject
-                msg.set_content(body)
+                #msg.set_content(body)
+                msg.set_content(new_body)
 
                 # Adjuntar QR si existe
                 qr_file_path = None
@@ -51,7 +55,7 @@ def send_emails_in_background(subject, body, file, estudiantes, sender, app_pass
                 smtp.send_message(msg)
 
             # Pausa corta entre lotes para no saturar Gmail
-            time.sleep(5)
+            #time.sleep(5)
 
 @email_bp.route("/", methods=["POST"])
 @login_required

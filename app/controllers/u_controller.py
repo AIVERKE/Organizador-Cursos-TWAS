@@ -947,19 +947,28 @@ def quitar_curso_a_ponente(id_curso):
 def obtener_estudiantes_i():
     conn = get_connection()
     cur = conn.cursor()
+    #cur.execute("""
+    #    SELECT u.id_usuario, u.email, i.id_inscripcion
+    #    FROM usuarios u
+    #    JOIN inscripciones i ON u.id_usuario = i.id_usuario
+    #    WHERE u.notificado = FALSE
+    #    LIMIT 1
+    #""")
     cur.execute("""
-        SELECT u.id_usuario, u.email, i.id_inscripcion
+        SELECT u.id_usuario, u.email, i.id_inscripcion, CONCAT(u.nombre,' ', u.apellido) as nom, c.nombre as cnombre
         FROM usuarios u
         JOIN inscripciones i ON u.id_usuario = i.id_usuario
-        WHERE u.notificado = FALSE
-        LIMIT 1
+		JOIN cursos c ON i.id_curso = c.id_curso
+		WHERE u.notificado = FALSE
+        LIMIT 10
     """)
     rows = cur.fetchall()
     cur.close()
     conn.close()
 
     # Retornar lista de diccionarios
-    estudiantes = [{"id_usuario": r[0], "email": r[1], "id_inscripcion": r[2]} for r in rows]
+    #estudiantes = [{"id_usuario": r[0], "email": r[1], "id_inscripcion": r[2]} for r in rows]
+    estudiantes = [{"id_usuario": r[0], "email": r[1], "id_inscripcion": r[2], "nombre":r[3], "curso":r[4]} for r in rows]
     return estudiantes
 
 
