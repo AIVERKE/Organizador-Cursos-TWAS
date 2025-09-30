@@ -186,38 +186,41 @@
 
   <script>
 
-    function formatDate(fecha) {
-      if (!fecha) return "";
-      const d = new Date(fecha);
-      if (isNaN(d)) return ""; // si no es parseable
-      return d.toISOString().split("T")[0];
+    function formatDate(dateString) {
+      if (!dateString) return "";
+      // Intenta crear una fecha. Es robusto y maneja varios formatos.
+      const date = new Date(dateString);
+      // Si la fecha no es válida, isNaN(date) será true.
+      if (isNaN(date)) return "";
+      // Formatea a YYYY-MM-DD
+      return date.toISOString().split('T')[0];
     }
     // Abrir modal y cargar datos
     function abrirModalEdit(estudianteJson) {
 
       if (!estudianteJson) {
-        console.error("⚠️ No se recibieron datos del estudiante");
+        console.error("No se recibieron datos del estudiante");
         return;
       }
-      const estudiante = JSON.parse(estudianteJson); // ahora sí un array bien formado
+      const estudiante = JSON.parse(estudianteJson);
       const modal = document.getElementById("modal-editar");
 
       // Llenar inputs con datos
-      document.getElementById("id_usuario").value = estudiante[0];
-      document.getElementById("nombre").value = estudiante[1];
-      document.getElementById("apellido").value = estudiante[2];
-      document.getElementById("email").value = estudiante[3];
+      document.getElementById("id_usuario").value = estudiante.id_usuario || "";
+      document.getElementById("nombre").value = estudiante.nombre || "";
+      document.getElementById("apellido").value = estudiante.apellido || "";
+      document.getElementById("email").value = estudiante.email || "";
       document.getElementById("contrasena").value = ""; // vacío para seguridad
-      document.getElementById("documento").value = estudiante[5];
-      document.getElementById("pais_origen").value = estudiante[6];
-      document.getElementById("id_rol").value = estudiante[7] || 3;
-      document.getElementById("fecha_nac").value = formatDate(estudiante[9]) || "";
-      document.getElementById("genero").value = estudiante[10] || "";
-      document.getElementById("pais_residencia").value = estudiante[11] || "";
-      document.getElementById("afiliacion_u").value = estudiante[12] || "";
-      document.getElementById("tipo_afiliacion").value = estudiante[13] || "";
-      document.getElementById("area_tematica").value = estudiante[14] || "";
-      document.getElementById("disciplina_cientifica").value = estudiante[15] || "";
+      document.getElementById("documento").value = estudiante.documento || "";
+      document.getElementById("pais_origen").value = estudiante.pais_origen || "";
+      document.getElementById("id_rol").value = estudiante.id_rol || 3;
+      document.getElementById("fecha_nac").value = formatDate(estudiante.fecha_nac) || "";
+      document.getElementById("genero").value = estudiante.genero || "";
+      document.getElementById("pais_residencia").value = estudiante.pais_residencia || "";
+      document.getElementById("afiliacion_u").value = estudiante.afiliacion_u || "";
+      document.getElementById("tipo_afiliacion").value = estudiante.tipo_afiliacion || "";
+      document.getElementById("area_tematica").value = estudiante.area_tematica || "";
+      document.getElementById("disciplina_cientifica").value = estudiante.disciplina_cientifica || "";
 
       // Mostrar modal
       modal.style.display = "flex";

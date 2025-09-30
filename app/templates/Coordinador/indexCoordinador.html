@@ -181,6 +181,15 @@
                 document.getElementById('pais_origen').value = data.pais_origen;
                 document.getElementById('id_rol').value = idRol;
 
+                //document.getElementById('fecha_nac').value = data.fecha_nac ? data.fecha_nac.split('T')[0] : '';
+                document.getElementById('fecha_nac').value = data.fecha_nac ? data.fecha_nac.split(' ')[0] : '';
+                document.getElementById('genero').value = data.genero;
+                document.getElementById('pais_residencia').value = data.pais_residencia;
+                document.getElementById('afiliacion_u').value = data.afiliacion_u;
+                document.getElementById('tipo_afiliacion').value = data.tipo_afiliacion;
+                document.getElementById('area_tematica').value = data.area_tematica;
+                document.getElementById('disciplina_cientifica').value = data.disciplina_cientifica;
+
                 document.getElementById('modal-editar').classList.add("activo");
               })
               .catch(err => alert("Error al obtener los datos: " + err.message));
