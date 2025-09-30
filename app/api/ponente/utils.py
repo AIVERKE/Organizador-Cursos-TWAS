@@ -187,8 +187,14 @@ def calcular_nota_asistencia(id_curso):
                 nota_asistencia = 1
             elif total_asistencias == 2:
                 nota_asistencia = 2
-            else:
+            elif total_asistencias == 3:
                 nota_asistencia = 5
+            elif total_asistencias == 4:
+                nota_asistencia = 6
+            elif total_asistencias == 5:
+                nota_asistencia = 7
+            else:
+                nota_asistencia = 10
 
             query_update = """
                 UPDATE notas
