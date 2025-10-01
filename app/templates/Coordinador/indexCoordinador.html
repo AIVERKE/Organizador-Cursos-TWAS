@@ -843,7 +843,7 @@ if (formEditar) {
         inicializarEventos();
         inicializarEventosCursos();    
         // Mostrar gráfico inicial
-        fetch("/cursos/estadisticas/inscritos")
+        fetch("/est_graf/estadisticas/inscritos")
         .then(res => res.json())
         .then(data => {
           if (data.success) {

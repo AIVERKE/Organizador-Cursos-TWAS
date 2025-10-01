@@ -127,29 +127,38 @@
     <span class="close" onclick="cerrarModalCrear()">&times;</span>
     <h3>Nuevo Expositor</h3>
     <form id="form-crear">
-      <label>Nombre:</label>
+      <label for="nombre_crear">Nombre:</label>
       <input type="text" id="nombre_crear" name="nombre" required><br>
-      <label>Apellido:</label>
+      <label for="apellido_crear">Apellido:</label>
       <input type="text" id="apellido_crear" name="apellido" required><br>
-      <label>Email:</label>
+      <label for="email_crear">Email:</label>
       <input type="email" id="email_crear" name="email" required><br>
-      <label>Contraseña:</label>
+      <label for="contrasena_crear">Contraseña:</label>
       <input type="password" id="contrasena_crear" name="contrasena" required><br>
-      <label>Documento:</label>
+      <label for="documento_crear">Documento:</label>
       <input type="text" id="documento_crear" name="documento" required><br>
-      <label>País de Origen:</label>
+      <label for="pais_origen_crear">País de Origen:</label>
       <input type="text" id="pais_origen_crear" name="pais_origen" required><br>
       <input type="hidden" name="id_rol" value="3">
       <label>Fecha de nacimiento:</label>
       <input type="date" id="fecha_nac_crear" name="fecha_nac" required><br>
-      <label>Género:</label>
-      <input type="text" id="genero_crear" name="genero" required><br>
+      <label for="genero_crear">Género:</label>
+      <select id="genero_crear" name="genero" required>
+        <option value="" disabled selected>Seleccione género</option>
+        <option value="male">Masculino</option>
+        <option value="female">Femenino</option>
+        <option value="other">Otro</option>
+      </select><br>
       <label>País de residencia:</label>
       <input type="text" id="pais_residencia_crear" name="pais_residencia" required><br>
       <label>Afiliacion con una universidad:</label>
       <input type="text" id="afiliacion_u_crear" name="afiliacion_u" required><br>
-      <label>Tipo de afiliacion:</label>
-      <input type="text" id="tipo_afiliacion_crear" name="tipo_afiliacion" required><br>
+      <label for="tipo_afiliacion_crear">Tipo de afiliacion:</label>
+      <select id="tipo_afiliacion_crear" name="tipo_afiliacion" required>
+        <option value="" disabled selected>Seleccione tipo</option>
+        <option value="public">Pública</option>
+        <option value="private">Privada</option>
+      </select><br>
       <label>Área tematica:</label>
       <input type="text" id="area_tematica_crear" name="area_tematica" required><br>
       <label>Disciplina cientifica:</label>
