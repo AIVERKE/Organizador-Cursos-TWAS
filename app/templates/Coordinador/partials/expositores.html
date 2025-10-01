@@ -101,16 +101,26 @@
       <label>País de Origen:</label>
       <input type="text" id="pais_origen" name="pais_origen"><br>
       <input type="hidden" id="id_rol" name="id_rol" value="3">
-<label>Fecha de nacimiento:</label>
+      <label>Fecha de nacimiento:</label>
       <input type="date" id="fecha_nac" name="fecha_nac"><br>
-      <label>Género:</label>
-      <input type="text" id="genero" name="genero"><br>
+      <label for="genero">Género:</label>
+      <select id="genero" name="genero" required>
+        <option value="" disabled selected>Seleccione género</option>
+        <option value="male">Masculino</option>
+        <option value="female">Femenino</option>
+        <option value="other">Otro</option>
+      </select><br>
+      
       <label>País de residencia:</label>
       <input type="text" id="pais_residencia" name="pais_residencia"><br>
       <label>Afiliacion con una universidad:</label>
       <input type="text" id="afiliacion_u" name="afiliacion_u"><br>
       <label>Tipo de afiliacion:</label>
-      <input type="text" id="tipo_afiliacion" name="tipo_afiliacion"><br>
+      <select id="tipo_afiliacion" name="tipo_afiliacion">
+        <option value="" disabled selected>Seleccione tipo</option>
+        <option value="public">Pública</option>
+        <option value="private">Privada</option>
+      </select><br>
       <label>Área tematica:</label>
       <input type="text" id="area_tematica" name="area_tematica"><br>
       <label>Disciplina cientifica:</label>
