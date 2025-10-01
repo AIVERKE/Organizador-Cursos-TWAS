@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Asistencia fuera de horario</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
   <style>
     * {
       box-sizing: border-box;
@@ -13,9 +13,9 @@
     }
 
     body {
-      font-family: 'Poppins', sans-serif;
+      font-family: 'Montserrat', sans-serif;
       line-height: 1.6;
-      background-color: #f4f7fb;
+      background-color: #f8f9fa;
       color: #333;
       display: flex;
       justify-content: center;
@@ -27,16 +27,22 @@
     .informacion {
       text-align: center;
       background: #fff;
-      max-width: 600px;
+      max-width: 500px;
       width: 100%;
       padding: 3rem 2rem;
       border-radius: 16px;
       box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
       animation: fadeIn 0.8s ease-in-out;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .informacion:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
     }
 
     .icono {
-      font-size: 3rem;
+      font-size: 60px;
       color: #e63946;
       margin-bottom: 1rem;
     }
@@ -49,7 +55,7 @@
     }
 
     .informacion p {
-      font-size: 1.1rem;
+      font-size: 1.2rem;
       color: #555;
       margin-bottom: 2rem;
     }
@@ -75,11 +81,58 @@
       from { opacity: 0; transform: translateY(10px); }
       to { opacity: 1; transform: translateY(0); }
     }
+
+    /* Responsivo */
+    @media (max-width: 768px) {
+      .informacion {
+        padding: 2.5rem 1.5rem;
+      }
+
+      .informacion h1 {
+        font-size: 1.6rem;
+      }
+
+      .informacion p {
+        font-size: 1.1rem;
+      }
+
+      .icono {
+        font-size: 50px;
+      }
+
+      .btn-volver {
+        padding: 0.8rem 1.8rem;
+        font-size: 0.95rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .informacion {
+        padding: 2rem 1rem;
+      }
+
+      .informacion h1 {
+        font-size: 1.4rem;
+      }
+
+      .informacion p {
+        font-size: 1rem;
+      }
+
+      .icono {
+        font-size: 40px;
+      }
+
+      .btn-volver {
+        padding: 0.7rem 1.5rem;
+        font-size: 0.9rem;
+      }
+    }
   </style>
 </head>
 <body>
   <section class="informacion">
-    <div class="icono"></div>
+    <div class="icono">❌</div>
     <h1>Asistencia fuera de horario</h1>
     <p>El registro de asistencia solo está disponible dentro del intervalo establecido para este curso.</p>
     <a class="btn-volver" href="{{ url_for('auth.dashboard') }}">Volver al inicio</a>
