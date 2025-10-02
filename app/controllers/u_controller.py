@@ -17,15 +17,34 @@ def obtener_usuarios(rol):
     return rows  # devuelve los datos a quien haya llamado esta función
 
 
+# def obtener_usuarios_id(rol, id):
+#     conn = get_connection()  # conecta a la base de datos
+#     cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+#     cursor.execute(
+#         "SELECT * FROM Usuarios WHERE id_rol = %s and id_usuario=%s", (rol, id)
+#     )  # consulta SQL directa
+#     rows = cursor.fetchall()  # obtiene todos los resultados en una lista
+#     conn.close()  # cierra la conexión
+#     return rows  # devuelve los datos a quien haya llamado esta función
+
 def obtener_usuarios_id(rol, id):
-    conn = get_connection()  # conecta a la base de datos
+    conn = get_connection()
     cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-    cursor.execute(
-        "SELECT * FROM Usuarios WHERE id_rol = %s and id_usuario=%s", (rol, id)
-    )  # consulta SQL directa
-    rows = cursor.fetchall()  # obtiene todos los resultados en una lista
-    conn.close()  # cierra la conexión
-    return rows  # devuelve los datos a quien haya llamado esta función
+    cursor.execute("SELECT * FROM Usuarios WHERE id_rol = %s and id_usuario=%s", (rol, id))
+    rows = cursor.fetchall()
+    conn.close()
+    if rows:
+        r = rows[0]
+        fn = r.get("fecha_nac")
+        # Convierte date/datetime a 'YYYY-MM-DD'
+        if fn:
+            try:
+                r["fecha_nac"] = fn.isoformat()[:10]
+            except Exception:
+                r["fecha_nac"] = str(fn)[:10]
+        return [r]
+    return []
+
 
 
 # --- Usuarios Estudiantes
@@ -53,78 +72,129 @@ def obtener_estudiante(id_usuario):
 
 
 # ----cambio 1
-def actualizar_estudiante(id_usuario,nombre,apellido,email,contrasena,documento,pais_origen,id_rol,fecha_nac,genero,pais_residencia,afiliacion_u,tipo_afiliacion,area_tematica,disciplina_cientifica):
-    query = """
-        UPDATE public.usuarios
-        SET nombre = %s,
-            apellido = %s,
-            email = %s,
-            documento = %s,
-            pais_origen = %s,
-            id_rol = %s,
-            fecha_nac = %s,
-            genero = %s,
-            pais_residencia = %s,
-            afiliacion_u = %s,
-            tipo_afiliacion = %s,
-            area_tematica = %s,
-            disciplina_cientifica = %s
-        WHERE id_usuario = %s
-    """
-    values = [
-        nombre,
-        apellido,
-        email,
-        documento,
-        pais_origen,
-        id_rol,
-        fecha_nac,
-        genero,
-        pais_residencia,
-        afiliacion_u,
-        tipo_afiliacion,
-        area_tematica,
-        disciplina_cientifica,
-        id_usuario,
-    ]
+# def actualizar_estudiante(id_usuario,nombre,apellido,email,contrasena,documento,pais_origen,id_rol,fecha_nac,genero,pais_residencia,afiliacion_u,tipo_afiliacion,area_tematica,disciplina_cientifica):
+#     query = """
+#         UPDATE public.usuarios
+#         SET nombre = %s,
+#             apellido = %s,
+#             email = %s,
+#             documento = %s,
+#             pais_origen = %s,
+#             id_rol = %s,
+#             fecha_nac = %s,
+#             genero = %s,
+#             pais_residencia = %s,
+#             afiliacion_u = %s,
+#             tipo_afiliacion = %s,
+#             area_tematica = %s,
+#             disciplina_cientifica = %s
+#         WHERE id_usuario = %s
+#     """
+#     values = [
+#         nombre,
+#         apellido,
+#         email,
+#         documento,
+#         pais_origen,
+#         id_rol,
+#         fecha_nac,
+#         genero,
+#         pais_residencia,
+#         afiliacion_u,
+#         tipo_afiliacion,
+#         area_tematica,
+#         disciplina_cientifica,
+#         id_usuario,
+#     ]
 
-    # --- Rama con cambio de contraseña ---
+#     # --- Rama con cambio de contraseña ---
+#     if contrasena and contrasena.strip():
+#         query = """
+#             UPDATE public.usuarios
+#             SET nombre = %s,
+#                 apellido = %s,
+#                 email = %s,
+#                 contrasena = %s,
+#                 documento = %s,
+#                 pais_origen = %s,
+#                 id_rol = %s,
+#                 fecha_nac = TO_DATE(%s, 'YYYY-MM-DD'),
+#                 genero = %s,
+#                 pais_residencia = %s,
+#                 afiliacion_u = %s,
+#                 tipo_afiliacion = %s,
+#                 area_tematica = %s,
+#                 disciplina_cientifica = %s
+#             WHERE id_usuario = %s
+#         """
+#         hashed = generate_password_hash(contrasena)
+#         values = [
+#             nombre,
+#             apellido,
+#             email,
+#             hashed,
+#             documento,
+#             pais_origen,
+#             id_rol,
+#             fecha_nac,
+#             genero,
+#             pais_residencia,
+#             afiliacion_u,
+#             tipo_afiliacion,
+#             area_tematica,
+#             disciplina_cientifica,
+#             id_usuario,
+#         ]
+
+#     conn = get_connection()
+#     try:
+#         with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cursor:
+#             cursor.execute(query, values)
+#         conn.commit()
+#     finally:
+#         conn.close()
+
+
+def actualizar_estudiante(id_usuario, nombre, apellido, email, contrasena, documento, pais_origen, id_rol, fecha_nac, genero, pais_residencia, afiliacion_u, tipo_afiliacion, area_tematica, disciplina_cientifica):
+    base_set = """
+        nombre = %s,
+        apellido = %s,
+        email = %s,
+        documento = %s,
+        pais_origen = %s,
+        id_rol = %s,
+        fecha_nac = TO_DATE(%s, 'YYYY-MM-DD'),
+        genero = %s,
+        pais_residencia = %s,
+        afiliacion_u = %s,
+        tipo_afiliacion = %s,
+        area_tematica = %s,
+        disciplina_cientifica = %s
+    """
+
     if contrasena and contrasena.strip():
-        query = """
+        hashed = generate_password_hash(contrasena)
+        query = f"""
             UPDATE public.usuarios
-            SET nombre = %s,
-                apellido = %s,
-                email = %s,
-                contrasena = %s,
-                documento = %s,
-                pais_origen = %s,
-                id_rol = %s,
-                fecha_nac = TO_DATE(%s, 'YYYY-MM-DD'),
-                genero = %s,
-                pais_residencia = %s,
-                afiliacion_u = %s,
-                tipo_afiliacion = %s,
-                area_tematica = %s,
-                disciplina_cientifica = %s
+            SET {base_set},
+                contrasena = %s
             WHERE id_usuario = %s
         """
-        hashed = generate_password_hash(contrasena)
         values = [
-            nombre,
-            apellido,
-            email,
-            hashed,
-            documento,
-            pais_origen,
-            id_rol,
-            fecha_nac,
-            genero,
-            pais_residencia,
-            afiliacion_u,
-            tipo_afiliacion,
-            area_tematica,
-            disciplina_cientifica,
-            id_usuario,
+            nombre, apellido, email, documento, pais_origen, id_rol, fecha_nac, genero,
+            pais_residencia, afiliacion_u, tipo_afiliacion, area_tematica, disciplina_cientifica,
+            hashed, id_usuario
+        ]
+    else:
+        query = f"""
+            UPDATE public.usuarios
+            SET {base_set}
+            WHERE id_usuario = %s
+        """
+        values = [
+            nombre, apellido, email, documento, pais_origen, id_rol, fecha_nac, genero,
+            pais_residencia, afiliacion_u, tipo_afiliacion, area_tematica, disciplina_cientifica,
+            id_usuario
         ]
 
     conn = get_connection()
@@ -134,6 +204,8 @@ def actualizar_estudiante(id_usuario,nombre,apellido,email,contrasena,documento,
         conn.commit()
     finally:
         conn.close()
+
+
 
 
 # ------------------------------Cambio2-----------------------------------------

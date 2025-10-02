@@ -108,6 +108,24 @@
     document.getElementById("modal-estudiantes").style.display = "none";
   }
   </script>
+
+  <script>
+function toDateInputValue(src) {
+  if (!src) return '';
+  if (typeof src === 'number') { // epoch ms
+    try { return new Date(src).toISOString().slice(0,10); } catch(_) { return ''; }
+  }
+  const s = String(src).trim();
+  let m = s.match(/^(\d{4})-(\d{2})-(\d{2})/); // YYYY-MM-DD...
+  if (m) return `${m[1]}-${m[2]}-${m[3]}`;
+  m = s.match(/^(\d{1,2})[\/-](\d{1,2})[\/-](\d{4})$/); // DD/MM/YYYY o D-M-YYYY
+  if (m) return `${m[3]}-${m[2].padStart(2,'0')}-${m[1].padStart(2,'0')}`;
+  const d = new Date(s);
+  return isNaN(d.getTime()) ? '' : d.toISOString().slice(0,10);
+}
+
+</script>
+
     <script>
 
 
@@ -181,8 +199,8 @@
                 document.getElementById('pais_origen').value = data.pais_origen;
                 document.getElementById('id_rol').value = idRol;
 
-                //document.getElementById('fecha_nac').value = data.fecha_nac ? data.fecha_nac.split('T')[0] : '';
-                document.getElementById('fecha_nac').value = data.fecha_nac ? data.fecha_nac.split(' ')[0] : '';
+                // document.getElementById('fecha_nac').value = data.fecha_nac ? data.fecha_nac.split(' ')[0] : '';
+                // document.getElementById('fecha_nac').value = toDateInputValue(data.fecha_nac);
                 document.getElementById('genero').value = data.genero;
                 document.getElementById('pais_residencia').value = data.pais_residencia;
                 document.getElementById('afiliacion_u').value = data.afiliacion_u;
