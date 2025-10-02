@@ -37,22 +37,21 @@
 
       <div class="collapse navbar-collapse" id="navMain">
         <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
-          <li class="nav-item"><a class="nav-link fw-semibold" href="#inicioid">
+          <li class="nav-item"><a class="nav-link fw-semibold" href="{{ url_for('home.index') }}#inicioid">
             <span class="i18n i18n-es">Inicio</span><span class="i18n i18n-en">Home</span>
           </a></li>
-          <li class="nav-item"><a class="nav-link fw-semibold" href="#informacionid">
+          <li class="nav-item"><a class="nav-link fw-semibold" href="{{ url_for('home.index') }}#informacionid">
             <span class="i18n i18n-es">Información</span><span class="i18n i18n-en">Information</span>
           </a></li>
-          <li class="nav-item"><a class="nav-link fw-semibold" href="#nosotrosid">
+          <li class="nav-item"><a class="nav-link fw-semibold" href="{{ url_for('home.index') }}#nosotrosid">
             <span class="i18n i18n-es">Organizacion</span><span class="i18n i18n-en">Organization</span>
           </a></li>
-          <li class="nav-item"><a class="nav-link fw-semibold" href="#ubicacionid">
+          <li class="nav-item"><a class="nav-link fw-semibold" href="{{ url_for('home.index') }}#ubicacionid">
             <span class="i18n i18n-es">Ubicación</span><span class="i18n i18n-en">Location</span>
           </a></li>
-          <li class="nav-item"><a class="nav-link fw-semibold" href="#footerid">
+          <li class="nav-item"><a class="nav-link fw-semibold" href="{{ url_for('home.index') }}#footerid">
             <span class="i18n i18n-es">Contacto</span><span class="i18n i18n-en">Contact</span>
           </a></li>
-
         </ul>
 
         <div class="d-flex align-items-center gap-2">
@@ -68,11 +67,11 @@
             <a href="{{ url_for('ins.index') }}" class="btn btn-outline-primary btn-sm"> 
                 <span class="i18n i18n-es">Asistencia</span><span class="i18n i18n-en">Attendance</span>
             </a>
-
-            -->
+                -->
             <a href="{{ url_for('auth.login') }}" class="btn btn-outline-primary btn-sm">
                 <span class="i18n i18n-es">Iniciar Sesión</span><span class="i18n i18n-en">Login</span>
             </a>
+            
 
           <!-- Logo UMSA y FCPN -->
           <a href="https://www.fcpn.edu.bo/" class="ms-1">

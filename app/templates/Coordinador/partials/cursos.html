@@ -24,9 +24,9 @@
       <!-- <td data-label="N °">{{ curso.id_curso }}</td> -->
       <td data-label="N °">{{ loop.index }}</td>
       <td data-label="Nombres">
-          <a href="{{ url_for('qrs.asistencias_coordinador') }}?curso_id={{ curso.id_curso }}" class="btn-bonito">
-            {{ curso.nombre }}
-          </a>
+            <a href="#" class="btn-bonito">
+              {{ curso.nombre }}
+            </a>
           <br>
           <br>
           <span id="pin-{{ curso.id_curso }}" class="text-warning small">
@@ -78,9 +78,9 @@
         </svg>
           </button>
 
-        <button class="btn btn-info" onclick="verAsistencias({{ curso.id_curso }})" title="Ver Asistencias">
+        <a href="{{ url_for('qrs.asistencias_coordinador') }}?curso_id={{ curso.id_curso }}" class="btn-bonito">
           Asistencias
-        </button>
+        </a>
 
         <div class="acciones-horario mt-2">
           <form method="POST" action="{{ url_for('qrs.actualizar_horario_asistencia', curso_id=curso.id_curso) }}">
