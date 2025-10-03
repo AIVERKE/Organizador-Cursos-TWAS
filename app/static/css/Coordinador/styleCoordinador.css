@@ -414,6 +414,7 @@ button:hover,
   height: 100%;
   background: rgba(0, 0, 0, 0.5);
   z-index: 1000;
+  backdrop-filter: blur(5px);
   animation: modalBg 0.3s ease;
 }
 
@@ -441,6 +442,7 @@ button:hover,
   border: none;
   z-index: 1001;
   position: relative; /* Añadido para posicionar el botón cerrar */
+  transform-origin: center;
 }
 
 @keyframes modalAppear {
@@ -508,6 +510,13 @@ button:hover,
 .close:hover {
   color: var(--danger-color);
   background: rgba(220, 53, 69, 0.1);
+}
+
+.modificado {
+  box-shadow: 0 0 5px var(--primary-light);
+  background-color: var(--border-color);
+  font-weight: 600;  
+  transition: background-color 0.9s, font-weight 0.9s;
 }
 
 /* ==================== */
