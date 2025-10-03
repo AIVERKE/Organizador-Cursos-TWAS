@@ -94,7 +94,7 @@ def registrar():
         conn = get_connection()
         cursor = conn.cursor()
 
-        # 📌 Obtener horario de asistencia del curso
+        # Obtener horario del curso
         cursor.execute(
             """
             SELECT c.hora_inicio_asistencia, c.hora_fin_asistencia
@@ -109,7 +109,6 @@ def registrar():
         if horarios:
             hora_inicio, hora_fin = horarios
 
-            # Validar horario solo si existen valores
             if hora_inicio and hora_fin:
                 fecha_hoy = hora_registro.date()
                 hora_inicio_dt = datetime.combine(fecha_hoy, hora_inicio)
@@ -127,15 +126,17 @@ def registrar():
                         400,
                     )
 
-        # 📌 Verificar duplicado en el mismo día
+        # 📌 Verificar cuántas asistencias ya hay hoy
         cursor.execute(
             """
-            SELECT 1 FROM asistencias
+            SELECT COUNT(*) FROM asistencias
             WHERE id_inscripcion = %s AND DATE(fecha) = CURRENT_DATE
             """,
             (id_inscripcion,),
         )
-        if cursor.fetchone():
+        asistencias_hoy = cursor.fetchone()[0]
+
+        if asistencias_hoy >= 2:
             conn.close()
             return (
                 render_template(
@@ -144,7 +145,7 @@ def registrar():
                 200,
             )
 
-        # 📌 Insertar asistencia
+        # 📌 Insertar nueva asistencia
         cursor.execute(
             """
             INSERT INTO asistencias (id_inscripcion, fecha, presente)
@@ -159,7 +160,6 @@ def registrar():
 
     except Exception as e:
         return f"Error al registrar la asistencia: {str(e)}", 500
-
 
 @qrs_bp.route("/actualizar_horario_asistencia/<int:curso_id>", methods=["POST"])
 @login_required

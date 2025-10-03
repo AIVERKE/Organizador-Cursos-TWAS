@@ -92,6 +92,13 @@
           input.value = input.defaultValue;
           return;
       }
+      if (campo === 'nota_acumulada' && nuevoValor < 0){
+          alert("La nota no puede ser menor a 0.");
+          input.value = input.defaultValue;
+          return;
+      }
+
+
 
       const tr = input.closest("tr");
       const id_inscripcion = tr.getAttribute("data-id-inscripcion");
