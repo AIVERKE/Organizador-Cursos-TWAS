@@ -172,7 +172,7 @@
                 return response.json();
               })
               .then(data => {
-                console.log(data)
+                //console.log(data)
                 document.getElementById('id_usuario').value = data.id_usuario;
                 document.getElementById('nombre').value = data.nombre;
                 document.getElementById('apellido').value = data.apellido;
@@ -195,6 +195,7 @@
                 document.getElementById('disciplina_cientifica').value = data.disciplina_cientifica;
                 
                 document.getElementById('modal-editar').classList.add("activo");
+                subEventosEdit();
               })
               .catch(err => alert("Error al obtener los datos: " + err.message));
           });
@@ -236,66 +237,92 @@
         //   });
         // }
 
-//Modifique estas vistas qlias y ahora estoy escuchando sabrina carpenter
+        //Modifique estas vistas qlias y ahora estoy escuchando sabrina carpenter
+        function subEventosEdit(){
+          const formEditar = document.getElementById('form-editar');
+          const editBtn = document.getElementById('btn-toggle-modo');
+          const btnGuardar = document.getElementById('btn-guardar');
 
-// Envío editar
-const formEditar = document.getElementById('form-editar');
-if (formEditar) {
-  formEditar.addEventListener('submit', async function (e) {
-    e.preventDefault();
+          if (!formEditar || !editBtn || !btnGuardar) return;
 
-    const id = document.getElementById('id_usuario').value;
-    const idRol = document.getElementById('id_rol').value; // ya lo pones en 3
+          // Arranca en modo lectura (inputs bloqueados)
+          formEditar.querySelectorAll("input, select, textarea").forEach(el => {
+            el.disabled = true;
+          });
+          formEditar.classList.add("modo-lectura");
+          editBtn.textContent = "Editar datos";
+          btnGuardar.style.display = "none"; 
 
-    const payload = {
-      nombre: document.getElementById('nombre').value.trim(),
-      apellido: document.getElementById('apellido').value.trim(),
-      email: document.getElementById('email').value.trim(),
-      contrasena: (document.getElementById('contrasena').value || '').trim() || null,
-      documento: document.getElementById('documento').value.trim(),
-      pais_origen: document.getElementById('pais_origen').value.trim(),
-      id_rol: idRol,
-      // ---- campos que pedía el backend ----
-      fecha_nac: document.getElementById('fecha_nac').value || null,
-      genero: document.getElementById('genero').value.trim(),
-      pais_residencia: document.getElementById('pais_residencia').value.trim(),
-      afiliacion_u: document.getElementById('afiliacion_u').value.trim(),
-      tipo_afiliacion: document.getElementById('tipo_afiliacion').value.trim(),
-      area_tematica: document.getElementById('area_tematica').value.trim(),
-      disciplina_cientifica: document.getElementById('disciplina_cientifica').value.trim()
-    };
+          editBtn.onclick = function () {
+            const isReadonly = formEditar.classList.contains("modo-lectura");
 
-    try {
-      const resp = await fetch(`/usuarios/coor/estudiantes/${id}`, {
-        method: 'PUT',                       // tu ruta acepta PUT
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',              // manda cookie de sesión
-        body: JSON.stringify(payload)
-      });
+            formEditar.querySelectorAll("input, select, textarea").forEach(el => {
+              el.disabled = !isReadonly;
+              btnGuardar.style.display = isReadonly ? "inline-block" : "none";
+            });
 
-      const ct = resp.headers.get('content-type') || '';
-      const raw = await resp.text();
+            formEditar.classList.toggle("modo-lectura", !isReadonly);
+            this.textContent = isReadonly ? "Bloquear edición" : "Editar datos";
+          };
+        }
+        // Envío editar
+        const formEditar = document.getElementById('form-editar');
+        if (formEditar) {
+          formEditar.addEventListener('submit', async function (e) {
+            e.preventDefault();
 
-      if (!ct.includes('application/json')) {
-        // HTML => seguramente error/redirect
-        alert(`Respuesta no JSON (${resp.status}).\n` + raw.slice(0,200));
-        return;
-      }
+            const id = document.getElementById('id_usuario').value;
+            const idRol = document.getElementById('id_rol').value; // ya lo pones en 3
 
-      const data = JSON.parse(raw);
-      if (!resp.ok) {
-        alert(data.error || `Error ${resp.status}`);
-        return;
-      }
+            const payload = {
+              nombre: document.getElementById('nombre').value.trim(),
+              apellido: document.getElementById('apellido').value.trim(),
+              email: document.getElementById('email').value.trim(),
+              contrasena: (document.getElementById('contrasena').value || '').trim() || null,
+              documento: document.getElementById('documento').value.trim(),
+              pais_origen: document.getElementById('pais_origen').value.trim(),
+              id_rol: idRol,
+              // ---- campos que pedía el backend ----
+              fecha_nac: document.getElementById('fecha_nac').value || null,
+              genero: document.getElementById('genero').value.trim(),
+              pais_residencia: document.getElementById('pais_residencia').value.trim(),
+              afiliacion_u: document.getElementById('afiliacion_u').value.trim(),
+              tipo_afiliacion: document.getElementById('tipo_afiliacion').value.trim(),
+              area_tematica: document.getElementById('area_tematica').value.trim(),
+              disciplina_cientifica: document.getElementById('disciplina_cientifica').value.trim()
+            };
 
-      alert('Estudiante actualizado correctamente.');
-      cerrarModalEdit();
-      showSection('usuarios/coor/estudiantes');
-    } catch (err) {
-      alert('Error al actualizar: ' + err.message);
-    }
-  });
-}
+            try {
+              const resp = await fetch(`/usuarios/coor/estudiantes/${id}`, {
+                method: 'PUT',                       // tu ruta acepta PUT
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',              // manda cookie de sesión
+                body: JSON.stringify(payload)
+              });
+
+              const ct = resp.headers.get('content-type') || '';
+              const raw = await resp.text();
+
+              if (!ct.includes('application/json')) {
+                // HTML => seguramente error/redirect
+                alert(`Respuesta no JSON (${resp.status}).\n` + raw.slice(0,200));
+                return;
+              }
+
+              const data = JSON.parse(raw);
+              if (!resp.ok) {
+                alert(data.error || `Error ${resp.status}`);
+                return;
+              }
+
+              alert('Estudiante actualizado correctamente.');
+              cerrarModalEdit();
+              showSection(`usuarios/coor/${tipo}`);
+            } catch (err) {
+              alert('Error al actualizar: ' + err.message);
+            }
+          });
+        }
         // Crear usuario
         document.querySelectorAll('.create-btn').forEach(btn => {
           btn.addEventListener("click", function () {
@@ -500,7 +527,7 @@ if (formEditar) {
 
                 // Mostrar modal
                 document.getElementById('modal-info').classList.add('activo');
-                console.log(data);
+                //console.log(data);
               })
               .catch(error => {
                 console.error("Error al obtener datos del servidor:", error);
