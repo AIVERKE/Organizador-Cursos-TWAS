@@ -242,27 +242,58 @@
           const formEditar = document.getElementById('form-editar');
           const editBtn = document.getElementById('btn-toggle-modo');
           const btnGuardar = document.getElementById('btn-guardar');
+          const btnCancelar = document.getElementById('btn-cancel');
 
-          if (!formEditar || !editBtn || !btnGuardar) return;
-
+          if(!formEditar || !editBtn || !btnGuardar || !btnCancelar) return;
+          let isReadonly = true;
           // Arranca en modo lectura (inputs bloqueados)
           formEditar.querySelectorAll("input, select, textarea").forEach(el => {
-            el.disabled = true;
+            if(el.type !== 'hidden') {
+              el.dataset.original = el.value || '';
+              el.classList.remove('modificado');
+              el.disabled = true;
+            }
           });
-          formEditar.classList.add("modo-lectura");
+
           editBtn.textContent = "Editar datos";
-          btnGuardar.style.display = "none"; 
+          btnGuardar.style.display = "none";
+          btnCancelar.style.display = "none";
 
           editBtn.onclick = function () {
-            const isReadonly = formEditar.classList.contains("modo-lectura");
+            isReadonly = !isReadonly;
 
             formEditar.querySelectorAll("input, select, textarea").forEach(el => {
-              el.disabled = !isReadonly;
-              btnGuardar.style.display = isReadonly ? "inline-block" : "none";
+              if (el.type !== 'hidden') el.disabled = isReadonly;
             });
 
-            formEditar.classList.toggle("modo-lectura", !isReadonly);
-            this.textContent = isReadonly ? "Bloquear edición" : "Editar datos";
+            btnGuardar.style.display = isReadonly ? "none" : "inline-block";
+            btnCancelar.style.display = isReadonly ? "none" : "inline-block";
+
+            this.textContent = isReadonly ? "Editar datos" : "Bloquear edición";
+          };
+
+          formEditar.querySelectorAll('input, select, textarea').forEach(el => {
+            el.addEventListener('input', () => {
+              if(el.value !== el.dataset.original) {
+                el.classList.add('modificado');
+              } else {
+                el.classList.remove('modificado');
+              }
+            });
+          });
+          // cancelar edicion
+          btnCancelar.onclick = () => {
+            formEditar.querySelectorAll('input, select, textarea').forEach(el => {
+              if(el.type !== 'hidden') {
+                el.value = el.dataset.original; // restaurar valor original
+                el.classList.remove('modificado');
+                el.disabled = true; // volver a modo lectura
+              }
+            });
+            isReadonly = true;
+            editBtn.textContent = "Editar datos";
+            btnGuardar.style.display = "none";
+            btnCancelar.style.display = "none";
           };
         }
         // Envío editar
@@ -879,6 +910,11 @@
         const modal = document.getElementById("modal-mail");
         if (modal) modal.classList.remove("activo");
       }
+      window.onclick = function(event) {
+        if (event.target.classList.contains('modal')) {
+          event.target.classList.remove('activo');
+        }
+      };
       document.addEventListener("DOMContentLoaded", () => { 
         inicializarEventos();
         inicializarEventosCursos();    
