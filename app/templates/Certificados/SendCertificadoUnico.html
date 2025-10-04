@@ -1,18 +1,21 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8" />
   <title>Enviar Certificado</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/certificados/enviar_certificado.css') }}">
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;600&display=swap"
+    rel="stylesheet">
 </head>
+
 <body>
 
   <header>
     <img src="{{ url_for('static', filename='images/TWAS_Logo.webp') }}" alt="Logo UNESCO" class="logo">
-    
+
     <div class="titulo">GESTIÓN COORDINADOR</div>
-    
+
     <div class="botones-header">
       <button onclick="location.href='/auth/dashboard'">Coordinador</button>
       <button onclick="location.href='/auth/logout'">Cerrar Sesión</button>
@@ -22,7 +25,7 @@
   </header>
 
   <main class="contenido">
-    
+
     <div class="info-izquierda">
       <a href="javascript:history.back()" class="volver">←</a>
       <p class="enviar-a">Enviar Certificado a:<br> <strong>{{ student }} {{ apellido }}</strong></p>
@@ -33,30 +36,41 @@
 
     <form method="POST" class="formulario">
       <label for="asunto">Asunto:</label>
-      <input type="text" id="asunto" name="asunto" required
-             value="{{ asunto|default('Tu certificado generado') }}">
+      <input type="text" id="asunto" name="asunto" required value="{{ asunto|default('Tu certificado generado') }}">
 
       <label for="mensaje">Cuerpo</label>
-      <textarea id="mensaje" name="mensaje" rows="10" required>{{ mensaje|default('Hola, adjuntamos tu certificado.') }}</textarea>
+      <textarea id="mensaje" name="mensaje" rows="10"
+        required>{{ mensaje|default('Hola, adjuntamos tu certificado.') }}</textarea>
 
       <button type="submit" class="boton-enviar">Enviar Certificado</button>
     </form>
 
-    
+
   </main>
-    <!-- Bloque de mensajes flash -->
-    {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-        {% set last_message = messages[-1] %}
-        <center>
-        <strong>
-        <div class="flash-message {{ last_message[0] }}">
-          {{ last_message[1] }}
-        </div>
-        </strong>
-        </center>
-      {% endif %}
-    {% endwith %}    
-    <!-- Fin bloque de mensajes flash -->
+  <!-- Bloque de mensajes flash -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+  {% set last_message = messages[-1] %}
+  <center>
+    <strong>
+      <div class="flash-message {{ last_message[0] }}">
+        {{ last_message[1] }}
+      </div>
+    </strong>
+  </center>
+  {% endif %}
+  {% endwith %}
+  <!-- Fin bloque de mensajes flash -->
+
+  <script>
+    document.querySelector("form").addEventListener("submit", function () {
+      let asunto = document.getElementById("asunto");
+      let mensaje = document.getElementById("mensaje");
+      asunto.value = asunto.value.replace(/\u00A0/g, " ");
+      mensaje.value = mensaje.value.replace(/\u00A0/g, " ");
+    });
+  </script>
+
 </body>
+
 </html>
