@@ -111,7 +111,9 @@ def obtener_inscripciones_usuario(id_usuario):
 
         cursor.close()
         print(" Cursor cerrado")
-
+        
+        print (rows)
+        
         return rows
 
     except Exception as e:
