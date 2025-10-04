@@ -24,6 +24,7 @@ def index():
         "Expositor/expositor.html",
         nombre=current_user.nombre,
         apellido=current_user.apellido,
+        id_usuario_c=current_user.id_usuario
     )
 
 

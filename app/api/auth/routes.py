@@ -58,6 +58,7 @@ def dashboard():
             "Expositor/expositor.html",
             nombre=current_user.nombre,
             apellidos=current_user.apellido,
+            id_usuario_c=current_user.id_usuario
         )
     if current_user.id_rol == 3:
         return redirect(

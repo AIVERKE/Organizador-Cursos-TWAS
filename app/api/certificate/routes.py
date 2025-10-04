@@ -174,7 +174,7 @@ def generar_certificados(rol_boton):
 
 @certificate_bp.route("/descargar-certificado/<int:user_id>")
 @login_required
-@role_required(1, 3, 4)
+@role_required(1, 2, 3, 4)
 def descargar_certificado(user_id):
     base_dir = os.path.dirname(os.path.abspath(__file__))
     folder = os.path.join(base_dir, "temp_certificates")
@@ -841,9 +841,20 @@ def verificar(search):
 
 
 @certificate_bp.route("/listar-certificados/<int:id_usuario>")
+@login_required
+@role_required(3)
 def listar_certificados_estudiantes(id_usuario):
     inscripciones = utils.get_inscripciones(id_usuario)        
     return  render_template("Estudiante/certificados.html", inscripciones = inscripciones, id_usuario=id_usuario)
+
+@certificate_bp.route("/listar-certificados-docente/<int:id_usuario>")
+@login_required
+@role_required(2)
+def listar_certificados_docente(id_usuario):
+    cursos = utils.get_cursos(id_usuario)
+    return render_template(
+        "Expositor/certificados.html", cursos=cursos, id_usuario=id_usuario
+    )
 
 def clean_text(text):
     if not text:

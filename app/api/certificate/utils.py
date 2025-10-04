@@ -32,6 +32,19 @@ def get_inscripciones(id_usuario):
         resultado = conn.execute(query, {"id_usuario": id_usuario}).fetchall()
     return resultado    
 
+def get_cursos(id_usuario):
+    with db.engine.connect() as conn:
+        query = text(
+            """
+            SELECT c.nombre as nombre_curso, c.id_curso 
+            FROM usuarios u 
+            JOIN cursos c ON u.id_usuario = c.id_ponente
+            WHERE id_usuario = :id_usuario;
+            """ 
+        )
+        resultado = conn.execute(query, {"id_usuario": id_usuario}).fetchall()
+    return resultado
+
 import re
 import unicodedata
 
