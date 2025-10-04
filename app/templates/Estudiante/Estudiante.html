@@ -6,7 +6,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Gestión Estudiante</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/Estudiante/styleEstudiantes.css') }}">
-  <!--pendiente a editar si es necesario-->
   <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;600&display=swap"
     rel="stylesheet">
   <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/Coordinador/styleRxls.css') }}"> -->
@@ -14,9 +13,6 @@
 </head>
 
 <body>
-
-  <!-- DEBUG -->
-  <!-- <p>{{ url_for('auth.cursos_estudiante') }}</p> -->
 
   <!-- Top bar -->
   <div class="top-bar">
@@ -42,41 +38,20 @@
     <!-- Sidebar -->
     <aside class="sidebar">
       <h2>BIENVENIDO</h2>
-      <h3>
-
-        <!--
-  {{ estudiante[1] | upper }}<br>
-  {{ estudiante[2] | upper }}
-        -->
-      </h3>
+      <h3>{{ estudiante.nombre }} {{ estudiante.apellido }}</h3>
       <p>Funciones</p>
       <ul class="menu">
         <li><a href="#" class="activo" onclick="mostrarSeccion('datos')">Datos Personales</a></li>
-        <!-- <li><a href="#" onclick="mostrarIframe('Curso.html', this)">Curso</a></li>     de momento agrego otro similar abajo para no arruinar esta linea xd-->
-
-
-        <!-- la wbda de aca arriba dice tener un error, pero no tiene ningno, el programa funciona de todas formas -->
-
-        <!-- Curso oculto porque no muestra información relevante de las plantillas -->
-        <!-- <li>
-          <a href="#" onclick="mostrarIframe('{{ url_for('auth.cursos_estudiante')}}', this)">Curso</a> 
-        </li> -->
-
-
-        <li><a href="#"
-            onclick="mostrarIframe('{{ url_for('qrs.ver_asistencias', id_usuario=estudiante[0]) }}', this)">Mis
-            Asistencias</a></li>
-        <!--
-        <li><a href="#"
-            onclick="mostrarIframe('{{ url_for('certificate.listar_certificados_estudiantes', id_usuario=estudiante[0] ) }}', this)">Mis
-            Certificados</a></li>
-        -->
+        <li>
+          <a href="#"
+            onclick="mostrarIframe('{{ url_for('qrs.ver_asistencias', id_usuario=estudiante.id_usuario) }}', this)">Mis
+            Asistencias</a>
+        </li>
       </ul>
     </aside>
 
     <!-- Contenido -->
     <main class="contenido">
-      <!-- Datos personales por defecto -->
       <div id="seccion-datos" class="datos-container">
         <div class="datos-content">
           <form method="GET" action="">
@@ -84,29 +59,21 @@
               onclick="abrirModalEdit(this.dataset.estudiante)">
               Editar Datos
             </button>
-
           </form>
           <div class="info-estudiante">
-            <!-- <input class="input-info" value="Nombre" readonly />
-            <input class="input-info" value="Identificación" readonly />
-            <input class="input-info" value="Género" readonly />
-            <input class="input-info" value="Edad" readonly />
-            <input class="input-info" value="Nacionalidad" readonly /> -->
-
-            <input class="input-info" value="Nombre Completo: {{ estudiante[1]}} {{ estudiante[2]}}" readonly />
-            <input class="input-info" value="Documento: {{ estudiante[5] }}" readonly />
-            <input class="input-info" value="Email: {{ estudiante[3]}}" readonly>
-            <!-- <input class="input-info" value="(coloca género aquí)" readonly />
-            <input class="input-info" value="(edad o calcula)" readonly /> -->
-            <input class="input-info" value="Pais Origen: {{ estudiante[6] }}" readonly />
-            <input class="input-info" value="Pais Residencia: {{ estudiante[11] }}" readonly />
+            <input class="input-info" value="Nombre Completo: {{ estudiante.nombre }} {{ estudiante.apellido }}"
+              readonly />
+            <input class="input-info" value="Documento: {{ estudiante.documento }}" readonly />
+            <input class="input-info" value="Email: {{ estudiante.email }}" readonly>
+            <input class="input-info" value="Pais Origen: {{ estudiante.pais_origen }}" readonly />
+            <input class="input-info" value="Pais Residencia: {{ estudiante.pais_residencia }}" readonly />
           </div>
           <div class="qr-container">
             {% if qr_path %}
             <img src="{{ qr_path }}" id="qr-estudiante" class="qr-img" alt="QR Estudiante" />
             {% else %}
             <p>No se ha generado un código QR para este estudiante.</p>
-            <form method="GET" action="{{ url_for('qrs.generate_qr_by_id', id_usuario=estudiante[0]) }}">
+            <form method="GET" action="{{ url_for('qrs.generate_qr_by_id', id_usuario=estudiante.id_usuario) }}">
               <button type="submit" class="btn-generar-qr">Generar QR</button>
             </form>
             {% endif %}
@@ -114,14 +81,13 @@
         </div>
       </div>
 
-      <!-- Iframe dinámico -->
       <iframe id="seccion-iframe" name="contenido-frame" class="iframe-oculto"></iframe>
     </main>
   </div>
 
   <script src="{{ url_for('static', filename='js/estudianteControl.js') }}"></script>
 
-  <!--  Modal / Tabla Emergente Actualizar Estudiantes -->
+  <!-- Modal
   <div id="modal-editar" class="modal">
     <div class="modal-content">
       <span class="close" onclick="cerrarModalEdit()">&times;</span>
@@ -143,11 +109,6 @@
         <input type="hidden" id="id_rol" name="id_rol" value="3">
         <label>Fecha de nacimiento:</label>
         <input type="date" id="fecha_nac" name="fecha_nac"><br>
-
-        <!-- 👇 Cambiado a combobox -->
-        <!-- <label>Género:</label>
-      <input type="text" id="genero" name="genero"><br> -->
-
         <label>Género:</label>
         <select id="genero" name="genero">
           <option value="" disabled selected>Seleccione género</option>
@@ -155,45 +116,35 @@
           <option value="female">Femenino</option>
           <option value="other">Otro</option>
         </select><br>
-
-
         <label>País de residencia:</label>
         <input type="text" id="pais_residencia" name="pais_residencia"><br>
-
-
-        <!-- 👇 Cambiado a combobox -->
-        <!-- <label>Afiliacion con una universidad:</label>
-      <input type="text" id="afiliacion_u" name="afiliacion_u"><br> -->
-
         <label>Tipo de afiliacion:</label>
         <select id="tipo_afiliacion" name="tipo_afiliacion">
           <option value="" disabled selected>Seleccione tipo</option>
           <option value="public">Pública</option>
           <option value="private">Privada</option>
         </select><br>
-
         <label>Afiliacion U:</label>
         <input type="text" id="afiliacion_u" name="afiliacion_u"><br>
         <label>Área tematica:</label>
         <input type="text" id="area_tematica" name="area_tematica"><br>
         <label>Disciplina cientifica:</label>
         <input type="text" id="disciplina_cientifica" name="disciplina_cientifica"><br>
-
         <button type="submit" id="guardarBtn">Guardar</button>
       </form>
     </div>
-  </div>
+  </div> -->
 
-  <script>
+  <!-- Modal -->
+<div id="modal-editar" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="cerrarModalEdit()">&times;</span>
+    <h3>Editar Estudiante</h3>
+    <form id="form-editar">
+      <input type="hidden" id="id_usuario" name="id_usuario">
 
-    function formatDate(fecha) {
-      if (!fecha) return "";
-      const d = new Date(fecha);
-      if (isNaN(d)) return ""; // si no es parseable
-      return d.toISOString().split("T")[0];
-    }
-    // Abrir modal y cargar datos
-    function abrirModalEdit(estudianteJson) {
+      <label>Nombre:</label>
+      <input type="text" id="nombre" name="nombre" disabled><br>
 
       if (!estudianteJson) {
         console.error("No se recibieron datos del estudiante");
@@ -223,68 +174,219 @@
       modal.style.display = "flex";
     }
 
-    // Cerrar modal
-    function cerrarModalEdit() {
-      document.getElementById("modal-editar").style.display = "none";
-    }
+      <label>Email:</label>
+      <input type="email" id="email" name="email" disabled><br>
 
-    // Cerrar al hacer click fuera
-    window.onclick = function (event) {
-      const modal = document.getElementById("modal-editar");
-      if (event.target === modal) {
-        modal.style.display = "none";
+      <label>Contraseña:</label>
+      <input type="password" id="contrasena" name="contrasena"
+             placeholder="Nueva contraseña (opcional)" disabled><br>
+
+      <input type="hidden" id="documento" name="documento">
+
+      <label>País de Origen:</label>
+      <input type="text" id="pais_origen" name="pais_origen" disabled><br>
+
+      <input type="hidden" id="id_rol" name="id_rol" value="3">
+
+      <label>Fecha de nacimiento:</label>
+      <input type="date" id="fecha_nac" name="fecha_nac" disabled><br>
+
+      <label for="genero">Género:</label>
+      <select id="genero" name="genero" disabled>
+        <option value="" disabled selected>Seleccione género</option>
+        <option value="male">Masculino</option>
+        <option value="female">Femenino</option>
+        <option value="other">Otro</option>
+      </select><br>
+
+      <label>País de residencia:</label>
+      <input type="text" id="pais_residencia" name="pais_residencia" disabled><br>
+
+      <label>Tipo de afiliacion:</label>
+      <select id="tipo_afiliacion" name="tipo_afiliacion" disabled>
+        <option value="" disabled selected>Seleccione tipo</option>
+        <option value="public">Pública</option>
+        <option value="private">Privada</option>
+      </select><br>
+
+      <label>Afiliacion U:</label>
+      <input type="text" id="afiliacion_u" name="afiliacion_u" disabled><br>
+
+      <label>Área tematica:</label>
+      <input type="text" id="area_tematica" name="area_tematica" disabled><br>
+
+      <label>Disciplina cientifica:</label>
+      <input type="text" id="disciplina_cientifica" name="disciplina_cientifica" disabled><br>
+
+      <!-- BOTONES -->
+      <button type="button" id="btn-toggle-modo">Editar</button>
+      <button type="button" id="btn-cancel" style="display:none;">Cancelar</button>
+      <button type="submit"  id="btn-guardar" style="display:none;">Guardar</button>
+    </form>
+  </div>
+</div>
+
+<script>
+  function formatDate(dateString) {
+    if (!dateString) return "";
+    const d = new Date(dateString);
+    if (isNaN(d)) return "";
+    return d.toISOString().split('T')[0];
+  }
+
+  // Guarda el snapshot para poder "Cancelar"
+  let _snapshot = null;
+
+  function setModoEdicion(activo) {
+    const ids = [
+      "nombre","apellido","email","contrasena","pais_origen",
+      "fecha_nac","genero","pais_residencia","afiliacion_u",
+      "tipo_afiliacion","area_tematica","disciplina_cientifica"
+    ];
+    ids.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.disabled = !activo;
+    });
+
+    // Botones visibles según modo
+    document.getElementById("btn-toggle-modo").style.display = activo ? "none" : "inline-block";
+    document.getElementById("btn-cancel").style.display      = activo ? "inline-block" : "none";
+    document.getElementById("btn-guardar").style.display     = activo ? "inline-block" : "none";
+  }
+
+  function abrirModalEdit(estudianteJson) {
+    if (!estudianteJson) return;
+    const estudiante = JSON.parse(estudianteJson);
+    const modal = document.getElementById("modal-editar");
+
+    // Cargar valores
+    document.getElementById("id_usuario").value          = estudiante.id_usuario || "";
+    document.getElementById("nombre").value              = estudiante.nombre || "";
+    document.getElementById("apellido").value            = estudiante.apellido || "";
+    document.getElementById("email").value               = estudiante.email || "";
+    document.getElementById("contrasena").value          = ""; // seguridad
+    document.getElementById("documento").value           = estudiante.documento || "";
+    document.getElementById("pais_origen").value         = estudiante.pais_origen || "";
+    document.getElementById("id_rol").value              = estudiante.id_rol || 3;
+    document.getElementById("fecha_nac").value           = formatDate(estudiante.fecha_nac) || "";
+    document.getElementById("genero").value              = estudiante.genero || "";
+    document.getElementById("pais_residencia").value     = estudiante.pais_residencia || "";
+    document.getElementById("afiliacion_u").value        = estudiante.afiliacion_u || "";
+    document.getElementById("tipo_afiliacion").value     = estudiante.tipo_afiliacion || "";
+    document.getElementById("area_tematica").value       = estudiante.area_tematica || "";
+    document.getElementById("disciplina_cientifica").value = estudiante.disciplina_cientifica || "";
+
+    // Modo lectura por defecto
+    setModoEdicion(false);
+
+    // Guardamos snapshot para poder "Cancelar"
+    _snapshot = {
+      nombre: document.getElementById("nombre").value,
+      apellido: document.getElementById("apellido").value,
+      email: document.getElementById("email").value,
+      documento: document.getElementById("documento").value,
+      pais_origen: document.getElementById("pais_origen").value,
+      id_rol: document.getElementById("id_rol").value,
+      fecha_nac: document.getElementById("fecha_nac").value,
+      genero: document.getElementById("genero").value,
+      pais_residencia: document.getElementById("pais_residencia").value,
+      afiliacion_u: document.getElementById("afiliacion_u").value,
+      tipo_afiliacion: document.getElementById("tipo_afiliacion").value,
+      area_tematica: document.getElementById("area_tematica").value,
+      disciplina_cientifica: document.getElementById("disciplina_cientifica").value,
+    };
+
+    modal.style.display = "flex";
+  }
+
+  function cerrarModalEdit() {
+    document.getElementById("modal-editar").style.display = "none";
+    _snapshot = null;
+  }
+
+  // Toggle a modo edición
+  document.getElementById("btn-toggle-modo").addEventListener("click", () => {
+    setModoEdicion(true);
+  });
+
+  // Cancelar: restaurar snapshot y volver a lectura
+  document.getElementById("btn-cancel").addEventListener("click", () => {
+    if (_snapshot) {
+      for (const k in _snapshot) {
+        if (document.getElementById(k)) {
+          document.getElementById(k).value = _snapshot[k];
+        }
       }
+      document.getElementById("contrasena").value = ""; // limpiar
     }
+    setModoEdicion(false);
+  });
 
-  </script>
+  // Submit (PUT)
+  const formEditar = document.getElementById("form-editar");
+  if (formEditar) {
+    formEditar.addEventListener("submit", async (e) => {
+      e.preventDefault();
 
-  <script>
-    const formEditar = document.getElementById("form-editar");
+      const payload = {
+        nombre: document.getElementById("nombre").value,
+        apellido: document.getElementById("apellido").value,
+        email: document.getElementById("email").value,
+        documento: document.getElementById("documento").value,
+        pais_origen: document.getElementById("pais_origen").value,
+        id_rol: document.getElementById("id_rol").value,
+        fecha_nac: document.getElementById("fecha_nac").value,
+        genero: document.getElementById("genero").value,
+        pais_residencia: document.getElementById("pais_residencia").value,
+        afiliacion_u: document.getElementById("afiliacion_u").value,
+        tipo_afiliacion: document.getElementById("tipo_afiliacion").value,
+        area_tematica: document.getElementById("area_tematica").value,
+        disciplina_cientifica: document.getElementById("disciplina_cientifica").value,
+        contrasena: document.getElementById("contrasena").value || null
+      };
 
-    if (formEditar) {
-      formEditar.addEventListener("submit", function (e) {
-        e.preventDefault(); // evita que recargue la página
+      const id_usuario = document.getElementById("id_usuario").value;
 
-        const payload = {
-          nombre: document.getElementById("nombre").value,
-          apellido: document.getElementById("apellido").value,
-          email: document.getElementById("email").value,
-          documento: document.getElementById("documento").value,
-          pais_origen: document.getElementById("pais_origen").value,
-          id_rol: document.getElementById("id_rol").value,
-          fecha_nac: document.getElementById("fecha_nac").value,
-          genero: document.getElementById("genero").value,
-          pais_residencia: document.getElementById("pais_residencia").value,
-          afiliacion_u: document.getElementById("afiliacion_u").value,
-          tipo_afiliacion: document.getElementById("tipo_afiliacion").value,
-          area_tematica: document.getElementById("area_tematica").value,
-          disciplina_cientifica: document.getElementById("disciplina_cientifica").value,
-          contrasena: document.getElementById("contrasena").value || null
-        };
+      // Endpoint que acepta rol=3 en tu app:
+      const endpoint = `/usuarios/coor/estudiantes/${id_usuario}`;
 
-        const id_usuario = document.getElementById("id_usuario").value;
+      // UX: deshabilitar mientras envía
+      document.getElementById("btn-guardar").disabled = true;
 
-        fetch(`/usuarios/coor/estudiantes/${id_usuario}`, {
+      try {
+        const res = await fetch(endpoint, {
           method: "PUT",
-          headers: {
-            "Content-Type": "application/json"
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload)
-        })
-          .then(res => res.json())
-          .then(data => {
-            alert(data.mensaje);
-            cerrarModalEdit();
-            location.reload();
-          })
-          .catch(err => console.error(err));
-      });
-    }
+        });
 
+        const data = await res.json().catch(() => ({}));
 
-  </script>
+        if (!res.ok) {
+          throw new Error(data.error || data.mensaje || "Error al actualizar");
+        }
 
+        alert(data.mensaje || "Actualizado correctamente");
+        cerrarModalEdit();
+        location.reload();
+
+      } catch (err) {
+        console.error(err);
+        alert("No se pudo guardar: " + err.message);
+      } finally {
+        document.getElementById("btn-guardar").disabled = false;
+      }
+    });
+  }
+
+  // Cerrar al click fuera
+  window.onclick = function (event) {
+    const modal = document.getElementById("modal-editar");
+    if (event.target === modal) cerrarModalEdit();
+  };
+</script>
+
+  
 
 </body>
-
 </html>

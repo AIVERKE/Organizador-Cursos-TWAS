@@ -181,6 +181,15 @@
                 document.getElementById('documento').value = data.documento;
                 document.getElementById('pais_origen').value = data.pais_origen;
                 document.getElementById('id_rol').value = idRol;
+
+                //document.getElementById('fecha_nac').value = data.fecha_nac ? data.fecha_nac.split('T')[0] : '';
+                document.getElementById('fecha_nac').value = data.fecha_nac ? data.fecha_nac.split(' ')[0] : '';
+                document.getElementById('genero').value = data.genero;
+                document.getElementById('pais_residencia').value = data.pais_residencia;
+                document.getElementById('afiliacion_u').value = data.afiliacion_u;
+                document.getElementById('tipo_afiliacion').value = data.tipo_afiliacion;
+                document.getElementById('area_tematica').value = data.area_tematica;
+                document.getElementById('disciplina_cientifica').value = data.disciplina_cientifica;
                 const fechaNacimientoOriginal = new Date(data.fecha_nac);
                 const año = fechaNacimientoOriginal.getFullYear();
                 const mes = (fechaNacimientoOriginal.getMonth() + 1).toString().padStart(2, '0');
