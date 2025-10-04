@@ -10,7 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;600&display=swap"
     rel="stylesheet">
   <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/Coordinador/styleRxls.css') }}"> -->
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/Coordinador/styleCoordinador.css') }}">
+ <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/Coordinador/styleCoordinador.css') }}">-->
 </head>
 
 <body>
@@ -196,7 +196,7 @@
     function abrirModalEdit(estudianteJson) {
 
       if (!estudianteJson) {
-        console.error("⚠️ No se recibieron datos del estudiante");
+        console.error("No se recibieron datos del estudiante");
         return;
       }
       const estudiante = JSON.parse(estudianteJson); // ahora sí un array bien formado
