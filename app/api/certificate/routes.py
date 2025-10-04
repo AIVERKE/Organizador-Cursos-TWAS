@@ -21,6 +21,13 @@ from flask_login import login_user, logout_user, login_required, current_user
 from app.api.auth.utils import role_required
 from datetime import date
 from . import utils
+import unicodedata
+
+# Módulos necesarios para el nuevo enfoque de smtplib
+from email.message import EmailMessage
+import smtplib
+import mimetypes
+
 
 @certificate_bp.route("/generar-certificados/<int:rol_boton>")
 @login_required
@@ -65,7 +72,7 @@ def generar_certificados(rol_boton):
 
     for _, row in participants.iterrows():
         participante = f"{row['nombre'] or ''} {row['apellido'] or ''}".strip()
-        documento = row["documento"] or ""
+        documento = row["documento"] or "CERT"
         docente = f"{row['docente'] or ''} {row['doc_ape'] or ''}".strip()
         mensaje = ""
         curso = ""
@@ -135,6 +142,7 @@ def generar_certificados(rol_boton):
             pdf.multi_cell(600, 14, docente + " \nDocente de Materia", 0, "C")
 
         file_name = f"{documento.replace(' ', '_')} {participante.replace(' ', '_')} {curso.replace(' ', '_')}"
+        file_name = utils.sanitize_filename(file_name)
         pdf.output(os.path.join(folder, f"{file_name}_certificate.pdf"))
 
         if rol_boton == 3:
@@ -212,7 +220,7 @@ def descargar_certificado(user_id):
 
     # Datos
     participante = result.nombre + " " + result.apellido
-    documento = result.documento
+    documento = result.documento or "CERT"
     docente = f"Dr(a). {result.docente or ''} {result.doc_ape or ''}".strip()
     curso = result.curso_nombre or ""
     rol = result.rol
@@ -314,7 +322,8 @@ def descargar_certificado(user_id):
 def enviar_certificado(user_id):
     base_dir = os.path.dirname(os.path.abspath(__file__))
     folder = os.path.join(base_dir, "temp_certificates")
-
+    print(f'base_dir_debug {base_dir}')
+    print(f'debug:folder {folder}')
     # Leer datos del usuario junto con información necesaria para personalizar
     with db.engine.connect() as conn:
         query = text(
@@ -367,10 +376,27 @@ def enviar_certificado(user_id):
             materia_dada,
             id_curso_doc,
         ) = result
+        docente = docente or ''
+        docente = docente.replace('\xa0', ' ').strip()
+        doc_ape = doc_ape or ''
+        doc_ape = doc_ape.replace('\xa0', ' ').strip()
+        student = student.replace('\xa0', ' ').strip()
+        apellido = apellido.replace('\xa0', ' ').strip()
+        documento = documento or ''
+        documento = documento.replace('\xa0', ' ').strip()
+        curso_nombre = curso_nombre or ''
+        curso_nombre = curso_nombre.replace('\xa0', ' ').strip()
+        # materia_dada puede ser None, por eso se maneja diferente
+        materia_dada = materia_dada.replace('\xa0', ' ').strip() if materia_dada else None
+        email = email.replace('\xa0', '').strip()
 
     if request.method == "POST":
-        asunto = request.form["asunto"]
-        mensaje = request.form["mensaje"]
+        asunto_sucio = request.form["asunto"]
+        mensaje_sucio = request.form["mensaje"]
+
+        # Limpieza estricta de \xa0 y saltos de línea/espacios externos
+        asunto = asunto_sucio.replace('\xa0', ' ').strip()
+        mensaje = mensaje_sucio.replace('\xa0', ' ').strip()
 
         # Definir título y mensaje
         participante = student + " " + apellido
@@ -386,8 +412,6 @@ def enviar_certificado(user_id):
         elif rol == 2:  # Expositor
             curso = materia_dada or ""
             mssg = f"""Por su colaboración como ponente en el tema "{curso}". Realizado en la ciudad La Paz del 11 al 15 de Marzo del 2024, auspiciado y organizado por la red internacional TYAN-TWAS y la Universidad Mayor de San Andrés."""
-
-        fecha = date.today().strftime("%Y-%m-%d")
 
         # Crear carpeta temporal limpia
         if os.path.exists(folder):
@@ -441,33 +465,80 @@ def enviar_certificado(user_id):
 
             # 3. Insertar QR en el PDF
             pdf.image(qr_path, x=740, y=500, w=80, h=80)  # ajusta x,y,w,h a tu diseño
-        file_name = f"{documento.replace(' ', '_')}_{student.replace(' ', '_')}_{apellido.replace(' ', '_')}_{curso.replace(' ', '_')}_certificate.pdf"
+        
+        file_name = f"{documento.replace(' ', '_')}_{student.replace(' ', '_')}_{apellido.replace(' ', '_')}_{curso.replace(' ', '_')}_certificate.pdf"        
+        file_name = utils.sanitize_filename(file_name)
+        
         output_path = os.path.join(folder, file_name)
-        pdf.output(output_path)
-
-        # Enviar correo con manejo de error
+        pdf.output(output_path)        
+    
+        mail_address = os.getenv("MAIL_USERNAME").replace('\xa0', '').strip()
+        safe_sender_name = "TYAN" # o "TYAN FCPN"
+        final_sender = f"{safe_sender_name} <{mail_address}>"
+        asunto = "Holaaaa"
+        mensaje = "Holaaaa"
         msg = Message(
-            subject=asunto, sender=os.getenv("MAIL_USERNAME"), recipients=[email]
-        )
-        msg.body = mensaje
-        try:
+            subject=asunto, 
+            sender=final_sender, 
+            recipients=[email.replace('\xa0','').strip()],
+            charset="utf-8"
+        )        
+        
+        msg.body = mensaje.encode('ascii', 'ignore').decode('ascii') # Limpieza ASCII agresiva
+        # Aplicar la limpieza más estricta a la variable del cuerpo:
+        clean_body = mensaje.replace('\xa0', ' ').strip() 
+        msg.body = clean_body.encode('ascii', 'ignore').decode('ascii') # Limpieza ASCII estricta
+        try:            
+        
+            # 1. Definir credenciales y remitente seguro (como en la otra función)
+            mail_address = os.getenv("MAIL_USERNAME").replace('\xa0', '').strip()
+            app_password = os.getenv("MAIL_PASSWORD") 
+            final_filename = file_name.replace('\xa0', ' ').strip()
+            
+            # 2. Crear el objeto EmailMessage
+            msg = EmailMessage()
+            msg["From"] = f"TYAN <{mail_address}>" # Remitente forzado, puramente ASCII. ¡Clave para solucionar el \xa0!
+            msg["To"] = email.replace('\xa0', '').strip()
+            msg["Subject"] = "Certificado de Participación/Aprobación" # Usar un asunto limpio, o tu variable 'asunto' limpia.
+            
+            # 3. Definir el cuerpo del mensaje (limpio)
+            mensaje_limpio = mensaje.replace('\xa0', ' ').strip()
+            msg.set_content(mensaje_limpio)
+            
+            # 4. Adjuntar el PDF generado
             with open(output_path, "rb") as f:
-                msg.attach(
-                    filename=file_name, content_type="application/pdf", data=f.read()
-                )
-            mail.send(msg)
+                # Guess type (opcional, pero buena práctica)
+                mime_type = mimetypes.guess_type(final_filename)[0] or 'application/pdf'
+                maintype, subtype = mime_type.split('/', 1)
+                
+                msg.add_attachment(f.read(), 
+                                  maintype=maintype, 
+                                  subtype=subtype, 
+                                  filename=final_filename)
+                                  
+            # 5. Enviar usando SMTPLIB (Conexión segura SSL)
+            with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
+                smtp.login(mail_address, app_password)
+                smtp.send_message(msg)   
+            
             flash(f"Certificado enviado a {email}", "success")
+            if rol == 3:
+                with db.engine.begin() as conn:
+                    conn.execute(
+                        text(
+                            "UPDATE inscripciones SET certificado_generado = TRUE WHERE id_inscripcion = :id"
+                        ),
+                        {"id": id_inscripcion},
+                    )
         except Exception as e:
+            print(">>> FINAL FILENAME:", repr(final_filename))
+            print(file_name)
+            print(mensaje)
+            print(asunto)
+            print(e)
             flash(f"Error al enviar certificado a {email}: {str(e)}", "error")
 
-        if rol == 3:
-            with db.engine.begin() as conn:
-                conn.execute(
-                    text(
-                        "UPDATE inscripciones SET certificado_generado = TRUE WHERE id_inscripcion = :id"
-                    ),
-                    {"id": id_inscripcion},
-                )
+        
         # Limpiar carpeta temporal
         shutil.rmtree(folder)
 
@@ -532,6 +603,11 @@ def enviar_certificados_todos(rol_boton):
 
         errores_envio, exitos_envio = [], []
 
+        # Configuración de correo (Tomado de la función de referencia)
+        mail_address = os.getenv("MAIL_USERNAME").replace('\xa0', '').strip()
+        app_password = os.getenv("MAIL_PASSWORD")
+        safe_sender_name = "TYAN"
+
         for user in usuarios:
             (
                 id_usuario,
@@ -554,7 +630,7 @@ def enviar_certificados_todos(rol_boton):
             participante = f"{nombre} {apellido}"
             curso = curso_nombre or ""
             docente_full = f"Dr(a). {docente or ''} {doc_ape or ''}".strip()
-
+            documento = documento or 'doc'
             # Definir título y mensaje
             titulo = "CERTIFICADO\nIII TYAN Hands-on Schools en Bolivia 2025"
             if rol == 3:  # Estudiante
@@ -610,27 +686,59 @@ def enviar_certificados_todos(rol_boton):
                 pdf.image(qr_path, x=740, y=500, w=80, h=80)
 
             file_name = f"{documento.replace(' ', '_')}_{participante.replace(' ', '_')}_{curso.replace(' ', '_')}_certificate.pdf"
+            file_name = utils.sanitize_filename(file_name)
             output_path = os.path.join(folder, file_name)
             pdf.output(output_path)
 
-            # Enviar correo
-            msg = Message(subject=asunto, sender=os.getenv("MAIL_USERNAME"), recipients=[email])
-            msg.body = mensaje
+            clean_email = email.replace('\xa0', '').strip()
+            final_filename = file_name.replace('\xa0', ' ').strip()
+            mensaje_limpio = mensaje.replace('\xa0', ' ').strip()
+            
+            if not clean_email:
+                errores_envio.append((participante, "Correo electrónico vacío"))
+                continue # Saltar esta iteración
 
             try:
+                # 1. Crear el objeto EmailMessage
+                msg_smtp = EmailMessage()
+                # Usar el remitente forzado para evitar \xa0 en el campo From
+                msg_smtp["From"] = f"{safe_sender_name} <{mail_address}>" 
+                msg_smtp["To"] = clean_email
+                msg_smtp["Subject"] = asunto 
+                
+                # 2. Definir el cuerpo del mensaje (limpio)
+                msg_smtp.set_content(mensaje_limpio)
+                
+                # 3. Adjuntar el PDF generado
                 with open(output_path, "rb") as f:
-                    msg.attach(filename=file_name, content_type="application/pdf", data=f.read())
-                mail.send(msg)
-                exitos_envio.append(email)
+                    # Guess type para adjuntar
+                    mime_type = mimetypes.guess_type(final_filename)[0] or 'application/pdf'
+                    maintype, subtype = mime_type.split('/', 1)
+                    
+                    msg_smtp.add_attachment(f.read(), 
+                                            maintype=maintype, 
+                                            subtype=subtype, 
+                                            filename=final_filename)
+                                            
+                # 4. Enviar usando SMTPLIB (Conexión segura SSL)
+                with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
+                    smtp.login(mail_address, app_password)
+                    smtp.send_message(msg_smtp)
+                
+                # Si el envío fue exitoso
+                exitos_envio.append(clean_email)
+                
+                # Actualizar DB (solo si rol == 3)
+                if rol == 3:
+                    with db.engine.begin() as conn_update:
+                        conn_update.execute(
+                            text("UPDATE inscripciones SET certificado_generado = TRUE WHERE id_inscripcion = :id"),
+                            {"id": id_inscripcion},
+                        )
+                        
             except Exception as e:
-                errores_envio.append((email, str(e)))
+                errores_envio.append((clean_email, str(e)))
 
-            if rol == 3:
-                with db.engine.begin() as conn:
-                    conn.execute(
-                        text("UPDATE inscripciones SET certificado_generado = TRUE WHERE id_inscripcion = :id"),
-                        {"id": id_inscripcion},
-                    )
 
         shutil.rmtree(folder)
 
@@ -736,3 +844,10 @@ def verificar(search):
 def listar_certificados_estudiantes(id_usuario):
     inscripciones = utils.get_inscripciones(id_usuario)        
     return  render_template("Estudiante/certificados.html", inscripciones = inscripciones, id_usuario=id_usuario)
+
+def clean_text(text):
+    if not text:
+        return ""
+    # Reemplazar espacios no separables y normalizar
+    text = text.replace(u"\xa0", " ")
+    return unicodedata.normalize("NFKC", text)

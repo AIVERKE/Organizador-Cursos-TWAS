@@ -31,3 +31,20 @@ def get_inscripciones(id_usuario):
         )
         resultado = conn.execute(query, {"id_usuario": id_usuario}).fetchall()
     return resultado    
+
+import re
+import unicodedata
+
+def sanitize_filename(name: str) -> str:
+    # 1. Normalizar y separar acentos
+    normalized_name = unicodedata.normalize('NFD', name)
+    
+    # 2. Eliminar acentos y diacríticos (Convierte á en a, ñ en n)
+    ascii_name = ''.join(c for c in normalized_name if unicodedata.category(c) != 'Mn')
+    
+    # 3. Eliminar caracteres que aún no sean ASCII (como los corruptos Ý y ¾)
+    # y convertir a ASCII puro, eliminando cualquier cosa que no encaje.
+    final_name = ascii_name.encode('ascii', 'ignore').decode('ascii')
+    
+    # 4. Reemplazar caracteres no seguros y espacios (incluido el \xa0 convertido en espacio)
+    return re.sub(r'[<>:"/\\|?*\s]+', '_', final_name.strip())
