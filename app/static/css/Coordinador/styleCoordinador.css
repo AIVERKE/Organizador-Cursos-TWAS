@@ -402,7 +402,7 @@ button:hover,
 }
 
 /* ==================== */
-/* MODALES FLAT DESIGN */
+/* MODALES FLAT DESIGN - CORREGIDO */
 /* ==================== */
 
 .modal {
@@ -414,6 +414,7 @@ button:hover,
   height: 100%;
   background: rgba(0, 0, 0, 0.5);
   z-index: 1000;
+  backdrop-filter: blur(5px);
   animation: modalBg 0.3s ease;
 }
 
@@ -440,6 +441,8 @@ button:hover,
   overflow-y: auto;
   border: none;
   z-index: 1001;
+  position: relative; /* Añadido para posicionar el botón cerrar */
+  transform-origin: center;
 }
 
 @keyframes modalAppear {
@@ -452,6 +455,7 @@ button:hover,
   margin-bottom: 1.5rem;
   font-weight: 700;
   font-size: 1.5rem;
+  padding-right: 2rem; /* Espacio para el botón cerrar */
 }
 
 .modal-content label {
@@ -483,6 +487,7 @@ button:hover,
   box-shadow: 0 0 0 3px rgba(0, 119, 194, 0.1);
 }
 
+/* BOTÓN CERRAR MODAL - CORREGIDO */
 .close {
   position: absolute;
   top: 1rem;
@@ -499,11 +504,19 @@ button:hover,
   align-items: center;
   justify-content: center;
   border-radius: 50%;
+  z-index: 1002; /* Asegurar que esté por encima del contenido */
 }
 
 .close:hover {
   color: var(--danger-color);
   background: rgba(220, 53, 69, 0.1);
+}
+
+.modificado {
+  box-shadow: 0 0 5px var(--primary-light);
+  background-color: var(--border-color);
+  font-weight: 600;  
+  transition: background-color 0.9s, font-weight 0.9s;
 }
 
 /* ==================== */
@@ -662,6 +675,12 @@ input[type="text"]:focus {
     margin: 1rem;
   }
 
+  .close {
+    top: 0.5rem;
+    right: 1rem;
+    font-size: 20px;
+  }
+
   .charts-container {
     gap: 1rem;
   }
@@ -712,6 +731,13 @@ input[type="text"]:focus {
 
   .modal-content h3 {
     font-size: 1.3rem;
+    padding-right: 1.5rem;
+  }
+
+  .close {
+    top: 0.3rem;
+    right: 0.8rem;
+    font-size: 18px;
   }
 
   .charts-container canvas {
