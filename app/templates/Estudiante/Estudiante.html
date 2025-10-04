@@ -8,7 +8,8 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='css/Estudiante/styleEstudiantes.css') }}">
   <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;600&display=swap"
     rel="stylesheet">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/Coordinador/styleCoordinador.css') }}">
+  <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/Coordinador/styleRxls.css') }}"> -->
+ <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/Coordinador/styleCoordinador.css') }}">-->
 </head>
 
 <body>
@@ -145,8 +146,33 @@
       <label>Nombre:</label>
       <input type="text" id="nombre" name="nombre" disabled><br>
 
-      <label>Apellido:</label>
-      <input type="text" id="apellido" name="apellido" disabled><br>
+      if (!estudianteJson) {
+        console.error("No se recibieron datos del estudiante");
+        return;
+      }
+      const estudiante = JSON.parse(estudianteJson); // ahora sí un array bien formado
+      const modal = document.getElementById("modal-editar");
+
+      // Llenar inputs con datos
+      document.getElementById("id_usuario").value = estudiante[0];
+      document.getElementById("nombre").value = estudiante[1];
+      document.getElementById("apellido").value = estudiante[2];
+      document.getElementById("email").value = estudiante[3];
+      document.getElementById("contrasena").value = ""; // vacío para seguridad
+      document.getElementById("documento").value = estudiante[5];
+      document.getElementById("pais_origen").value = estudiante[6];
+      document.getElementById("id_rol").value = estudiante[7] || 3;
+      document.getElementById("fecha_nac").value = formatDate(estudiante[9]) || "";
+      document.getElementById("genero").value = estudiante[10] || "";
+      document.getElementById("pais_residencia").value = estudiante[11] || "";
+      document.getElementById("afiliacion_u").value = estudiante[12] || "";
+      document.getElementById("tipo_afiliacion").value = estudiante[13] || "";
+      document.getElementById("area_tematica").value = estudiante[14] || "";
+      document.getElementById("disciplina_cientifica").value = estudiante[15] || "";
+
+      // Mostrar modal
+      modal.style.display = "flex";
+    }
 
       <label>Email:</label>
       <input type="email" id="email" name="email" disabled><br>

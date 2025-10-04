@@ -60,8 +60,6 @@
                 <i class="fa-solid fa-globe"></i>
                 <span class="i18n i18n-es">ENGLISH</span><span class="i18n i18n-en">ESPAÑOL</span>
             </button>
-
-
             <!--
 
             <a href="{{ url_for('ins.index') }}" class="btn btn-outline-primary btn-sm"> 
@@ -77,7 +75,7 @@
           <a href="https://www.fcpn.edu.bo/" class="ms-1">
             <img src="/static/images/EscudoFCPN.webp" alt="FCPN" class="logo-fcpn">
           </a>
-          <a href="https://www.fcpn.edu.bo/" class="ms-1">
+          <a href="https://www.umsa.bo/" class="ms-1">
             <img src="/static/images/EscudoUMSA.png" alt="UMSA" class="logo-umsa">
           </a>
         </div>
@@ -112,15 +110,15 @@
         <div class="logo-column">
           <!-- Logos en 2 filas -->
           <div class="logo-grid">
-            <img src="{{ url_for('static', filename='images/TWAS_Logo.webp') }}" alt="UNESCO-TWAS" class="footer-logo">
-            <img src="{{ url_for('static', filename='images/TYAN.webp') }}" alt="TYAN" class="footer-logo">
-            <img src="{{ url_for('static', filename='images/EmbajadaBrasil.png') }}" alt="Embajada de Brasil" class="footer-logo">
+            <a href="https://twas.org/"><img src="{{ url_for('static', filename='images/TWAS_Logo.webp') }}" alt="UNESCO-TWAS" class="footer-logo"></a>
+            <a href="https://twas.org/tyan"><img src="{{ url_for('static', filename='images/TYAN.webp') }}" alt="TYAN" class="footer-logo"></a>
+            <a href="https://www.gov.br/mre/pt-br/embaixada-la-paz"><img src="{{ url_for('static', filename='images/EmbajadaBrasil.png') }}" alt="Embajada de Brasil" class="footer-logo"></a>
           </div>
           <div class="logo-grid2"> 
-            <img src="{{ url_for('static', filename='images/EscudoUMSA.png') }}" alt="Logo UMSA" class="footer-logo">
-            <img src="{{ url_for('static', filename='images/EscudoFCPN.webp') }}" alt="Escudo FCPN" class="footer-logo">
-            <img src="{{ url_for('static', filename='images/CarreraQuimica.png') }}" alt="Carrera de Química" class="footer-logo">
-            <img src="{{ url_for('static', filename='images/ing-quimica.jpg') }}" alt="Ingeniería Química" class="footer-logo">
+            <a href="https://www.umsa.bo/"><img src="{{ url_for('static', filename='images/EscudoUMSA.png') }}" alt="Logo UMSA" class="footer-logo"></a>
+            <a href="https://www.fcpn.edu.bo/"><img src="{{ url_for('static', filename='images/EscudoFCPN.webp') }}" alt="Escudo FCPN" class="footer-logo"></a>
+            <a href="#"><img src="{{ url_for('static', filename='images/CarreraQuimica.png') }}" alt="Carrera de Química" class="footer-logo"></a>
+            <a href="#"><img src="{{ url_for('static', filename='images/ing-quimica.jpg') }}" alt="Ingeniería Química" class="footer-logo"></a>
           </div>
         </div>
       </div>
@@ -144,6 +142,7 @@
   <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
   <script src="{{ url_for('static', filename='js/botonTraductor.js') }}"></script>
   <script src="{{ url_for('static', filename='js/CronogramaActividades.js') }}"></script>
+ 
 
   {% block extra_js %}{% endblock %}
 </body>
