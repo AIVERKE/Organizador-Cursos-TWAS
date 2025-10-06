@@ -667,3 +667,89 @@ select:focus {
     font-size: 24px;
   }
 }
+
+
+/* Botones base */
+.btn {
+  font-family: 'Montserrat Alternates', sans-serif;
+  padding: 10px 20px;
+  border-radius: var(--radius);
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+  background: #fff;
+  color: var(--text-color);
+  box-shadow: var(--shadow);
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-hover);
+}
+
+/* Variantes */
+.btn-primary {
+  background: var(--primary-color);
+  color: #fff;
+  border-color: var(--primary-color);
+}
+
+.btn-primary:hover {
+  filter: brightness(1.05);
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--primary-color);
+  border: 1px solid var(--primary-color);
+}
+
+.btn-ghost {
+  background: #fff;
+  color: var(--text-light);
+  border: 1px solid var(--border-color);
+}
+
+/* Estado disabled */
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: var(--shadow);
+}
+
+/* Grupo de acciones del modal */
+.form-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+  margin-top: 0.5rem;
+  flex-wrap: wrap;
+}
+/* Cuando el form tiene la clase .edit-mode, los inputs lucen activos */
+#form-editar.edit-mode input,
+#form-editar.edit-mode select {
+  background: #fff;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(0, 119, 194, 0.08);
+}
+
+
+/* Email inmutable */
+.readonly-input,
+input[readonly] {
+  background: #f3f4f6;      /* gris suave */
+  color: #555;               /* texto consistente */
+  border-color: #e0e0e0;
+  cursor: not-allowed;       /* comunica que no se edita */
+}
+.readonly-input:focus {
+  outline: none;
+  box-shadow: none;
+  border-color: #e0e0e0;
+  background: #f3f4f6;
+}

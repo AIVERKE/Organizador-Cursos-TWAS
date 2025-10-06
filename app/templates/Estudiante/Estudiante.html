@@ -87,99 +87,41 @@
 
   <script src="{{ url_for('static', filename='js/estudianteControl.js') }}"></script>
 
-  <!-- Modal
-  <div id="modal-editar" class="modal">
-    <div class="modal-content">
-      <span class="close" onclick="cerrarModalEdit()">&times;</span>
-      <h3>Editar Estudiante</h3>
-      <form id="form-editar">
-        <input type="hidden" id="id_usuario" name="id_usuario">
-        <label>Nombre:</label>
-        <input type="text" id="nombre" name="nombre"><br>
-        <label>Apellido:</label>
-        <input type="text" id="apellido" name="apellido"><br>
-        <label>Email:</label>
-        <input type="email" id="email" name="email"><br>
-        <label>Contraseña:</label>
-        <input type="password" id="contrasena" name="contrasena" placeholder="Nueva contraseña (opcional)"><br>
-        <label>Documento:</label>
-        <input type="text" id="documento" name="documento"><br>
-        <label>País de Origen:</label>
-        <input type="text" id="pais_origen" name="pais_origen"><br>
-        <input type="hidden" id="id_rol" name="id_rol" value="3">
-        <label>Fecha de nacimiento:</label>
-        <input type="date" id="fecha_nac" name="fecha_nac"><br>
-        <label>Género:</label>
-        <select id="genero" name="genero">
-          <option value="" disabled selected>Seleccione género</option>
-          <option value="male">Masculino</option>
-          <option value="female">Femenino</option>
-          <option value="other">Otro</option>
-        </select><br>
-        <label>País de residencia:</label>
-        <input type="text" id="pais_residencia" name="pais_residencia"><br>
-        <label>Tipo de afiliacion:</label>
-        <select id="tipo_afiliacion" name="tipo_afiliacion">
-          <option value="" disabled selected>Seleccione tipo</option>
-          <option value="public">Pública</option>
-          <option value="private">Privada</option>
-        </select><br>
-        <label>Afiliacion U:</label>
-        <input type="text" id="afiliacion_u" name="afiliacion_u"><br>
-        <label>Área tematica:</label>
-        <input type="text" id="area_tematica" name="area_tematica"><br>
-        <label>Disciplina cientifica:</label>
-        <input type="text" id="disciplina_cientifica" name="disciplina_cientifica"><br>
-        <button type="submit" id="guardarBtn">Guardar</button>
-      </form>
-    </div>
-  </div> -->
 
-  <!-- Modal -->
+<!-- Modal -->
 <div id="modal-editar" class="modal">
   <div class="modal-content">
     <span class="close" onclick="cerrarModalEdit()">&times;</span>
     <h3>Editar Estudiante</h3>
+
     <form id="form-editar">
       <input type="hidden" id="id_usuario" name="id_usuario">
 
       <label>Nombre:</label>
       <input type="text" id="nombre" name="nombre" disabled><br>
 
-      if (!estudianteJson) {
-        console.error("No se recibieron datos del estudiante");
-        return;
-      }
-      const estudiante = JSON.parse(estudianteJson); // ahora sí un array bien formado
-      const modal = document.getElementById("modal-editar");
+      <label>Apellido:</label>
+      <input type="text" id="apellido" name="apellido" disabled><br>
 
-      // Llenar inputs con datos
-      document.getElementById("id_usuario").value = estudiante[0];
-      document.getElementById("nombre").value = estudiante[1];
-      document.getElementById("apellido").value = estudiante[2];
-      document.getElementById("email").value = estudiante[3];
-      document.getElementById("contrasena").value = ""; // vacío para seguridad
-      document.getElementById("documento").value = estudiante[5];
-      document.getElementById("pais_origen").value = estudiante[6];
-      document.getElementById("id_rol").value = estudiante[7] || 3;
-      document.getElementById("fecha_nac").value = formatDate(estudiante[9]) || "";
-      document.getElementById("genero").value = estudiante[10] || "";
-      document.getElementById("pais_residencia").value = estudiante[11] || "";
-      document.getElementById("afiliacion_u").value = estudiante[12] || "";
-      document.getElementById("tipo_afiliacion").value = estudiante[13] || "";
-      document.getElementById("area_tematica").value = estudiante[14] || "";
-      document.getElementById("disciplina_cientifica").value = estudiante[15] || "";
+      <!-- <label>Email:</label>
+      <input type="email" id="email" name="email" disabled><br> -->
 
-      // Mostrar modal
-      modal.style.display = "flex";
-    }
+<label>Email:</label>
+<input
+  type="email"
+  id="email"
+  name="email"
+  class="readonly-input"
+  readonly
+  aria-readonly="true"
+  data-static="true"
+  title="El correo no puede modificarse. Si necesitas cambiarlo, contacta al coordinador."
+><br>
 
-      <label>Email:</label>
-      <input type="email" id="email" name="email" disabled><br>
+
 
       <label>Contraseña:</label>
-      <input type="password" id="contrasena" name="contrasena"
-             placeholder="Nueva contraseña (opcional)" disabled><br>
+      <input type="password" id="contrasena" name="contrasena" placeholder="Nueva contraseña (opcional)" disabled><br>
 
       <input type="hidden" id="documento" name="documento">
 
@@ -219,9 +161,16 @@
       <input type="text" id="disciplina_cientifica" name="disciplina_cientifica" disabled><br>
 
       <!-- BOTONES -->
-      <button type="button" id="btn-toggle-modo">Editar</button>
+      <!-- <button type="button" id="btn-toggle-modo">Editar</button>
       <button type="button" id="btn-cancel" style="display:none;">Cancelar</button>
-      <button type="submit"  id="btn-guardar" style="display:none;">Guardar</button>
+      <button type="submit" id="btn-guardar" style="display:none;">Guardar</button> -->
+
+      <div class="form-actions">
+  <button type="button" id="btn-toggle-modo" class="btn btn-outline">Editar</button>
+  <button type="button" id="btn-cancel" class="btn btn-ghost" style="display:none;">Cancelar</button>
+  <button type="submit" id="btn-guardar" class="btn btn-primary" style="display:none;">Guardar</button>
+</div>
+
     </form>
   </div>
 </div>
@@ -234,33 +183,52 @@
     return d.toISOString().split('T')[0];
   }
 
-  // Guarda el snapshot para poder "Cancelar"
+  // snapshot para "Cancelar"
   let _snapshot = null;
 
+  const EDITABLE_IDS = [
+  "nombre","apellido","contrasena","pais_origen",
+  "fecha_nac","genero","pais_residencia","afiliacion_u",
+  "tipo_afiliacion","area_tematica","disciplina_cientifica"
+];
+
   function setModoEdicion(activo) {
-    const ids = [
-      "nombre","apellido","email","contrasena","pais_origen",
-      "fecha_nac","genero","pais_residencia","afiliacion_u",
-      "tipo_afiliacion","area_tematica","disciplina_cientifica"
-    ];
-    ids.forEach(id => {
+    // const ids = [
+    //   "nombre","apellido","email","contrasena","pais_origen",
+    //   "fecha_nac","genero","pais_residencia","afiliacion_u",
+    //   "tipo_afiliacion","area_tematica","disciplina_cientifica"
+    // ];
+    EDITABLE_IDS.forEach(id => {
       const el = document.getElementById(id);
       if (el) el.disabled = !activo;
     });
 
-    // Botones visibles según modo
+    const emailEl = document.getElementById("email");
+  if (emailEl) emailEl.disabled = true;
+
+    const form = document.getElementById("form-editar");
+if (form) {
+  form.classList.toggle("edit-mode", activo);
+}
+
+
     document.getElementById("btn-toggle-modo").style.display = activo ? "none" : "inline-block";
     document.getElementById("btn-cancel").style.display      = activo ? "inline-block" : "none";
     document.getElementById("btn-guardar").style.display     = activo ? "inline-block" : "none";
   }
 
+  // Recibe el JSON del data-estudiante del botón principal
   function abrirModalEdit(estudianteJson) {
-    if (!estudianteJson) return;
+    if (!estudianteJson) {
+      console.error("No se recibieron datos del estudiante");
+      return;
+    }
     const estudiante = JSON.parse(estudianteJson);
     const modal = document.getElementById("modal-editar");
 
-    // Cargar valores
+    // 🔴 Asegúrate de setear id_usuario
     document.getElementById("id_usuario").value          = estudiante.id_usuario || "";
+
     document.getElementById("nombre").value              = estudiante.nombre || "";
     document.getElementById("apellido").value            = estudiante.apellido || "";
     document.getElementById("email").value               = estudiante.email || "";
@@ -279,7 +247,7 @@
     // Modo lectura por defecto
     setModoEdicion(false);
 
-    // Guardamos snapshot para poder "Cancelar"
+    // snapshot
     _snapshot = {
       nombre: document.getElementById("nombre").value,
       apellido: document.getElementById("apellido").value,
@@ -304,80 +272,73 @@
     _snapshot = null;
   }
 
-  // Toggle a modo edición
+  // Toggle a edición
   document.getElementById("btn-toggle-modo").addEventListener("click", () => {
     setModoEdicion(true);
   });
 
-  // Cancelar: restaurar snapshot y volver a lectura
+  // Cancelar edición
   document.getElementById("btn-cancel").addEventListener("click", () => {
     if (_snapshot) {
       for (const k in _snapshot) {
-        if (document.getElementById(k)) {
-          document.getElementById(k).value = _snapshot[k];
-        }
+        const el = document.getElementById(k);
+        if (el) el.value = _snapshot[k];
       }
-      document.getElementById("contrasena").value = ""; // limpiar
+      document.getElementById("contrasena").value = "";
     }
     setModoEdicion(false);
   });
 
-  // Submit (PUT)
+  // Guardar (PUT)
   const formEditar = document.getElementById("form-editar");
-  if (formEditar) {
-    formEditar.addEventListener("submit", async (e) => {
-      e.preventDefault();
+  formEditar.addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-      const payload = {
-        nombre: document.getElementById("nombre").value,
-        apellido: document.getElementById("apellido").value,
-        email: document.getElementById("email").value,
-        documento: document.getElementById("documento").value,
-        pais_origen: document.getElementById("pais_origen").value,
-        id_rol: document.getElementById("id_rol").value,
-        fecha_nac: document.getElementById("fecha_nac").value,
-        genero: document.getElementById("genero").value,
-        pais_residencia: document.getElementById("pais_residencia").value,
-        afiliacion_u: document.getElementById("afiliacion_u").value,
-        tipo_afiliacion: document.getElementById("tipo_afiliacion").value,
-        area_tematica: document.getElementById("area_tematica").value,
-        disciplina_cientifica: document.getElementById("disciplina_cientifica").value,
-        contrasena: document.getElementById("contrasena").value || null
-      };
+    const payload = {
+      nombre: document.getElementById("nombre").value,
+      apellido: document.getElementById("apellido").value,
+      email: document.getElementById("email").value,
+      documento: document.getElementById("documento").value,
+      pais_origen: document.getElementById("pais_origen").value,
+      id_rol: document.getElementById("id_rol").value,
+      fecha_nac: document.getElementById("fecha_nac").value,
+      genero: document.getElementById("genero").value,
+      pais_residencia: document.getElementById("pais_residencia").value,
+      afiliacion_u: document.getElementById("afiliacion_u").value,
+      tipo_afiliacion: document.getElementById("tipo_afiliacion").value,
+      area_tematica: document.getElementById("area_tematica").value,
+      disciplina_cientifica: document.getElementById("disciplina_cientifica").value,
+      contrasena: document.getElementById("contrasena").value || null
+    };
 
-      const id_usuario = document.getElementById("id_usuario").value;
 
-      // Endpoint que acepta rol=3 en tu app:
-      const endpoint = `/usuarios/coor/estudiantes/${id_usuario}`;
 
-      // UX: deshabilitar mientras envía
-      document.getElementById("btn-guardar").disabled = true;
+    const id_usuario = document.getElementById("id_usuario").value;
 
-      try {
-        const res = await fetch(endpoint, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        });
+    // Si tu endpoint real es diferente, cámbialo aquí:
+    const endpoint = `/usuarios/coor/estudiantes/${id_usuario}`;
 
-        const data = await res.json().catch(() => ({}));
+    document.getElementById("btn-guardar").disabled = true;
+    try {
+      const res = await fetch(endpoint, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
 
-        if (!res.ok) {
-          throw new Error(data.error || data.mensaje || "Error al actualizar");
-        }
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || data.mensaje || "Error al actualizar");
 
-        alert(data.mensaje || "Actualizado correctamente");
-        cerrarModalEdit();
-        location.reload();
-
-      } catch (err) {
-        console.error(err);
-        alert("No se pudo guardar: " + err.message);
-      } finally {
-        document.getElementById("btn-guardar").disabled = false;
-      }
-    });
-  }
+      alert(data.mensaje || "Actualizado correctamente");
+      cerrarModalEdit();
+      location.reload();
+    } catch (err) {
+      console.error(err);
+      alert("No se pudo guardar: " + err.message);
+    } finally {
+      document.getElementById("btn-guardar").disabled = false;
+    }
+  });
 
   // Cerrar al click fuera
   window.onclick = function (event) {
@@ -385,8 +346,6 @@
     if (event.target === modal) cerrarModalEdit();
   };
 </script>
-
-  
 
 </body>
 </html>
