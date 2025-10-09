@@ -203,23 +203,27 @@ def perfil_estudiante(id_usuario):
             qr_filename = None
         else:
             id_inscripcion = datos[0]["id_inscripcion"]
+            print("ID Inscripción👁👄👁:", id_inscripcion)
+            print(row)
             qr_filename = None
             for fname in os.listdir(BASE_DIR):
                 if fname.startswith(f"qr_{id_inscripcion}_") and fname.endswith(".png"):
                     qr_filename = fname
                     break
 
+        print ("aca estoy mi king 🦍🔥🔥")
         qr_path = f"/qrs/{qr_filename}" if qr_filename else None
-
+        print ("Ahora estoy aca estoy mi king 🦍🔥🔥🔥")
         return render_template(
             "Estudiante/Estudiante.html",
             estudiante=row,
             qr_path=qr_path,
+            
         )
 
     except Exception as e:
-        return str(e), 500
-
+        #return str(e), 500
+        return "Puta madre abuela 🗣🗣🔥🔥",500
 
 # Muestra las asistencias de un estudiante
 @qrs_bp.route("/asistencias/<int:id_usuario>", methods=["GET"])

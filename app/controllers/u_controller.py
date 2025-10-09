@@ -42,14 +42,14 @@ def obtener_estudiantes():
 
 def obtener_estudiante(id_usuario):
     conn = get_connection()
-    cursor = conn.cursor()
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
     cursor.execute(
         "SELECT * FROM Usuarios WHERE id_usuario = %s ORDER BY id_usuario ASC;",
         (id_usuario,),
     )
     row = cursor.fetchone()
     conn.close()
-    return row
+    return row or {}
 
 
 # ----cambio 1
@@ -99,7 +99,7 @@ def actualizar_estudiante(id_usuario,nombre,apellido,email,contrasena,documento,
                 documento = %s,
                 pais_origen = %s,
                 id_rol = %s,
-                fecha_nac = %s,
+                fecha_nac = TO_DATE(%s, 'YYYY-MM-DD'),
                 genero = %s,
                 pais_residencia = %s,
                 afiliacion_u = %s,
@@ -631,7 +631,7 @@ def actualizar_ponente(
             documento = %s,
             pais_origen = %s,
             id_rol = %s,
-            fecha_nac = %s,
+            fecha_nac = TO_DATE(%s, 'YYYY-MM-DD'),
             genero = %s,
             pais_residencia = %s,
             afiliacion_u = %s,
@@ -669,7 +669,7 @@ def actualizar_ponente(
                 documento = %s,
                 pais_origen = %s,
                 id_rol = %s,
-                fecha_nac = %s,
+                fecha_nac = TO_DATE(%s, 'YYYY-MM-DD'),
                 genero = %s,
                 pais_residencia = %s,
                 afiliacion_u = %s,

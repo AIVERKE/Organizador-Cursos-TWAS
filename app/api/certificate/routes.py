@@ -822,8 +822,8 @@ def verificar(search):
                 LEFT JOIN notas n ON n.id_inscripcion = i.id_inscripcion
                 LEFT JOIN usuarios p ON p.id_usuario = c.id_ponente
                 LEFT JOIN cursos cur ON cur.id_ponente = u.id_usuario
-                WHERE p.id_usuario = :id_usuario
-                AND c.id_curso = :id_curso
+                WHERE u.id_usuario = :id_usuario
+                AND cur.id_curso = :id_curso
                 LIMIT 1
             """
             )
