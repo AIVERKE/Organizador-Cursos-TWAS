@@ -7,7 +7,7 @@ __pycache__/
 *.egg-info/
 *.egg
 *.log
-
+*.pkl
 insertar_usuarios.py
 # Archivos QR generados
 app/static/qrs/*
