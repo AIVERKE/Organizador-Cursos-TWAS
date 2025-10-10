@@ -836,7 +836,8 @@ def enviar_certificados_todos(rol_boton):
 def verificar(search):
     partes = search.split("-")
     id_principal = int(partes[0])
-    id_extra = int(partes[1])
+    id_extra = int(float(partes[1]))
+
 
     result = None
     tipo = None
