@@ -77,24 +77,25 @@ def generar_certificados(rol_boton):
         mensaje = ""
         curso = ""
         titulo = (
-            "CERTIFICADO DE APROBACION\nIII TYAN Hands-on Schools en Bolivia 2025"
+            "CERTIFICADO DE APROBACION"
             if row["modalidad"] == "catedra-laboratorio" and int(row["nota"]) > 64
-            else "CERTIFICADO\nIII TYAN Hands-on Schools en Bolivia 2025"
+            else "CERTIFICADO"
         )
         if (rol_boton) == 3:
             curso = row["curso_nombre"] or ""
             if row["modalidad"] == "catedra-laboratorio" and int(row["nota"]) > 64:
-                mensaje = f"""Ha completado exitosamente el curso de "{curso}" dictado por {docente}, inaugurado dentro del postgrado de Ciencias Químicas\n de la Facultad de Ciencias Puras y Naturales, de la Universidad Mayor de San Andrés. Realizado en la ciudad La Paz del '11 al 15 de Marzo del 2024', con una duración de 30 hrs. académicas equivalente a 1 CLAR (Crédito Latinoamericano de Referencia)."""
+                mensaje = f"""Ha completado exitosamente el curso de "{curso}" dictado por {docente}, inaugurado dentro del postgrado de Ciencias Químicas de la Facultad de Ciencias Puras y Naturales, de la Universidad Mayor de San Andrés. Realizado en la ciudad La Paz del '11 al 15 de Marzo del 2024', con una duración de 30 hrs. académicas equivalente a 1 CLAR (Crédito Latinoamericano de Referencia)."""
             else:
-                mensaje = f"""Ha participado del curso de "{curso}" dictado por {docente}, inaugurado dentro del postgrado de Ciencias Químicas\n de la Facultad de Ciencias Puras y Naturales, de la Universidad Mayor de San Andrés. Realizado en la ciudad La Paz del '11 al 15 de Marzo del 2024'."""
+                mensaje = f"""Ha participado del curso de "{curso}" dictado por {docente}, inaugurado dentro del postgrado de Ciencias Químicas de la Facultad de Ciencias Puras y Naturales, de la Universidad Mayor de San Andrés. Realizado en la ciudad La Paz del '11 al 15 de Marzo del 2024'."""
         elif (rol_boton) == 2:
             curso = row["materia_dada"] or ""
-            mensaje = f"""Por su colaboración como ponente en el tema  "{curso}".\nRealizado en la ciudad La Paz del 11 al 15 de Marzo del 2024, auspiciado y organizado por la red internacional TYAN-TWAS y la Universidad Mayor de San Andrés."""
+            # mensaje = f"""Por su colaboración como ponente en el tema  "{curso}".\nRealizado en la ciudad La Paz del 11 al 15 de Marzo del 2024, auspiciado y organizado por la red internacional TYAN-TWAS y la Universidad Mayor de San Andrés."""
+            mensaje = "In recognition of their active involvement in the third TYAN Hands-On Schools conference, and their contribution of significant knowledge and experience for the enhancement of the program for all participants. The event took place at the Universidad Mayor de San Andrés in La Paz, Bolivia, from 6th to 10th October 2025."
         # fecha = date.today()
 
         pdf = FPDF(orientation="L", unit="pt", format="A4")
         pdf.add_page()
-        template_path = os.path.join(base_dir, "Input", "certificate_template.jpg")
+        template_path = os.path.join(base_dir, "Input", "certificate_template.png")
         pdf.image(template_path, 0, 0, w=842, h=595)
 
         if rol_boton == 3:
@@ -121,29 +122,107 @@ def generar_certificados(rol_boton):
             # 3. Insertar QR en el PDF
             pdf.image(qr_path, x=740, y=500, w=80, h=80)  # ajusta x,y,w,h a tu diseño
 
-        pdf.set_font("Arial", "B", 50)
+        # Registrar la fuente (asumiendo que están en ./fonts/)
+        fonts_path_poppins_bold = os.path.join(base_dir, "fonts", "Poppins-Bold.ttf")
+        fonts_path_poppins_medium = os.path.join(base_dir, "fonts", "Poppins-Medium.ttf")
+        fonts_path_poppins_regular= os.path.join(base_dir, "fonts", "Poppins-Regular.ttf")
+        fonts_path_poppins_light= os.path.join(base_dir, "fonts", "Poppins-Light.ttf")
+        pdf.add_font("Poppins_Bold", "", fonts_path_poppins_bold, uni=True)
+        pdf.add_font("Poppins_Medium", "", fonts_path_poppins_medium, uni=True)
+        pdf.add_font("Poppins_Regular", "", fonts_path_poppins_regular, uni=True)
+        pdf.add_font("Poppins_Light", "", fonts_path_poppins_light, uni=True)
+
+        pdf.set_font("Poppins_Bold", style="", size=50)
         pdf.set_text_color(0, 20, 60)
-        pdf.set_xy(0, 20)
+        pdf.set_xy(0, 125)
         pdf.multi_cell(842, 60, titulo, 0, "C")
 
-        pdf.set_font("Helvetica", "I", 30)
-        pdf.set_text_color(60, 60, 60)
-        pdf.set_xy(0, 210)
-        pdf.cell(w=842, h=60, txt=participante, align="C")
+        pdf.set_font("Poppins_Light", style="", size=15)
+        pdf.set_xy(0, 175)
+        pdf.multi_cell(842, 60, "The organization in charge of TYAN BOLIVIA awarded this recognition to:", 0, "C")
 
-        pdf.set_font("Arial", "", 12)
-        pdf.set_text_color(250, 250, 250)
-        pdf.set_xy(150, 260)
-        pdf.multi_cell(600, 15, mensaje, 0, "C")
-        if rol_boton == 3:
-            pdf.set_font("Arial", "I", 14)
-            pdf.set_text_color(0, 0, 0)
-            pdf.set_xy(0, 510)
-            pdf.multi_cell(600, 14, docente + " \nDocente de Materia", 0, "C")
+        pdf.set_font("Poppins_Bold", "", 30)
+        pdf.set_xy(0, 225)
+        pdf.cell(w=842, h=60, txt=participante.upper(), align="C")
+
+        ### EL SIGUIENTE BLOQUE ES LA LINEA HORIZONTAL
+        # Configuración
+        margen_horizontal = 120   # distancia desde los bordes izquierdo y derecho
+        y_pos = 280              # altura donde irá la línea (en mm)
+        color_linea = (0, 119, 194)  # azul medio (RGB)
+
+        # Dibujar línea
+        pdf.set_draw_color(*color_linea)
+        pdf.set_line_width(0.5)  # grosor opcional
+
+        # Coordenadas calculadas
+        x1 = margen_horizontal
+        x2 = pdf.w - margen_horizontal  # ancho total - margen derecho
+
+        pdf.line(x1, y_pos, x2, y_pos)
+        ### FIN DE LA LINEA HORIZONTAL
+
+
+        pdf.set_font("Poppins_Light", "", 13)
+        pdf.set_xy((pdf.w - 600) / 2, 300)
+        pdf.multi_cell(w=600, h=20, txt=mensaje, border=0, align="J")
+        
+        x = 50
+        pdf.set_font("Poppins_Light", "", 13)
+        pdf.set_xy(x, 425)
+        pdf.multi_cell(w=150, h=10, txt="Dr. Max Paoli", align="C")
+        pdf.set_font("Poppins_Medium","", 13)
+        pdf.set_xy(x, 440)
+        pdf.multi_cell(w=150, h=10, txt="Director", align="C")
+        pdf.set_xy(x, 455)
+        pdf.multi_cell(w=150, h=10, txt="Programa TYAN", align="C")
+
+        x = 200
+        pdf.set_font("Poppins_Light", "", 13)
+        pdf.set_xy(x, 425)
+        pdf.multi_cell(w=150, h=10, txt="Dr. Rigoberto Choque", align="C")
+        pdf.set_font("Poppins_Medium","", 13)
+        pdf.set_xy(x, 440)
+        pdf.multi_cell(w=150, h=10, txt="Director Académico", align="C")
+        pdf.set_xy(x, 455)
+        pdf.multi_cell(w=150, h=10, txt="Carrera Cs. Quimicas", align="C")
+
+        x = 350
+        pdf.set_font("Poppins_Light", "", 13)
+        pdf.set_xy(x, 425)
+        pdf.multi_cell(w=150, h=10, txt="Dra. Leslie Tejada", align="C")
+        pdf.set_font("Poppins_Medium","", 13)
+        pdf.set_xy(x, 440)
+        pdf.multi_cell(w=150, h=10, txt="Coordinadora", align="C")
+        pdf.set_xy(x, 455)
+        pdf.multi_cell(w=150, h=10, txt="TYAN-TWAS", align="C")
+
+        x = 500
+        pdf.set_font("Poppins_Light", "", 13)
+        pdf.set_xy(x, 425)
+        pdf.multi_cell(w=300, h=10, txt="M.Sc. Aldo Valdez Alvarado", align="C")
+        pdf.set_font("Poppins_Medium","", 13)
+        pdf.set_xy(x, 440)
+        pdf.multi_cell(w=300, h=10, txt="Decano", align="C")
+        pdf.set_xy(x, 455)
+        pdf.multi_cell(w=300, h=10, txt="Facultado de Ciencias Puras y Naturales", align="C")
+
+        pdf.set_font("Poppins_Light", "", 10 )
+        pdf.set_xy(600, 470)
+        pdf.multi_cell(w=200, h=10, txt="La Paz - Bolivia, Octubre de 2025")
+
+        ### FIRMAS DIGITALES
+        img_path = os.path.join(base_dir, "Input", "firma_max_paoli_sin_fondo.png")
+        pdf.image(img_path, 50, 380, w=149, h=70)
+
+        img_path = os.path.join(base_dir, "Input", "firma_decano.png")
+        pdf.image(img_path, 550, 340, w=207, h=120)
+        ### FIN DE FIRMAS DIGITALES
 
         file_name = f"{documento.replace(' ', '_')} {participante.replace(' ', '_')} {curso.replace(' ', '_')}"
         file_name = utils.sanitize_filename(file_name)
         pdf.output(os.path.join(folder, f"{file_name}_certificate.pdf"))
+        
 
         if rol_boton == 3:
             with db.engine.begin() as conn:
