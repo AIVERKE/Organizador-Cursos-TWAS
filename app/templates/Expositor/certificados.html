@@ -12,7 +12,7 @@
     <div class="asistencias-container">
         <h1 class="asistencias-title">Mis certificados</h1>
 
-        {% if inscripciones and inscripciones|length > 0 %}
+        {% if cursos and cursos|length > 0 %}
         <table class="asistencias-table">
             <thead>
                 <tr>
@@ -21,7 +21,7 @@
                 </tr>
             </thead>
             <tbody>
-                {% for a in inscripciones %}
+                {% for a in cursos %}
                 <tr>
                     <td> {{a.nombre_curso}} </td>
                     <td>

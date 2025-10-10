@@ -21,6 +21,13 @@ from flask_login import login_user, logout_user, login_required, current_user
 from app.api.auth.utils import role_required
 from datetime import date
 from . import utils
+import unicodedata
+
+# Módulos necesarios para el nuevo enfoque de smtplib
+from email.message import EmailMessage
+import smtplib
+import mimetypes
+
 
 @certificate_bp.route("/generar-certificados/<int:rol_boton>")
 @login_required
@@ -65,29 +72,30 @@ def generar_certificados(rol_boton):
 
     for _, row in participants.iterrows():
         participante = f"{row['nombre'] or ''} {row['apellido'] or ''}".strip()
-        documento = row["documento"] or ""
+        documento = row["documento"] or "CERT"
         docente = f"{row['docente'] or ''} {row['doc_ape'] or ''}".strip()
         mensaje = ""
         curso = ""
         titulo = (
-            "CERTIFICADO DE APROBACION\nIII TYAN Hands-on Schools en Bolivia 2025"
+            "CERTIFICADO DE APROBACION"
             if row["modalidad"] == "catedra-laboratorio" and int(row["nota"]) > 64
-            else "CERTIFICADO\nIII TYAN Hands-on Schools en Bolivia 2025"
+            else "CERTIFICADO"
         )
         if (rol_boton) == 3:
             curso = row["curso_nombre"] or ""
             if row["modalidad"] == "catedra-laboratorio" and int(row["nota"]) > 64:
-                mensaje = f"""Ha completado exitosamente el curso de "{curso}" dictado por {docente}, inaugurado dentro del postgrado de Ciencias Químicas\n de la Facultad de Ciencias Puras y Naturales, de la Universidad Mayor de San Andrés. Realizado en la ciudad La Paz del '11 al 15 de Marzo del 2024', con una duración de 30 hrs. académicas equivalente a 1 CLAR (Crédito Latinoamericano de Referencia)."""
+                mensaje = f"""Ha completado exitosamente el curso de "{curso}" dictado por {docente}, inaugurado dentro del postgrado de Ciencias Químicas de la Facultad de Ciencias Puras y Naturales, de la Universidad Mayor de San Andrés. Realizado en la ciudad La Paz del '11 al 15 de Marzo del 2024', con una duración de 30 hrs. académicas equivalente a 1 CLAR (Crédito Latinoamericano de Referencia)."""
             else:
-                mensaje = f"""Ha participado del curso de "{curso}" dictado por {docente}, inaugurado dentro del postgrado de Ciencias Químicas\n de la Facultad de Ciencias Puras y Naturales, de la Universidad Mayor de San Andrés. Realizado en la ciudad La Paz del '11 al 15 de Marzo del 2024'."""
+                mensaje = f"""Ha participado del curso de "{curso}" dictado por {docente}, inaugurado dentro del postgrado de Ciencias Químicas de la Facultad de Ciencias Puras y Naturales, de la Universidad Mayor de San Andrés. Realizado en la ciudad La Paz del '11 al 15 de Marzo del 2024'."""
         elif (rol_boton) == 2:
             curso = row["materia_dada"] or ""
-            mensaje = f"""Por su colaboración como ponente en el tema  "{curso}".\nRealizado en la ciudad La Paz del 11 al 15 de Marzo del 2024, auspiciado y organizado por la red internacional TYAN-TWAS y la Universidad Mayor de San Andrés."""
+            # mensaje = f"""Por su colaboración como ponente en el tema  "{curso}".\nRealizado en la ciudad La Paz del 11 al 15 de Marzo del 2024, auspiciado y organizado por la red internacional TYAN-TWAS y la Universidad Mayor de San Andrés."""
+            mensaje = "In recognition of their active involvement in the third TYAN Hands-On Schools conference, and their contribution of significant knowledge and experience for the enhancement of the program for all participants. The event took place at the Universidad Mayor de San Andrés in La Paz, Bolivia, from 6th to 10th October 2025."
         # fecha = date.today()
 
         pdf = FPDF(orientation="L", unit="pt", format="A4")
         pdf.add_page()
-        template_path = os.path.join(base_dir, "Input", "certificate_template.jpg")
+        template_path = os.path.join(base_dir, "Input", "certificate_template.png")
         pdf.image(template_path, 0, 0, w=842, h=595)
 
         if rol_boton == 3:
@@ -114,28 +122,107 @@ def generar_certificados(rol_boton):
             # 3. Insertar QR en el PDF
             pdf.image(qr_path, x=740, y=500, w=80, h=80)  # ajusta x,y,w,h a tu diseño
 
-        pdf.set_font("Arial", "B", 50)
+        # Registrar la fuente (asumiendo que están en ./fonts/)
+        fonts_path_poppins_bold = os.path.join(base_dir, "fonts", "Poppins-Bold.ttf")
+        fonts_path_poppins_medium = os.path.join(base_dir, "fonts", "Poppins-Medium.ttf")
+        fonts_path_poppins_regular= os.path.join(base_dir, "fonts", "Poppins-Regular.ttf")
+        fonts_path_poppins_light= os.path.join(base_dir, "fonts", "Poppins-Light.ttf")
+        pdf.add_font("Poppins_Bold", "", fonts_path_poppins_bold, uni=True)
+        pdf.add_font("Poppins_Medium", "", fonts_path_poppins_medium, uni=True)
+        pdf.add_font("Poppins_Regular", "", fonts_path_poppins_regular, uni=True)
+        pdf.add_font("Poppins_Light", "", fonts_path_poppins_light, uni=True)
+
+        pdf.set_font("Poppins_Bold", style="", size=50)
         pdf.set_text_color(0, 20, 60)
-        pdf.set_xy(0, 20)
+        pdf.set_xy(0, 125)
         pdf.multi_cell(842, 60, titulo, 0, "C")
 
-        pdf.set_font("Helvetica", "I", 30)
-        pdf.set_text_color(60, 60, 60)
-        pdf.set_xy(0, 210)
-        pdf.cell(w=842, h=60, txt=participante, align="C")
+        pdf.set_font("Poppins_Light", style="", size=15)
+        pdf.set_xy(0, 175)
+        pdf.multi_cell(842, 60, "The organization in charge of TYAN BOLIVIA awarded this recognition to:", 0, "C")
 
-        pdf.set_font("Arial", "", 12)
-        pdf.set_text_color(250, 250, 250)
-        pdf.set_xy(150, 260)
-        pdf.multi_cell(600, 15, mensaje, 0, "C")
-        if rol_boton == 3:
-            pdf.set_font("Arial", "I", 14)
-            pdf.set_text_color(0, 0, 0)
-            pdf.set_xy(0, 510)
-            pdf.multi_cell(600, 14, docente + " \nDocente de Materia", 0, "C")
+        pdf.set_font("Poppins_Bold", "", 30)
+        pdf.set_xy(0, 225)
+        pdf.cell(w=842, h=60, txt=participante.upper(), align="C")
+
+        ### EL SIGUIENTE BLOQUE ES LA LINEA HORIZONTAL
+        # Configuración
+        margen_horizontal = 120   # distancia desde los bordes izquierdo y derecho
+        y_pos = 280              # altura donde irá la línea (en mm)
+        color_linea = (0, 119, 194)  # azul medio (RGB)
+
+        # Dibujar línea
+        pdf.set_draw_color(*color_linea)
+        pdf.set_line_width(0.5)  # grosor opcional
+
+        # Coordenadas calculadas
+        x1 = margen_horizontal
+        x2 = pdf.w - margen_horizontal  # ancho total - margen derecho
+
+        pdf.line(x1, y_pos, x2, y_pos)
+        ### FIN DE LA LINEA HORIZONTAL
+
+
+        pdf.set_font("Poppins_Light", "", 13)
+        pdf.set_xy((pdf.w - 600) / 2, 300)
+        pdf.multi_cell(w=600, h=20, txt=mensaje, border=0, align="J")
+        
+        x = 50
+        pdf.set_font("Poppins_Light", "", 13)
+        pdf.set_xy(x, 425)
+        pdf.multi_cell(w=150, h=10, txt="Dr. Max Paoli", align="C")
+        pdf.set_font("Poppins_Medium","", 13)
+        pdf.set_xy(x, 440)
+        pdf.multi_cell(w=150, h=10, txt="Director", align="C")
+        pdf.set_xy(x, 455)
+        pdf.multi_cell(w=150, h=10, txt="Programa TYAN", align="C")
+
+        x = 200
+        pdf.set_font("Poppins_Light", "", 13)
+        pdf.set_xy(x, 425)
+        pdf.multi_cell(w=150, h=10, txt="Dr. Rigoberto Choque", align="C")
+        pdf.set_font("Poppins_Medium","", 13)
+        pdf.set_xy(x, 440)
+        pdf.multi_cell(w=150, h=10, txt="Director Académico", align="C")
+        pdf.set_xy(x, 455)
+        pdf.multi_cell(w=150, h=10, txt="Carrera Cs. Quimicas", align="C")
+
+        x = 350
+        pdf.set_font("Poppins_Light", "", 13)
+        pdf.set_xy(x, 425)
+        pdf.multi_cell(w=150, h=10, txt="Dra. Leslie Tejada", align="C")
+        pdf.set_font("Poppins_Medium","", 13)
+        pdf.set_xy(x, 440)
+        pdf.multi_cell(w=150, h=10, txt="Coordinadora", align="C")
+        pdf.set_xy(x, 455)
+        pdf.multi_cell(w=150, h=10, txt="TYAN-TWAS", align="C")
+
+        x = 500
+        pdf.set_font("Poppins_Light", "", 13)
+        pdf.set_xy(x, 425)
+        pdf.multi_cell(w=300, h=10, txt="M.Sc. Aldo Valdez Alvarado", align="C")
+        pdf.set_font("Poppins_Medium","", 13)
+        pdf.set_xy(x, 440)
+        pdf.multi_cell(w=300, h=10, txt="Decano", align="C")
+        pdf.set_xy(x, 455)
+        pdf.multi_cell(w=300, h=10, txt="Facultado de Ciencias Puras y Naturales", align="C")
+
+        pdf.set_font("Poppins_Light", "", 10 )
+        pdf.set_xy(600, 470)
+        pdf.multi_cell(w=200, h=10, txt="La Paz - Bolivia, Octubre de 2025")
+
+        ### FIRMAS DIGITALES
+        img_path = os.path.join(base_dir, "Input", "firma_max_paoli_sin_fondo.png")
+        pdf.image(img_path, 50, 380, w=149, h=70)
+
+        img_path = os.path.join(base_dir, "Input", "firma_decano.png")
+        pdf.image(img_path, 550, 340, w=207, h=120)
+        ### FIN DE FIRMAS DIGITALES
 
         file_name = f"{documento.replace(' ', '_')} {participante.replace(' ', '_')} {curso.replace(' ', '_')}"
+        file_name = utils.sanitize_filename(file_name)
         pdf.output(os.path.join(folder, f"{file_name}_certificate.pdf"))
+        
 
         if rol_boton == 3:
             with db.engine.begin() as conn:
@@ -166,7 +253,7 @@ def generar_certificados(rol_boton):
 
 @certificate_bp.route("/descargar-certificado/<int:user_id>")
 @login_required
-@role_required(1, 3, 4)
+@role_required(1, 2, 3, 4)
 def descargar_certificado(user_id):
     base_dir = os.path.dirname(os.path.abspath(__file__))
     folder = os.path.join(base_dir, "temp_certificates")
@@ -212,7 +299,7 @@ def descargar_certificado(user_id):
 
     # Datos
     participante = result.nombre + " " + result.apellido
-    documento = result.documento
+    documento = result.documento or "CERT"
     docente = f"Dr(a). {result.docente or ''} {result.doc_ape or ''}".strip()
     curso = result.curso_nombre or ""
     rol = result.rol
@@ -314,7 +401,8 @@ def descargar_certificado(user_id):
 def enviar_certificado(user_id):
     base_dir = os.path.dirname(os.path.abspath(__file__))
     folder = os.path.join(base_dir, "temp_certificates")
-
+    print(f'base_dir_debug {base_dir}')
+    print(f'debug:folder {folder}')
     # Leer datos del usuario junto con información necesaria para personalizar
     with db.engine.connect() as conn:
         query = text(
@@ -367,10 +455,27 @@ def enviar_certificado(user_id):
             materia_dada,
             id_curso_doc,
         ) = result
+        docente = docente or ''
+        docente = docente.replace('\xa0', ' ').strip()
+        doc_ape = doc_ape or ''
+        doc_ape = doc_ape.replace('\xa0', ' ').strip()
+        student = student.replace('\xa0', ' ').strip()
+        apellido = apellido.replace('\xa0', ' ').strip()
+        documento = documento or ''
+        documento = documento.replace('\xa0', ' ').strip()
+        curso_nombre = curso_nombre or ''
+        curso_nombre = curso_nombre.replace('\xa0', ' ').strip()
+        # materia_dada puede ser None, por eso se maneja diferente
+        materia_dada = materia_dada.replace('\xa0', ' ').strip() if materia_dada else None
+        email = email.replace('\xa0', '').strip()
 
     if request.method == "POST":
-        asunto = request.form["asunto"]
-        mensaje = request.form["mensaje"]
+        asunto_sucio = request.form["asunto"]
+        mensaje_sucio = request.form["mensaje"]
+
+        # Limpieza estricta de \xa0 y saltos de línea/espacios externos
+        asunto = asunto_sucio.replace('\xa0', ' ').strip()
+        mensaje = mensaje_sucio.replace('\xa0', ' ').strip()
 
         # Definir título y mensaje
         participante = student + " " + apellido
@@ -386,8 +491,6 @@ def enviar_certificado(user_id):
         elif rol == 2:  # Expositor
             curso = materia_dada or ""
             mssg = f"""Por su colaboración como ponente en el tema "{curso}". Realizado en la ciudad La Paz del 11 al 15 de Marzo del 2024, auspiciado y organizado por la red internacional TYAN-TWAS y la Universidad Mayor de San Andrés."""
-
-        fecha = date.today().strftime("%Y-%m-%d")
 
         # Crear carpeta temporal limpia
         if os.path.exists(folder):
@@ -441,33 +544,80 @@ def enviar_certificado(user_id):
 
             # 3. Insertar QR en el PDF
             pdf.image(qr_path, x=740, y=500, w=80, h=80)  # ajusta x,y,w,h a tu diseño
-        file_name = f"{documento.replace(' ', '_')}_{student.replace(' ', '_')}_{apellido.replace(' ', '_')}_{curso.replace(' ', '_')}_certificate.pdf"
+        
+        file_name = f"{documento.replace(' ', '_')}_{student.replace(' ', '_')}_{apellido.replace(' ', '_')}_{curso.replace(' ', '_')}_certificate.pdf"        
+        file_name = utils.sanitize_filename(file_name)
+        
         output_path = os.path.join(folder, file_name)
-        pdf.output(output_path)
-
-        # Enviar correo con manejo de error
+        pdf.output(output_path)        
+    
+        mail_address = os.getenv("MAIL_USERNAME").replace('\xa0', '').strip()
+        safe_sender_name = "TYAN" # o "TYAN FCPN"
+        final_sender = f"{safe_sender_name} <{mail_address}>"
+        asunto = "Holaaaa"
+        mensaje = "Holaaaa"
         msg = Message(
-            subject=asunto, sender=os.getenv("MAIL_USERNAME"), recipients=[email]
-        )
-        msg.body = mensaje
-        try:
+            subject=asunto, 
+            sender=final_sender, 
+            recipients=[email.replace('\xa0','').strip()],
+            charset="utf-8"
+        )        
+        
+        msg.body = mensaje.encode('ascii', 'ignore').decode('ascii') # Limpieza ASCII agresiva
+        # Aplicar la limpieza más estricta a la variable del cuerpo:
+        clean_body = mensaje.replace('\xa0', ' ').strip() 
+        msg.body = clean_body.encode('ascii', 'ignore').decode('ascii') # Limpieza ASCII estricta
+        try:            
+        
+            # 1. Definir credenciales y remitente seguro (como en la otra función)
+            mail_address = os.getenv("MAIL_USERNAME").replace('\xa0', '').strip()
+            app_password = os.getenv("MAIL_PASSWORD") 
+            final_filename = file_name.replace('\xa0', ' ').strip()
+            
+            # 2. Crear el objeto EmailMessage
+            msg = EmailMessage()
+            msg["From"] = f"TYAN <{mail_address}>" # Remitente forzado, puramente ASCII. ¡Clave para solucionar el \xa0!
+            msg["To"] = email.replace('\xa0', '').strip()
+            msg["Subject"] = "Certificado de Participación/Aprobación" # Usar un asunto limpio, o tu variable 'asunto' limpia.
+            
+            # 3. Definir el cuerpo del mensaje (limpio)
+            mensaje_limpio = mensaje.replace('\xa0', ' ').strip()
+            msg.set_content(mensaje_limpio)
+            
+            # 4. Adjuntar el PDF generado
             with open(output_path, "rb") as f:
-                msg.attach(
-                    filename=file_name, content_type="application/pdf", data=f.read()
-                )
-            mail.send(msg)
+                # Guess type (opcional, pero buena práctica)
+                mime_type = mimetypes.guess_type(final_filename)[0] or 'application/pdf'
+                maintype, subtype = mime_type.split('/', 1)
+                
+                msg.add_attachment(f.read(), 
+                                  maintype=maintype, 
+                                  subtype=subtype, 
+                                  filename=final_filename)
+                                  
+            # 5. Enviar usando SMTPLIB (Conexión segura SSL)
+            with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
+                smtp.login(mail_address, app_password)
+                smtp.send_message(msg)   
+            
             flash(f"Certificado enviado a {email}", "success")
+            if rol == 3:
+                with db.engine.begin() as conn:
+                    conn.execute(
+                        text(
+                            "UPDATE inscripciones SET certificado_generado = TRUE WHERE id_inscripcion = :id"
+                        ),
+                        {"id": id_inscripcion},
+                    )
         except Exception as e:
+            print(">>> FINAL FILENAME:", repr(final_filename))
+            print(file_name)
+            print(mensaje)
+            print(asunto)
+            print(e)
             flash(f"Error al enviar certificado a {email}: {str(e)}", "error")
 
-        if rol == 3:
-            with db.engine.begin() as conn:
-                conn.execute(
-                    text(
-                        "UPDATE inscripciones SET certificado_generado = TRUE WHERE id_inscripcion = :id"
-                    ),
-                    {"id": id_inscripcion},
-                )
+        
         # Limpiar carpeta temporal
         shutil.rmtree(folder)
 
@@ -532,6 +682,11 @@ def enviar_certificados_todos(rol_boton):
 
         errores_envio, exitos_envio = [], []
 
+        # Configuración de correo (Tomado de la función de referencia)
+        mail_address = os.getenv("MAIL_USERNAME").replace('\xa0', '').strip()
+        app_password = os.getenv("MAIL_PASSWORD")
+        safe_sender_name = "TYAN"
+
         for user in usuarios:
             (
                 id_usuario,
@@ -554,7 +709,7 @@ def enviar_certificados_todos(rol_boton):
             participante = f"{nombre} {apellido}"
             curso = curso_nombre or ""
             docente_full = f"Dr(a). {docente or ''} {doc_ape or ''}".strip()
-
+            documento = documento or 'doc'
             # Definir título y mensaje
             titulo = "CERTIFICADO\nIII TYAN Hands-on Schools en Bolivia 2025"
             if rol == 3:  # Estudiante
@@ -610,27 +765,59 @@ def enviar_certificados_todos(rol_boton):
                 pdf.image(qr_path, x=740, y=500, w=80, h=80)
 
             file_name = f"{documento.replace(' ', '_')}_{participante.replace(' ', '_')}_{curso.replace(' ', '_')}_certificate.pdf"
+            file_name = utils.sanitize_filename(file_name)
             output_path = os.path.join(folder, file_name)
             pdf.output(output_path)
 
-            # Enviar correo
-            msg = Message(subject=asunto, sender=os.getenv("MAIL_USERNAME"), recipients=[email])
-            msg.body = mensaje
+            clean_email = email.replace('\xa0', '').strip()
+            final_filename = file_name.replace('\xa0', ' ').strip()
+            mensaje_limpio = mensaje.replace('\xa0', ' ').strip()
+            
+            if not clean_email:
+                errores_envio.append((participante, "Correo electrónico vacío"))
+                continue # Saltar esta iteración
 
             try:
+                # 1. Crear el objeto EmailMessage
+                msg_smtp = EmailMessage()
+                # Usar el remitente forzado para evitar \xa0 en el campo From
+                msg_smtp["From"] = f"{safe_sender_name} <{mail_address}>" 
+                msg_smtp["To"] = clean_email
+                msg_smtp["Subject"] = asunto 
+                
+                # 2. Definir el cuerpo del mensaje (limpio)
+                msg_smtp.set_content(mensaje_limpio)
+                
+                # 3. Adjuntar el PDF generado
                 with open(output_path, "rb") as f:
-                    msg.attach(filename=file_name, content_type="application/pdf", data=f.read())
-                mail.send(msg)
-                exitos_envio.append(email)
+                    # Guess type para adjuntar
+                    mime_type = mimetypes.guess_type(final_filename)[0] or 'application/pdf'
+                    maintype, subtype = mime_type.split('/', 1)
+                    
+                    msg_smtp.add_attachment(f.read(), 
+                                            maintype=maintype, 
+                                            subtype=subtype, 
+                                            filename=final_filename)
+                                            
+                # 4. Enviar usando SMTPLIB (Conexión segura SSL)
+                with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
+                    smtp.login(mail_address, app_password)
+                    smtp.send_message(msg_smtp)
+                
+                # Si el envío fue exitoso
+                exitos_envio.append(clean_email)
+                
+                # Actualizar DB (solo si rol == 3)
+                if rol == 3:
+                    with db.engine.begin() as conn_update:
+                        conn_update.execute(
+                            text("UPDATE inscripciones SET certificado_generado = TRUE WHERE id_inscripcion = :id"),
+                            {"id": id_inscripcion},
+                        )
+                        
             except Exception as e:
-                errores_envio.append((email, str(e)))
+                errores_envio.append((clean_email, str(e)))
 
-            if rol == 3:
-                with db.engine.begin() as conn:
-                    conn.execute(
-                        text("UPDATE inscripciones SET certificado_generado = TRUE WHERE id_inscripcion = :id"),
-                        {"id": id_inscripcion},
-                    )
 
         shutil.rmtree(folder)
 
@@ -733,6 +920,24 @@ def verificar(search):
 
 
 @certificate_bp.route("/listar-certificados/<int:id_usuario>")
+@login_required
+@role_required(3)
 def listar_certificados_estudiantes(id_usuario):
     inscripciones = utils.get_inscripciones(id_usuario)        
     return  render_template("Estudiante/certificados.html", inscripciones = inscripciones, id_usuario=id_usuario)
+
+@certificate_bp.route("/listar-certificados-docente/<int:id_usuario>")
+@login_required
+@role_required(2)
+def listar_certificados_docente(id_usuario):
+    cursos = utils.get_cursos(id_usuario)
+    return render_template(
+        "Expositor/certificados.html", cursos=cursos, id_usuario=id_usuario
+    )
+
+def clean_text(text):
+    if not text:
+        return ""
+    # Reemplazar espacios no separables y normalizar
+    text = text.replace(u"\xa0", " ")
+    return unicodedata.normalize("NFKC", text)
