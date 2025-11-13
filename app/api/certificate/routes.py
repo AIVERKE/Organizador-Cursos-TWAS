@@ -751,7 +751,7 @@ def enviar_certificados_todos(rol_boton):
                 pdf.add_font("Poppins_Regular", "", os.path.join(base_dir, "fonts", "Poppins-Regular.ttf"), uni=True)
                 pdf.add_font("Poppins_Light", "", os.path.join(base_dir, "fonts", "Poppins-Light.ttf"), uni=True)
 
-                pdf.set_font("Poppins_Bold", size=40)
+                pdf.set_font("Poppins_Bold", size=30)
                 pdf.set_text_color(0, 20, 60)
                 pdf.set_xy(0, 125)
                 pdf.multi_cell(842, 60, titulo, 0, "C")
@@ -760,7 +760,7 @@ def enviar_certificados_todos(rol_boton):
                 pdf.set_xy(0, 155)
                 pdf.multi_cell(842, 60, "The organization in charge of TYAN BOLIVIA awarded this recognition to:", 0, "C")
 
-                pdf.set_font("Poppins_Bold", size=30)
+                pdf.set_font("Poppins_Bold", size=20)
                 pdf.set_xy(0, 185)
                 pdf.cell(842, 60, participante.upper(), align="C")
 
@@ -771,9 +771,9 @@ def enviar_certificados_todos(rol_boton):
                 pdf.set_line_width(0.5)
                 pdf.line(margen_horizontal, y_pos, pdf.w - margen_horizontal, y_pos)
 
-                pdf.set_font("Poppins_Light", size=11)
+                pdf.set_font("Poppins_Light", size=12)
                 pdf.set_xy((pdf.w - 600) / 2, 260)
-                pdf.multi_cell(600, 20, mensaje_cert, 0, "J")
+                pdf.multi_cell(600, 18, mensaje_cert, 0, "J")
 
                 # Modelos animales y aplicaciones en agroindustria y medio ambiente
                 # coordenadas[50, 200, 350, 500], [40, 160. 280, 400, 500]
