@@ -929,7 +929,7 @@ def enviar_certificados_todos(rol_boton):
                     msg = EmailMessage()
                     msg["From"] = f"{safe_sender_name} <{mail_address}>"
                     msg["To"] = email
-                    # msg["bcc"] = "lktejeda@umsa.bo"
+                    msg["bcc"] = "lktejeda@umsa.bo"
                     msg["Subject"] = asunto
                     msg.set_content(mensaje)
 
