@@ -325,7 +325,7 @@ def descargar_certificado(user_id):
     # Crear PDF
     pdf = FPDF(orientation="L", unit="pt", format="A4")
     pdf.add_page()
-    template_path = os.path.join(base_dir, "Input", "certificate_template.jpg")
+    template_path = os.path.join(base_dir, "Input", "certificate_template.png")
     pdf.image(template_path, 0, 0, w=842, h=595)
 
     pdf.set_font("Arial", "B", 50)
@@ -500,7 +500,7 @@ def enviar_certificado(user_id):
         # Generar PDF
         pdf = FPDF(orientation="L", unit="pt", format="A4")
         pdf.add_page()
-        template_path = os.path.join(base_dir, "Input", "certificate_template.jpg")
+        template_path = os.path.join(base_dir, "Input", "certificate_template.png")
         pdf.image(template_path, 0, 0, w=842, h=595)
 
         pdf.set_font("Arial", "B", 50)
@@ -698,6 +698,93 @@ def enviar_certificados_todos(rol_boton):
         
         with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
             smtp.login(mail_address, app_password)
+        safe_sender_name = "TYAN"
+
+        for user in usuarios:
+            (
+                id_usuario,
+                id_inscripcion,
+                docente,
+                doc_ape,
+                nombre,
+                apellido,
+                email,
+                documento,
+                modalidad,
+                fecha_inscripcion,
+                curso_nombre,
+                nota,
+                rol,
+                materia_dada,
+                id_curso_doc,
+            ) = user
+
+            participante = f"{nombre} {apellido}"
+            curso = curso_nombre or ""
+            docente_full = f"Dr(a). {docente or ''} {doc_ape or ''}".strip()
+            documento = documento or 'doc'
+            # Definir título y mensaje
+            titulo = "CERTIFICADO\nIII TYAN Hands-on Schools en Bolivia 2025"
+            if rol == 3:  # Estudiante
+                if modalidad == "catedra-laboratorio" and nota and int(nota) > 64:
+                    titulo = "CERTIFICADO DE APROBACION\nIII TYAN Hands-on Schools en Bolivia 2025"
+                    mssg = f"""Ha completado exitosamente el curso de "{curso}" dictado por {docente_full}, inaugurado dentro del postgrado de Ciencias Químicas de la Facultad de Ciencias Puras y Naturales, de la Universidad Mayor de San Andrés. Realizado en la ciudad La Paz del '11 al 15 de Marzo del 2024', con una duración de 30 hrs. académicas equivalente a 1 CLAR (Crédito Latinoamericano de Referencia)."""
+                else:
+                    mssg = f"""Ha participado del curso de "{curso}" dictado por {docente_full}, inaugurado dentro del postgrado de Ciencias Químicas de la Facultad de Ciencias Puras y Naturales, de la Universidad Mayor de San Andrés. Realizado en la ciudad La Paz del '11 al 15 de Marzo del 2024'."""
+            elif rol == 2:  # Expositor
+                curso = materia_dada or ""
+                mssg = f"""Por su colaboración como ponente en el tema "{curso}". Realizado en la ciudad La Paz del 11 al 15 de Marzo del 2024, auspiciado y organizado por la red internacional TYAN-TWAS y la Universidad Mayor de San Andrés."""
+
+            # Crear PDF
+            pdf = FPDF(orientation="L", unit="pt", format="A4")
+            pdf.add_page()
+            template_path = os.path.join(base_dir, "Input", "certificate_template.png")
+            pdf.image(template_path, 0, 0, w=842, h=595)
+
+            pdf.set_font("Arial", "B", 50)
+            pdf.set_text_color(0, 20, 60)
+            pdf.set_xy(0, 20)
+            pdf.multi_cell(842, 60, titulo, 0, "C")
+
+            pdf.set_font("Helvetica", "I", 30)
+            pdf.set_text_color(60, 60, 60)
+            pdf.set_xy(0, 210)
+            pdf.cell(w=842, h=60, txt=participante, align="C")
+
+            pdf.set_font("Arial", "", 12)
+            pdf.set_text_color(250, 250, 250)
+            pdf.set_xy(150, 260)
+            pdf.multi_cell(600, 15, mssg, 0, "C")
+
+            if rol == 3:
+                pdf.set_font("Arial", "I", 14)
+                pdf.set_text_color(0, 0, 0)
+                pdf.set_xy(0, 510)
+                pdf.multi_cell(600, 14, docente_full + " \nDocente de Materia", 0, "C")
+
+                # Generar QR estudiante
+                url = f"{os.getenv('URL_APP')}/cert/verificar/{id_inscripcion}-0"
+                qr_img = segno.make(url)
+                qr_path = os.path.join(folder, f"qr_{id_inscripcion}.png")
+                qr_img.save(qr_path, scale=5)
+                pdf.image(qr_path, x=740, y=500, w=80, h=80)
+
+            elif rol == 2:
+                # Generar QR expositor
+                url = f"{os.getenv('URL_APP')}/cert/verificar/{id_usuario}-{id_curso_doc}"
+                qr_img = segno.make(url)
+                qr_path = os.path.join(folder, f"qr_{id_usuario}-{id_curso_doc}.png")
+                qr_img.save(qr_path, scale=5)
+                pdf.image(qr_path, x=740, y=500, w=80, h=80)
+
+            file_name = f"{documento.replace(' ', '_')}_{participante.replace(' ', '_')}_{curso.replace(' ', '_')}_certificate.pdf"
+            file_name = utils.sanitize_filename(file_name)
+            output_path = os.path.join(folder, file_name)
+            pdf.output(output_path)
+
+            clean_email = email.replace('\xa0', '').strip()
+            final_filename = file_name.replace('\xa0', ' ').strip()
+            mensaje_limpio = mensaje.replace('\xa0', ' ').strip()
             
             for _, row in participants.iterrows():
                 participante = f"{row['nombre']} {row['apellido']}"
