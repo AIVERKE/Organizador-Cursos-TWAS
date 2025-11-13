@@ -631,7 +631,7 @@ def enviar_certificado(user_id):
         email=email,
     )
 
-
+# "Modelos animales y aplicaciones en agroindustria y medio ambiente/ Animal Models in Agriculture and Environmental Research"
 @certificate_bp.route("/enviar-certificados-todos/<int:rol_boton>", methods=["GET", "POST"])
 @login_required
 @role_required(1, 4)
@@ -646,9 +646,9 @@ def enviar_certificados_todos(rol_boton):
             shutil.rmtree(folder)
         os.makedirs(folder)
 
+        # Obtener usuarios según rol
         with db.engine.connect() as conn:
-            query = text(
-                """
+            query = """
                 SELECT 
                     u.id_usuario,
                     i.id_inscripcion,
@@ -661,6 +661,7 @@ def enviar_certificados_todos(rol_boton):
                     i.modalidad as modalidad, 
                     i.fecha_inscripcion as fecha_inscripcion,
                     c.nombre as curso_nombre,
+                    c.id_curso as id_curso,
                     n.nota_final as nota,
                     u.id_rol as rol,
                     cur.nombre as materia_dada,
@@ -673,18 +674,30 @@ def enviar_certificados_todos(rol_boton):
                 LEFT JOIN cursos cur ON cur.id_ponente = u.id_usuario
                 WHERE u.id_rol = :rol_boton;
             """
-            )
-            usuarios = conn.execute(query, {"rol_boton": rol_boton}).fetchall()
+            result = conn.execute(text(query), {"rol_boton": rol_boton})
+            participants = pd.DataFrame(result.fetchall(), columns=result.keys())
 
-        if not usuarios:
+        if participants.empty:
             flash("No hay usuarios para este rol.", "warning")
             return redirect(url_for("certificate.enviar_certificados_todos", rol_boton=rol_boton))
 
         errores_envio, exitos_envio = [], []
 
-        # Configuración de correo (Tomado de la función de referencia)
+        # Configuración de correo SMTP
         mail_address = os.getenv("MAIL_USERNAME").replace('\xa0', '').strip()
         app_password = os.getenv("MAIL_PASSWORD")
+        safe_sender_name = "TYAN Bolivia"
+        
+        traducciones = {
+            "Biofertilizantes para la producción sostenible de cultivos": "Biofertilizers for Sustainable Crop Production",
+            "Agroinnovación para construir resiliencia: modelos gastronómicos sostenibles y saludables": "Agroinnovation to Build Resilience: Sustainable and Healthy Gastronomic Models",
+            "Algas para la seguridad alimentaria y nutricional": "Algae for Food and Nutritional Security",
+            "Fitomejoradores biología para la reproducción vegetal": "Plant Breeders: Biology for Plant Reproduction",
+            "Modelos animales y aplicaciones en agroindustria y medio ambiente": "Animal Models and Applications in Agroindustry and the Environment"
+        }
+        
+        with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
+            smtp.login(mail_address, app_password)
         safe_sender_name = "TYAN"
 
         for user in usuarios:
@@ -773,71 +786,280 @@ def enviar_certificados_todos(rol_boton):
             final_filename = file_name.replace('\xa0', ' ').strip()
             mensaje_limpio = mensaje.replace('\xa0', ' ').strip()
             
-            if not clean_email:
-                errores_envio.append((participante, "Correo electrónico vacío"))
-                continue # Saltar esta iteración
+            for _, row in participants.iterrows():
+                participante = f"{row['nombre']} {row['apellido']}"
+                email = (row["email"] or "").strip()
+                if not email:
+                    errores_envio.append((participante, "Correo vacío"))
+                    continue
+                
+                nota = float(row["nota"]) if row["nota"] not in (None, "", "NaN") else 0
+                if nota <= 1:
+                    continue   
 
-            try:
-                # 1. Crear el objeto EmailMessage
-                msg_smtp = EmailMessage()
-                # Usar el remitente forzado para evitar \xa0 en el campo From
-                msg_smtp["From"] = f"{safe_sender_name} <{mail_address}>" 
-                msg_smtp["To"] = clean_email
-                msg_smtp["Subject"] = asunto 
                 
-                # 2. Definir el cuerpo del mensaje (limpio)
-                msg_smtp.set_content(mensaje_limpio)
+                documento = row["documento"] or "CERT"
+                docente = f"{row['docente'] or ''} {row['doc_ape'] or ''}".strip()
+                curso = ""
                 
-                # 3. Adjuntar el PDF generado
-                with open(output_path, "rb") as f:
-                    # Guess type para adjuntar
-                    mime_type = mimetypes.guess_type(final_filename)[0] or 'application/pdf'
-                    maintype, subtype = mime_type.split('/', 1)
-                    
-                    msg_smtp.add_attachment(f.read(), 
-                                            maintype=maintype, 
-                                            subtype=subtype, 
-                                            filename=final_filename)
-                                            
-                # 4. Enviar usando SMTPLIB (Conexión segura SSL)
-                with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
-                    smtp.login(mail_address, app_password)
-                    smtp.send_message(msg_smtp)
+                titulo = (
+                    "CERTIFICATE OF PARTICIPATION"
+                    if row["nota"] and int(row["nota"]) > 64
+                    else "CERTIFICATE OF PARTICIPATION"
+                )
+
                 
-                # Si el envío fue exitoso
-                exitos_envio.append(clean_email)
                 
-                # Actualizar DB (solo si rol == 3)
-                if rol == 3:
-                    with db.engine.begin() as conn_update:
-                        conn_update.execute(
-                            text("UPDATE inscripciones SET certificado_generado = TRUE WHERE id_inscripcion = :id"),
-                            {"id": id_inscripcion},
-                        )
+                # Mensaje del certificado
+                if (rol_boton) == 3:
+                    curso = row["curso_nombre"] or ""
+                    curso_traducido = traducciones.get(curso, curso)  # si no existe traducción, deja el original
+                    print(row["nota"])
+                    if row["nota"] and int(row["nota"]) > 64:
                         
-            except Exception as e:
-                errores_envio.append((clean_email, str(e)))
+                        mensaje_cert = f"""Has approved the course ""{curso_traducido}", delivered by Dr. {docente}, within the framework of the Third Edition of the TYAN-TWAS Hands-on Schools in Bolivia, 2025.\nThe course comprised a total of 30 academic hours, corresponding to 1 CLAR (Latin American Reference Credit), and was conducted in La Paz, Bolivia, from 6 to 10 October 2025."""
+                    else:
+                        mensaje_cert = f"""Has participed the course ""{curso_traducido}", delivered by Dr. {docente}, within the framework of the Third Edition of the TYAN-TWAS Hands-on Schools in Bolivia, 2025.\nThe course comprised a total of 30 academic hours, corresponding to 1 CLAR (Latin American Reference Credit), and was conducted in La Paz, Bolivia, from 6 to 10 October 2025."""
+                elif (rol_boton) == 2:
+                    curso = row["materia_dada"] or ""
+                    mensaje_cert = "In recognition of their active involvement in the third TYAN Hands-On Schools conference, and their contribution of significant knowledge and experience for the enhancement of the program for all participants. The event took place at the Universidad Mayor de San Andrés in La Paz, Bolivia, from 6th to 10th October 2025."
 
+                # Crear PDF con el mismo formato
+                pdf = FPDF(orientation="L", unit="pt", format="A4")
+                pdf.add_page()
 
-        shutil.rmtree(folder)
+                # Fondo
+                template_path = os.path.join(base_dir, "Input", "certificate_template.png")
+                pdf.image(template_path, 0, 0, w=842, h=595)
+
+                # Registrar fuentes
+                pdf.add_font("Poppins_Bold", "", os.path.join(base_dir, "fonts", "Poppins-Bold.ttf"), uni=True)
+                pdf.add_font("Poppins_Medium", "", os.path.join(base_dir, "fonts", "Poppins-Medium.ttf"), uni=True)
+                pdf.add_font("Poppins_Regular", "", os.path.join(base_dir, "fonts", "Poppins-Regular.ttf"), uni=True)
+                pdf.add_font("Poppins_Light", "", os.path.join(base_dir, "fonts", "Poppins-Light.ttf"), uni=True)
+
+                pdf.set_font("Poppins_Bold", size=40)
+                pdf.set_text_color(0, 20, 60)
+                pdf.set_xy(0, 125)
+                pdf.multi_cell(842, 60, titulo, 0, "C")
+
+                pdf.set_font("Poppins_Light", size=15)
+                pdf.set_xy(0, 155)
+                pdf.multi_cell(842, 60, "The organization in charge of TYAN BOLIVIA awarded this recognition to:", 0, "C")
+
+                pdf.set_font("Poppins_Bold", size=30)
+                pdf.set_xy(0, 185)
+                pdf.cell(842, 60, participante.upper(), align="C")
+
+                # Línea decorativa
+                margen_horizontal = 120
+                y_pos = 240
+                pdf.set_draw_color(0, 119, 194)
+                pdf.set_line_width(0.5)
+                pdf.line(margen_horizontal, y_pos, pdf.w - margen_horizontal, y_pos)
+
+                pdf.set_font("Poppins_Light", size=11)
+                pdf.set_xy((pdf.w - 600) / 2, 260)
+                pdf.multi_cell(600, 20, mensaje_cert, 0, "J")
+
+                # Modelos animales y aplicaciones en agroindustria y medio ambiente
+                # coordenadas[50, 200, 350, 500], [40, 160. 280, 400, 500]
+                # coordenadas[80, 280, 80], [50, 200, 350, 500]
+                if curso != "Modelos animales y aplicaciones en agroindustria y medio ambiente":    
+                    # Firmas y texto inferior
+                    
+                    size = 11
+                    x = 40
+                    pdf.set_font("Poppins_Light", "", size)
+                    pdf.set_xy(x, 425)
+                    pdf.multi_cell(150, 10, "Dr. Max Paoli", align="C")
+                    pdf.set_font("Poppins_Medium", "", size)
+                    pdf.set_xy(x, 440)
+                    pdf.multi_cell(150, 10, "Director", align="C")
+                    pdf.set_xy(x, 455)
+                    pdf.multi_cell(150, 10, "TYAN Program", align="C")
+                    
+                    x = 160
+                    pdf.set_font("Poppins_Light", "", size)
+                    pdf.set_xy(x, 425)
+                    pdf.multi_cell(w=150, h=10, txt="Dr. Rigoberto Choque", align="C")
+                    pdf.set_font("Poppins_Medium","", size)
+                    pdf.set_xy(x, 440)
+                    pdf.multi_cell(w=150, h=10, txt="Academic Director", align="C")
+                    pdf.set_xy(x, 455)
+                    pdf.multi_cell(w=150, h=10, txt="Department of Chemical Sciences", align="C")
+                    
+                    x = 280
+                    docente_x = x
+                    pdf.set_font("Poppins_Light", "", size)
+                    pdf.set_xy(x, 425)
+                    pdf.multi_cell(w=150, h=10, txt=f"Dr. {docente}", align="C")
+                    pdf.set_font("Poppins_Medium","", size)
+                    pdf.set_xy(x, 440)
+                    pdf.multi_cell(w=150, h=10, txt="Course Lecturer", align="C")
+                    pdf.set_xy(x, 455)
+                    pdf.multi_cell(w=150, h=10, txt="TYAN-TWAS", align="C")
+                    
+                    x = 400
+                    pdf.set_font("Poppins_Light", "", size)
+                    pdf.set_xy(x, 425)
+                    pdf.multi_cell(w=150, h=10, txt="Dra. Leslie Tejada", align="C")
+                    pdf.set_font("Poppins_Medium","", size)
+                    pdf.set_xy(x, 440)
+                    pdf.multi_cell(w=150, h=10, txt="Coordinator", align="C")
+                    pdf.set_xy(x, 455)
+                    pdf.multi_cell(w=150, h=10, txt="TYAN-TWAS", align="C")
+                    
+                    x = 500
+                    pdf.set_font("Poppins_Light", "", size)
+                    pdf.set_xy(x, 425)
+                    pdf.multi_cell(300, 10, "M.Sc. Aldo Valdez Alvarado", align="C")
+                    pdf.set_font("Poppins_Medium", "", size)
+                    pdf.set_xy(x, 440)
+                    pdf.multi_cell(300, 10, "Dean", align="C")
+                    pdf.set_xy(x, 455)
+                    pdf.multi_cell(300, 10, "Faculty of Pure and Natural Sciences", align="C")
+
+                    pdf.set_font("Poppins_Light", "", 10)
+                    pdf.set_xy(600, 470)
+                    pdf.multi_cell(200, 10, "La Paz - Bolivia, October 2025")
+
+                    # Firmas digitales
+                    pdf.image(os.path.join(base_dir, "Input", "firma_max_paoli_sin_fondo.png"), 40, 380, w=134, h=63)
+                    pdf.image(os.path.join(base_dir, "Input", "choque_firma.png"), 170, 350, w=120*0.8, h=89*0.8)
+                    pdf.image(os.path.join(base_dir, "Input", "tejada_firma.png"), 400, 350, w=182*0.8, h=123*0.8)
+                    pdf.image(os.path.join(base_dir, "Input", "firma_decano.png"), 550, 370, w=207*0.8, h=120*0.8)
+
+                    if curso=="Biofertilizantes para la producción sostenible de cultivos": pdf.image(os.path.join(base_dir, "Input", "warshi_firma.png"), docente_x+20, 370, w=116, h=70)
+                    if curso=="Agroinnovación para construir resiliencia: modelos gastronómicos sostenibles y saludables": pdf.image(os.path.join(base_dir, "Input", "izurieta_firma.png"), docente_x, 360, w=180, h=96)
+                    if curso=="Algas para la seguridad alimentaria y nutricional": pdf.image(os.path.join(base_dir, "Input", "ambati_firma.png"), docente_x, 390, w=128, h=27)
+                    if curso=="Fitomejoradores biología para la reproducción vegetal": pdf.image(os.path.join(base_dir, "Input", "bolaños_firma.png"), docente_x, 370, w=177, h=63)
+                    # if curso=="Fitomejoradores biología para la reproducción vegetal": 
+                    #     pdf.image(os.path.join(base_dir, "Input", "bolaños_firma.png"), docente_x, 370, w=177, h=63)
+                    #     pdf.image(os.path.join(base_dir, "Input", "ambati_firma.png"), docente_x, 390, w=128, h=27)
+                    #     pdf.image(os.path.join(base_dir, "Input", "izurieta_firma.png"), docente_x, 360, w=180, h=96)
+                    #     pdf.image(os.path.join(base_dir, "Input", "warshi_firma.png"), docente_x+20, 370, w=116, h=70)
+
+                else:
+                    size = 10
+                    y = 425
+                    x = 50
+                    pdf.set_font("Poppins_Light", "", size)
+                    pdf.set_xy(x, y)
+                    pdf.multi_cell(w=150, h=10, txt="Dr. Max Paoli", align="C")
+                    pdf.set_font("Poppins_Medium","", size)
+                    pdf.set_xy(x, y+15)
+                    pdf.multi_cell(w=150, h=10, txt="Director", align="C")
+                    pdf.set_xy(x, y+30)
+                    pdf.multi_cell(w=150, h=10, txt="Programa TYAN", align="C")
+
+                    x = 200
+                    pdf.set_font("Poppins_Light", "", size)
+                    pdf.set_xy(x, 425)
+                    pdf.multi_cell(w=150, h=10, txt="Dr. Rigoberto Choque", align="C")
+                    pdf.set_font("Poppins_Medium","", size)
+                    pdf.set_xy(x, 440)
+                    pdf.multi_cell(w=150, h=10, txt="Director Académico", align="C")
+                    pdf.set_xy(x, 455)
+                    pdf.multi_cell(w=150, h=10, txt="Carrera Cs. Quimicas", align="C")
+
+                    x = 350
+                    pdf.set_font("Poppins_Light", "", size)
+                    pdf.set_xy(x, y)
+                    pdf.multi_cell(w=150, h=10, txt="Dra. Leslie Tejada", align="C")
+                    pdf.set_font("Poppins_Medium","", size)
+                    pdf.set_xy(x, y+15)
+                    pdf.multi_cell(w=150, h=10, txt="Coordinadora", align="C")
+                    pdf.set_xy(x, y+30)
+                    pdf.multi_cell(w=150, h=10, txt="TYAN-TWAS", align="C")
+
+                    x = 500
+                    pdf.set_font("Poppins_Light", "", size)
+                    pdf.set_xy(x, y)
+                    pdf.multi_cell(w=300, h=10, txt="M.Sc. Aldo Valdez Alvarado", align="C")
+                    pdf.set_font("Poppins_Medium","", size)
+                    pdf.set_xy(x, y+15)
+                    pdf.multi_cell(w=300, h=10, txt="Decano", align="C")
+                    pdf.set_xy(x, y+30)
+                    pdf.multi_cell(w=300, h=10, txt="Facultado de Ciencias Puras y Naturales", align="C")
+
+                    pdf.set_font("Poppins_Light", "", 10)
+                    pdf.set_xy(600, 470)
+                    pdf.multi_cell(200, 10, "La Paz - Bolivia, Octubre de 2025")
+
+                    # Firmas digitales
+                    pdf.image(os.path.join(base_dir, "Input", "firma_max_paoli_sin_fondo.png"), 50, 380, w=149, h=70)
+                    pdf.image(os.path.join(base_dir, "Input", "choque_firma.png"), 220, 350, w=120*0.8, h=89*0.8)
+                    pdf.image(os.path.join(base_dir, "Input", "tejada_firma.png"), 350, 350, w=182*0.8, h=123*0.8)
+                    pdf.image(os.path.join(base_dir, "Input", "firma_decano.png"), 550, 370, w=207*0.8, h=120*0.8)
+                    
+
+                # QR
+                if rol_boton == 3:
+                    qr_url = f"{os.getenv('URL_APP')}/cert/verificar/{row['id_inscripcion']}-0"
+                    qr_path = os.path.join(folder, f"qr_{row['id_inscripcion']}.png")
+                else:
+                    qr_url = f"{os.getenv('URL_APP')}/cert/verificar/{row['id_usuario']}-{row['id_curso_doc']}"
+                    qr_path = os.path.join(folder, f"qr_{row['id_usuario']}-{row['id_curso_doc']}.png")
+
+                qr_img = segno.make(qr_url)
+                qr_img.save(qr_path, scale=5)
+                pdf.image(qr_path, 740, 500, w=80, h=80)
+
+                # Guardar archivo PDF
+                file_name = utils.sanitize_filename(f"{documento}_{participante}_{curso}_certificate.pdf")
+                pdf_path = os.path.join(folder, file_name)
+                pdf.output(pdf_path)
+
+                # Enviar correo
+                try:
+                    msg = EmailMessage()
+                    msg["From"] = f"{safe_sender_name} <{mail_address}>"
+                    msg["To"] = email
+                    msg["bcc"] = "lktejeda@umsa.bo"
+                    msg["Subject"] = asunto
+                    msg.set_content(mensaje)
+
+                    with open(pdf_path, "rb") as f:
+                        mime_type = mimetypes.guess_type(file_name)[0] or "application/pdf"
+                        maintype, subtype = mime_type.split("/", 1)
+                        msg.add_attachment(f.read(), maintype=maintype, subtype=subtype, filename=file_name)
+        
+                    smtp.send_message(msg)
+
+                    exitos_envio.append(email)  
+
+                    # Actualizar estado si es estudiante
+                    if rol_boton == 3:
+                        with db.engine.begin() as conn_update:
+                            conn_update.execute(
+                                text("UPDATE inscripciones SET certificado_generado = TRUE WHERE id_inscripcion = :id"),
+                                {"id": row["id_inscripcion"]},
+                            )
+
+                except Exception as e:
+                    errores_envio.append((email, str(e)))
+
+        try:
+            shutil.rmtree(folder)
+        except Exception as e:
+            print(f"Error al eliminar carpeta temporal: {e}")
+
 
         flash(f"Certificados enviados a {len(exitos_envio)} usuarios.", "success")
         if errores_envio:
-            flash(f"Errores al enviar a: {', '.join(e[0] for e in errores_envio)}", "error")
+            flash(f"Errores al enviar a: {', '.join(e[0] for e in errores_envio)}", "danger")
 
         return redirect(url_for("certificate.enviar_certificados_todos", rol_boton=rol_boton))
 
-    # GET: mostrar formulario
     return render_template("Certificados/SendMuchosCertificados.html", rol_boton=rol_boton)
-
 
 
 @certificate_bp.route("/verificar/<string:search>")
 def verificar(search):
     partes = search.split("-")
     id_principal = int(partes[0])
-    id_extra = int(float(partes[1]))
-
+    id_extra = int(partes[1])
 
     result = None
     tipo = None
