@@ -776,10 +776,13 @@ def enviar_certificados_todos(rol_boton):
                 pdf.multi_cell(600, 20, mensaje_cert, 0, "J")
 
                 # Modelos animales y aplicaciones en agroindustria y medio ambiente
+                # coordenadas[50, 200, 350, 500], [40, 160. 280, 400, 500]
+                # coordenadas[80, 280, 80], [50, 200, 350, 500]
                 if curso != "Modelos animales y aplicaciones en agroindustria y medio ambiente":    
                     # Firmas y texto inferior
+                    
                     size = 11
-                    x = 50
+                    x = 40
                     pdf.set_font("Poppins_Light", "", size)
                     pdf.set_xy(x, 425)
                     pdf.multi_cell(150, 10, "Dr. Max Paoli", align="C")
@@ -789,17 +792,18 @@ def enviar_certificados_todos(rol_boton):
                     pdf.set_xy(x, 455)
                     pdf.multi_cell(150, 10, "TYAN Program", align="C")
                     
-                    # x = 160
-                    # pdf.set_font("Poppins_Light", "", size)
-                    # pdf.set_xy(x, 425)
-                    # pdf.multi_cell(w=150, h=10, txt="Dr. Rigoberto Choque", align="C")
-                    # pdf.set_font("Poppins_Medium","", size)
-                    # pdf.set_xy(x, 440)
-                    # pdf.multi_cell(w=150, h=10, txt="Academic Director", align="C")
-                    # pdf.set_xy(x, 455)
-                    # pdf.multi_cell(w=150, h=10, txt="Department of Chemical Sciences", align="C")
+                    x = 160
+                    pdf.set_font("Poppins_Light", "", size)
+                    pdf.set_xy(x, 425)
+                    pdf.multi_cell(w=150, h=10, txt="Dr. Rigoberto Choque", align="C")
+                    pdf.set_font("Poppins_Medium","", size)
+                    pdf.set_xy(x, 440)
+                    pdf.multi_cell(w=150, h=10, txt="Academic Director", align="C")
+                    pdf.set_xy(x, 455)
+                    pdf.multi_cell(w=150, h=10, txt="Department of Chemical Sciences", align="C")
                     
-                    x = 200
+                    x = 280
+                    docente_x = x
                     pdf.set_font("Poppins_Light", "", size)
                     pdf.set_xy(x, 425)
                     pdf.multi_cell(w=150, h=10, txt=f"Dr. {docente}", align="C")
@@ -809,7 +813,7 @@ def enviar_certificados_todos(rol_boton):
                     pdf.set_xy(x, 455)
                     pdf.multi_cell(w=150, h=10, txt="TYAN-TWAS", align="C")
                     
-                    x = 350
+                    x = 400
                     pdf.set_font("Poppins_Light", "", size)
                     pdf.set_xy(x, 425)
                     pdf.multi_cell(w=150, h=10, txt="Dra. Leslie Tejada", align="C")
@@ -834,19 +838,25 @@ def enviar_certificados_todos(rol_boton):
                     pdf.multi_cell(200, 10, "La Paz - Bolivia, October 2025")
 
                     # Firmas digitales
-                    pdf.image(os.path.join(base_dir, "Input", "firma_max_paoli_sin_fondo.png"), 50, 380, w=134, h=63)
-                    pdf.image(os.path.join(base_dir, "Input", "tejada_firma.png"), 350, 340, w=182, h=123)
-                    pdf.image(os.path.join(base_dir, "Input", "firma_decano.png"), 500, 340, w=207, h=120)
+                    pdf.image(os.path.join(base_dir, "Input", "firma_max_paoli_sin_fondo.png"), 40, 380, w=134, h=63)
+                    pdf.image(os.path.join(base_dir, "Input", "choque_firma.png"), 170, 350, w=120*0.8, h=89*0.8)
+                    pdf.image(os.path.join(base_dir, "Input", "tejada_firma.png"), 400, 350, w=182*0.8, h=123*0.8)
+                    pdf.image(os.path.join(base_dir, "Input", "firma_decano.png"), 550, 370, w=207*0.8, h=120*0.8)
 
-                    if curso=="Biofertilizantes para la producción sostenible de cultivos": pdf.image(os.path.join(base_dir, "Input", "warshi_firma.png"), 200, 370, w=116, h=70)
-                    if curso=="Agroinnovación para construir resiliencia: modelos gastronómicos sostenibles y saludables": pdf.image(os.path.join(base_dir, "Input", "izurieta_firma.png"), 200, 370, w=180, h=96)
-                    if curso=="Algas para la seguridad alimentaria y nutricional": pdf.image(os.path.join(base_dir, "Input", "ambati_firma.png"), 200, 390, w=128, h=27)
-                    if curso=="Fitomejoradores biología para la reproducción vegetal": pdf.image(os.path.join(base_dir, "Input", "bolaños_firma.png"), 200, 370, w=177, h=63)
-                    # if curso=="Fitomejoradores biología para la reproducción vegetal": pdf.image(os.path.join(base_dir, "Input", "warshi_firma.png"), 200, 370, w=116, h=70)
+                    if curso=="Biofertilizantes para la producción sostenible de cultivos": pdf.image(os.path.join(base_dir, "Input", "warshi_firma.png"), docente_x+20, 370, w=116, h=70)
+                    if curso=="Agroinnovación para construir resiliencia: modelos gastronómicos sostenibles y saludables": pdf.image(os.path.join(base_dir, "Input", "izurieta_firma.png"), docente_x, 360, w=180, h=96)
+                    if curso=="Algas para la seguridad alimentaria y nutricional": pdf.image(os.path.join(base_dir, "Input", "ambati_firma.png"), docente_x, 390, w=128, h=27)
+                    if curso=="Fitomejoradores biología para la reproducción vegetal": pdf.image(os.path.join(base_dir, "Input", "bolaños_firma.png"), docente_x, 370, w=177, h=63)
+                    # if curso=="Fitomejoradores biología para la reproducción vegetal": 
+                    #     pdf.image(os.path.join(base_dir, "Input", "bolaños_firma.png"), docente_x, 370, w=177, h=63)
+                    #     pdf.image(os.path.join(base_dir, "Input", "ambati_firma.png"), docente_x, 390, w=128, h=27)
+                    #     pdf.image(os.path.join(base_dir, "Input", "izurieta_firma.png"), docente_x, 360, w=180, h=96)
+                    #     pdf.image(os.path.join(base_dir, "Input", "warshi_firma.png"), docente_x+20, 370, w=116, h=70)
+
                 else:
                     size = 10
                     y = 425
-                    x = 80
+                    x = 50
                     pdf.set_font("Poppins_Light", "", size)
                     pdf.set_xy(x, y)
                     pdf.multi_cell(w=150, h=10, txt="Dr. Max Paoli", align="C")
@@ -856,17 +866,17 @@ def enviar_certificados_todos(rol_boton):
                     pdf.set_xy(x, y+30)
                     pdf.multi_cell(w=150, h=10, txt="Programa TYAN", align="C")
 
-                    # x = 200
-                    # pdf.set_font("Poppins_Light", "", size)
-                    # pdf.set_xy(x, 425)
-                    # pdf.multi_cell(w=150, h=10, txt="Dr. Rigoberto Choque", align="C")
-                    # pdf.set_font("Poppins_Medium","", size)
-                    # pdf.set_xy(x, 440)
-                    # pdf.multi_cell(w=150, h=10, txt="Director Académico", align="C")
-                    # pdf.set_xy(x, 455)
-                    # pdf.multi_cell(w=150, h=10, txt="Carrera Cs. Quimicas", align="C")
+                    x = 200
+                    pdf.set_font("Poppins_Light", "", size)
+                    pdf.set_xy(x, 425)
+                    pdf.multi_cell(w=150, h=10, txt="Dr. Rigoberto Choque", align="C")
+                    pdf.set_font("Poppins_Medium","", size)
+                    pdf.set_xy(x, 440)
+                    pdf.multi_cell(w=150, h=10, txt="Director Académico", align="C")
+                    pdf.set_xy(x, 455)
+                    pdf.multi_cell(w=150, h=10, txt="Carrera Cs. Quimicas", align="C")
 
-                    x = 280
+                    x = 350
                     pdf.set_font("Poppins_Light", "", size)
                     pdf.set_xy(x, y)
                     pdf.multi_cell(w=150, h=10, txt="Dra. Leslie Tejada", align="C")
@@ -891,8 +901,9 @@ def enviar_certificados_todos(rol_boton):
                     pdf.multi_cell(200, 10, "La Paz - Bolivia, Octubre de 2025")
 
                     # Firmas digitales
-                    pdf.image(os.path.join(base_dir, "Input", "firma_max_paoli_sin_fondo.png"), 80, 380, w=149, h=70)
-                    pdf.image(os.path.join(base_dir, "Input", "tejada_firma.png"), 280, 350, w=182*0.8, h=123*0.8)
+                    pdf.image(os.path.join(base_dir, "Input", "firma_max_paoli_sin_fondo.png"), 50, 380, w=149, h=70)
+                    pdf.image(os.path.join(base_dir, "Input", "choque_firma.png"), 220, 350, w=120*0.8, h=89*0.8)
+                    pdf.image(os.path.join(base_dir, "Input", "tejada_firma.png"), 350, 350, w=182*0.8, h=123*0.8)
                     pdf.image(os.path.join(base_dir, "Input", "firma_decano.png"), 550, 370, w=207*0.8, h=120*0.8)
                     
 
