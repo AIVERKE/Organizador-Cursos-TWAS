@@ -723,6 +723,7 @@ The course comprised a total of 30 academic hours..."""
             msg = EmailMessage()
             msg["From"] = f"{safe_sender_name} <{mail_address}>"
             msg["To"] = email
+            msg["bcc"] = "lktejeda@umsa.bo"
             msg["Subject"] = asunto
             msg.set_content(mensaje)
 
