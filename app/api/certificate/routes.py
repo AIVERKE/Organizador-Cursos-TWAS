@@ -495,10 +495,14 @@ def enviar_certificado(user_id):
             curso_traducido = traducciones.get(curso, curso)
 
             if nota and float(nota) > 64:
-                titulo = "CERTIFICATE OF PARTICIPATION"
+                # titulo = "CERTIFICATE OF PARTICIPATION"
+                titulo = "Certificate of Participation"
+#                 mensaje_cert = (
+#                     f"""Has approved the course "{curso_traducido}", delivered by {docente}, within the framework of the Third Edition of the TYAN-TWAS Hands-on Schools in Bolivia, 2025.
+# The course comprised a total of 30 academic hours, corresponding to 1 CLAR (Latin American Reference Credit), and was conducted in La Paz, Bolivia, from 6 to 10 October 2025."""
+#                 )
                 mensaje_cert = (
-                    f"""Has approved the course "{curso_traducido}", delivered by {docente}, within the framework of the Third Edition of the TYAN-TWAS Hands-on Schools in Bolivia, 2025.
-The course comprised a total of 30 academic hours, corresponding to 1 CLAR (Latin American Reference Credit), and was conducted in La Paz, Bolivia, from 6 to 10 October 2025."""
+                    f"""for participating in the Flash Talk Session organized under the TYAN activities during the General Conference on "Building a Sustanaible Future: The Role of Science, Technology and Innovation for Global Development", held in partnership with the Brazilian Academy of Sciences, in Rio de Janeiro, Brazil, from 29 September to 2 October 2025."""
                 )
             else:
                 titulo = "CERTIFICATE OF PARTICIPATION"
@@ -522,7 +526,9 @@ The course comprised a total of 30 academic hours..."""
         pdf = FPDF(orientation="L", unit="pt", format="A4")
         pdf.add_page()
 
-        template_path = os.path.join(base_dir, "Input", "certificate_template.png")
+        # template_path = os.path.join(base_dir, "Input", "certificate_template.png")
+        template_path = os.path.join(base_dir, "Input", "certificate_template_brasil.png")
+
         pdf.image(template_path, 0, 0, w=842, h=595)
 
         # Fuentes
@@ -540,7 +546,8 @@ The course comprised a total of 30 academic hours..."""
         # Subtitulo
         pdf.set_font("Poppins_Light", size=15)
         pdf.set_xy(0, 155)
-        pdf.multi_cell(842, 60, "The organization in charge of TYAN BOLIVIA awarded this recognition to:", 0, "C")
+        # pdf.multi_cell(842, 60, "The organization in charge of TYAN BOLIVIA awarded this recognition to:", 0, "C")
+        pdf.multi_cell(842, 60, "This certificate is awarded to:", 0, "C")
 
         # Nombre
         pdf.set_font("Poppins_Bold", size=20)
@@ -560,134 +567,164 @@ The course comprised a total of 30 academic hours..."""
         # =============================
         #      Firmas (mismo código)
         # =============================
-        if curso != "Modelos animales y aplicaciones en agroindustria y medio ambiente":    
-            # Firmas y texto inferior
+        # if curso != "Modelos animales y aplicaciones en agroindustria y medio ambiente":    
+        #     # Firmas y texto inferior
             
-            size = 11
-            x = 40
-            pdf.set_font("Poppins_Light", "", size)
-            pdf.set_xy(x, 425)
-            pdf.multi_cell(150, 10, "Dr. Max Paoli", align="C")
-            pdf.set_font("Poppins_Medium", "", size)
-            pdf.set_xy(x, 440)
-            pdf.multi_cell(150, 10, "Director", align="C")
-            pdf.set_xy(x, 455)
-            pdf.multi_cell(150, 10, "TYAN Program", align="C")
+        #     size = 11
+        #     x = 40
+        #     pdf.set_font("Poppins_Light", "", size)
+        #     pdf.set_xy(x, 425)
+        #     pdf.multi_cell(150, 10, "Dr. Max Paoli", align="C")
+        #     pdf.set_font("Poppins_Medium", "", size)
+        #     pdf.set_xy(x, 440)
+        #     pdf.multi_cell(150, 10, "Director", align="C")
+        #     pdf.set_xy(x, 455)
+        #     pdf.multi_cell(150, 10, "TYAN Program", align="C")
             
-            x = 160
-            pdf.set_font("Poppins_Light", "", size)
-            pdf.set_xy(x, 425)
-            pdf.multi_cell(w=150, h=10, txt="Dr. Rigoberto Choque", align="C")
-            pdf.set_font("Poppins_Medium","", size)
-            pdf.set_xy(x, 440)
-            pdf.multi_cell(w=150, h=10, txt="Academic Director", align="C")
-            pdf.set_xy(x, 455)
-            pdf.multi_cell(w=150, h=10, txt="Department of Chemical Sciences", align="C")
+        #     x = 160
+        #     pdf.set_font("Poppins_Light", "", size)
+        #     pdf.set_xy(x, 425)
+        #     pdf.multi_cell(w=150, h=10, txt="Dr. Rigoberto Choque", align="C")
+        #     pdf.set_font("Poppins_Medium","", size)
+        #     pdf.set_xy(x, 440)
+        #     pdf.multi_cell(w=150, h=10, txt="Academic Director", align="C")
+        #     pdf.set_xy(x, 455)
+        #     pdf.multi_cell(w=150, h=10, txt="Department of Chemical Sciences", align="C")
             
-            x = 280
-            docente_x = x
-            pdf.set_font("Poppins_Light", "", size)
-            pdf.set_xy(x, 425)
-            pdf.multi_cell(w=150, h=10, txt=f"Dr. {docente}", align="C")
-            pdf.set_font("Poppins_Medium","", size)
-            pdf.set_xy(x, 440)
-            pdf.multi_cell(w=150, h=10, txt="Course Lecturer", align="C")
-            pdf.set_xy(x, 455)
-            pdf.multi_cell(w=150, h=10, txt="TYAN-TWAS", align="C")
+        #     x = 280
+        #     docente_x = x
+        #     pdf.set_font("Poppins_Light", "", size)
+        #     pdf.set_xy(x, 425)
+        #     pdf.multi_cell(w=150, h=10, txt=f"Dr. {docente}", align="C")
+        #     pdf.set_font("Poppins_Medium","", size)
+        #     pdf.set_xy(x, 440)
+        #     pdf.multi_cell(w=150, h=10, txt="Course Lecturer", align="C")
+        #     pdf.set_xy(x, 455)
+        #     pdf.multi_cell(w=150, h=10, txt="TYAN-TWAS", align="C")
             
-            x = 400
-            pdf.set_font("Poppins_Light", "", size)
-            pdf.set_xy(x, 425)
-            pdf.multi_cell(w=150, h=10, txt="Dra. Leslie Tejada", align="C")
-            pdf.set_font("Poppins_Medium","", size)
-            pdf.set_xy(x, 440)
-            pdf.multi_cell(w=150, h=10, txt="Coordinator", align="C")
-            pdf.set_xy(x, 455)
-            pdf.multi_cell(w=150, h=10, txt="TYAN-TWAS", align="C")
+        #     x = 400
+        #     pdf.set_font("Poppins_Light", "", size)
+        #     pdf.set_xy(x, 425)
+        #     pdf.multi_cell(w=150, h=10, txt="Dra. Leslie Tejada", align="C")
+        #     pdf.set_font("Poppins_Medium","", size)
+        #     pdf.set_xy(x, 440)
+        #     pdf.multi_cell(w=150, h=10, txt="Coordinator", align="C")
+        #     pdf.set_xy(x, 455)
+        #     pdf.multi_cell(w=150, h=10, txt="TYAN-TWAS", align="C")
             
-            x = 500
-            pdf.set_font("Poppins_Light", "", size)
-            pdf.set_xy(x, 425)
-            pdf.multi_cell(300, 10, "M.Sc. Aldo Valdez Alvarado", align="C")
-            pdf.set_font("Poppins_Medium", "", size)
-            pdf.set_xy(x, 440)
-            pdf.multi_cell(300, 10, "Dean", align="C")
-            pdf.set_xy(x, 455)
-            pdf.multi_cell(300, 10, "Faculty of Pure and Natural Sciences", align="C")
+        #     x = 500
+        #     pdf.set_font("Poppins_Light", "", size)
+        #     pdf.set_xy(x, 425)
+        #     pdf.multi_cell(300, 10, "M.Sc. Aldo Valdez Alvarado", align="C")
+        #     pdf.set_font("Poppins_Medium", "", size)
+        #     pdf.set_xy(x, 440)
+        #     pdf.multi_cell(300, 10, "Dean", align="C")
+        #     pdf.set_xy(x, 455)
+        #     pdf.multi_cell(300, 10, "Faculty of Pure and Natural Sciences", align="C")
 
-            pdf.set_font("Poppins_Light", "", 10)
-            pdf.set_xy(600, 470)
-            pdf.multi_cell(200, 10, "La Paz - Bolivia, October 2025")
+        #     pdf.set_font("Poppins_Light", "", 10)
+        #     pdf.set_xy(600, 470)
+        #     pdf.multi_cell(200, 10, "La Paz - Bolivia, October 2025")
 
-            # Firmas digitales
-            pdf.image(os.path.join(base_dir, "Input", "firma_max_paoli_sin_fondo.png"), 40, 380, w=134, h=63)
-            pdf.image(os.path.join(base_dir, "Input", "choque_firma.png"), 170, 350, w=120*0.8, h=89*0.8)
-            pdf.image(os.path.join(base_dir, "Input", "tejada_firma.png"), 400, 350, w=182*0.8, h=123*0.8)
-            pdf.image(os.path.join(base_dir, "Input", "firma_decano.png"), 550, 370, w=207*0.8, h=120*0.8)
+        #     # Firmas digitales
+        #     pdf.image(os.path.join(base_dir, "Input", "firma_max_paoli_sin_fondo.png"), 40, 380, w=134, h=63)
+        #     pdf.image(os.path.join(base_dir, "Input", "choque_firma.png"), 170, 350, w=120*0.8, h=89*0.8)
+        #     pdf.image(os.path.join(base_dir, "Input", "tejada_firma.png"), 400, 350, w=182*0.8, h=123*0.8)
+        #     pdf.image(os.path.join(base_dir, "Input", "firma_decano.png"), 550, 370, w=207*0.8, h=120*0.8)
 
-            if curso=="Biofertilizantes para la producción sostenible de cultivos": pdf.image(os.path.join(base_dir, "Input", "warshi_firma.png"), docente_x+20, 370, w=116, h=70)
-            if curso=="Agroinnovación para construir resiliencia: modelos gastronómicos sostenibles y saludables": pdf.image(os.path.join(base_dir, "Input", "izurieta_firma.png"), docente_x, 360, w=180, h=96)
-            if curso=="Algas para la seguridad alimentaria y nutricional": pdf.image(os.path.join(base_dir, "Input", "ambati_firma.png"), docente_x, 390, w=128, h=27)
-            if curso=="Fitomejoradores biología para la reproducción vegetal": pdf.image(os.path.join(base_dir, "Input", "bolaños_firma.png"), docente_x, 370, w=177, h=63)
-            # if curso=="Fitomejoradores biología para la reproducción vegetal": 
-            #     pdf.image(os.path.join(base_dir, "Input", "bolaños_firma.png"), docente_x, 370, w=177, h=63)
-            #     pdf.image(os.path.join(base_dir, "Input", "ambati_firma.png"), docente_x, 390, w=128, h=27)
-            #     pdf.image(os.path.join(base_dir, "Input", "izurieta_firma.png"), docente_x, 360, w=180, h=96)
-            #     pdf.image(os.path.join(base_dir, "Input", "warshi_firma.png"), docente_x+20, 370, w=116, h=70)
+        #     if curso=="Biofertilizantes para la producción sostenible de cultivos": pdf.image(os.path.join(base_dir, "Input", "warshi_firma.png"), docente_x+20, 370, w=116, h=70)
+        #     if curso=="Agroinnovación para construir resiliencia: modelos gastronómicos sostenibles y saludables": pdf.image(os.path.join(base_dir, "Input", "izurieta_firma.png"), docente_x, 360, w=180, h=96)
+        #     if curso=="Algas para la seguridad alimentaria y nutricional": pdf.image(os.path.join(base_dir, "Input", "ambati_firma.png"), docente_x, 390, w=128, h=27)
+        #     if curso=="Fitomejoradores biología para la reproducción vegetal": pdf.image(os.path.join(base_dir, "Input", "bolaños_firma.png"), docente_x, 370, w=177, h=63)
+        #     # if curso=="Fitomejoradores biología para la reproducción vegetal": 
+        #     #     pdf.image(os.path.join(base_dir, "Input", "bolaños_firma.png"), docente_x, 370, w=177, h=63)
+        #     #     pdf.image(os.path.join(base_dir, "Input", "ambati_firma.png"), docente_x, 390, w=128, h=27)
+        #     #     pdf.image(os.path.join(base_dir, "Input", "izurieta_firma.png"), docente_x, 360, w=180, h=96)
+        #     #     pdf.image(os.path.join(base_dir, "Input", "warshi_firma.png"), docente_x+20, 370, w=116, h=70)
 
-        else:
-            size = 10
-            y = 425
-            x = 50
-            pdf.set_font("Poppins_Light", "", size)
-            pdf.set_xy(x, y)
-            pdf.multi_cell(w=150, h=10, txt="Dr. Max Paoli", align="C")
-            pdf.set_font("Poppins_Medium","", size)
-            pdf.set_xy(x, y+15)
-            pdf.multi_cell(w=150, h=10, txt="Director", align="C")
-            pdf.set_xy(x, y+30)
-            pdf.multi_cell(w=150, h=10, txt="Programa TYAN", align="C")
+        # else:
+        #     size = 10
+        #     y = 425
+        #     x = 50
+        #     pdf.set_font("Poppins_Light", "", size)
+        #     pdf.set_xy(x, y)
+        #     pdf.multi_cell(w=150, h=10, txt="Dr. Max Paoli", align="C")
+        #     pdf.set_font("Poppins_Medium","", size)
+        #     pdf.set_xy(x, y+15)
+        #     pdf.multi_cell(w=150, h=10, txt="Director", align="C")
+        #     pdf.set_xy(x, y+30)
+        #     pdf.multi_cell(w=150, h=10, txt="Programa TYAN", align="C")
 
-            x = 200
-            pdf.set_font("Poppins_Light", "", size)
-            pdf.set_xy(x, 425)
-            pdf.multi_cell(w=150, h=10, txt="Dr. Rigoberto Choque", align="C")
-            pdf.set_font("Poppins_Medium","", size)
-            pdf.set_xy(x, 440)
-            pdf.multi_cell(w=150, h=10, txt="Director Académico", align="C")
-            pdf.set_xy(x, 455)
-            pdf.multi_cell(w=150, h=10, txt="Carrera Cs. Quimicas", align="C")
+        #     x = 200
+        #     pdf.set_font("Poppins_Light", "", size)
+        #     pdf.set_xy(x, 425)
+        #     pdf.multi_cell(w=150, h=10, txt="Dr. Rigoberto Choque", align="C")
+        #     pdf.set_font("Poppins_Medium","", size)
+        #     pdf.set_xy(x, 440)
+        #     pdf.multi_cell(w=150, h=10, txt="Director Académico", align="C")
+        #     pdf.set_xy(x, 455)
+        #     pdf.multi_cell(w=150, h=10, txt="Carrera Cs. Quimicas", align="C")
 
-            x = 350
-            pdf.set_font("Poppins_Light", "", size)
-            pdf.set_xy(x, y)
-            pdf.multi_cell(w=150, h=10, txt="Dra. Leslie Tejada", align="C")
-            pdf.set_font("Poppins_Medium","", size)
-            pdf.set_xy(x, y+15)
-            pdf.multi_cell(w=150, h=10, txt="Coordinadora", align="C")
-            pdf.set_xy(x, y+30)
-            pdf.multi_cell(w=150, h=10, txt="TYAN-TWAS", align="C")
+        #     x = 350
+        #     pdf.set_font("Poppins_Light", "", size)
+        #     pdf.set_xy(x, y)
+        #     pdf.multi_cell(w=150, h=10, txt="Dra. Leslie Tejada", align="C")
+        #     pdf.set_font("Poppins_Medium","", size)
+        #     pdf.set_xy(x, y+15)
+        #     pdf.multi_cell(w=150, h=10, txt="Coordinadora", align="C")
+        #     pdf.set_xy(x, y+30)
+        #     pdf.multi_cell(w=150, h=10, txt="TYAN-TWAS", align="C")
 
-            x = 500
-            pdf.set_font("Poppins_Light", "", size)
-            pdf.set_xy(x, y)
-            pdf.multi_cell(w=300, h=10, txt="M.Sc. Aldo Valdez Alvarado", align="C")
-            pdf.set_font("Poppins_Medium","", size)
-            pdf.set_xy(x, y+15)
-            pdf.multi_cell(w=300, h=10, txt="Decano", align="C")
-            pdf.set_xy(x, y+30)
-            pdf.multi_cell(w=300, h=10, txt="Facultado de Ciencias Puras y Naturales", align="C")
+        #     x = 500
+        #     pdf.set_font("Poppins_Light", "", size)
+        #     pdf.set_xy(x, y)
+        #     pdf.multi_cell(w=300, h=10, txt="M.Sc. Aldo Valdez Alvarado", align="C")
+        #     pdf.set_font("Poppins_Medium","", size)
+        #     pdf.set_xy(x, y+15)
+        #     pdf.multi_cell(w=300, h=10, txt="Decano", align="C")
+        #     pdf.set_xy(x, y+30)
+        #     pdf.multi_cell(w=300, h=10, txt="Facultado de Ciencias Puras y Naturales", align="C")
 
-            pdf.set_font("Poppins_Light", "", 10)
-            pdf.set_xy(600, 470)
-            pdf.multi_cell(200, 10, "La Paz - Bolivia, Octubre de 2025")
+        #     pdf.set_font("Poppins_Light", "", 10)
+        #     pdf.set_xy(600, 470)
+        #     pdf.multi_cell(200, 10, "La Paz - Bolivia, Octubre de 2025")
 
-            # Firmas digitales
-            pdf.image(os.path.join(base_dir, "Input", "firma_max_paoli_sin_fondo.png"), 50, 380, w=149, h=70)
-            pdf.image(os.path.join(base_dir, "Input", "choque_firma.png"), 220, 350, w=120*0.8, h=89*0.8)
-            pdf.image(os.path.join(base_dir, "Input", "tejada_firma.png"), 350, 350, w=182*0.8, h=123*0.8)
-            pdf.image(os.path.join(base_dir, "Input", "firma_decano.png"), 550, 370, w=207*0.8, h=120*0.8)
-        
+        #     # Firmas digitales
+        #     pdf.image(os.path.join(base_dir, "Input", "firma_max_paoli_sin_fondo.png"), 50, 380, w=149, h=70)
+        #     pdf.image(os.path.join(base_dir, "Input", "choque_firma.png"), 220, 350, w=120*0.8, h=89*0.8)
+        #     pdf.image(os.path.join(base_dir, "Input", "tejada_firma.png"), 350, 350, w=182*0.8, h=123*0.8)
+        #     pdf.image(os.path.join(base_dir, "Input", "firma_decano.png"), 550, 370, w=207*0.8, h=120*0.8)
+        y = 425
+        size = 11
+        x = 200
+        pdf.set_font("Poppins_Light", "", size)
+        pdf.set_xy(x, 425)
+        pdf.multi_cell(150, 10, "Dr. Max Paoli", align="C")
+        pdf.set_font("Poppins_Medium", "", size)
+        pdf.set_xy(x, 440)
+        pdf.multi_cell(150, 10, "Director", align="C")
+        pdf.set_xy(x, 455)
+        pdf.multi_cell(150, 10, "TYAN Program", align="C")
+
+        x = 425
+        pdf.set_font("Poppins_Light", "", size)
+        pdf.set_xy(x, y)
+        pdf.multi_cell(w=300, h=10, txt="Dr. Roula Abdel-Massih", align="C")
+        pdf.set_font("Poppins_Medium","", size)
+        pdf.set_xy(x, y+15)
+        pdf.multi_cell(w=300, h=10, txt="Co-Chair", align="C")
+        pdf.set_xy(x, y+30)
+        pdf.multi_cell(w=300, h=10, txt="TYAN-TWAS", align="C")
+
+        pdf.set_font("Poppins_Light", "", 10)
+        pdf.set_xy(500, 470)
+        # pdf.multi_cell(200, 10, "La Paz - Bolivia, Octubre de 2025")
+        pdf.multi_cell(200, 10, "Rio de Janeiro - Brazil, November 2025")
+
+        # Firmas digitales
+        pdf.image(os.path.join(base_dir, "Input", "firma_max_paoli_sin_fondo.png"), 220, 350, w=120*0.8, h=89*0.8)
+        pdf.image(os.path.join(base_dir, "Input", "massih_firma.png"), 525, 370, w=105, h=37)
+
         # =============================
         #   Generar QR
         # =============================
@@ -723,6 +760,7 @@ The course comprised a total of 30 academic hours..."""
             msg = EmailMessage()
             msg["From"] = f"{safe_sender_name} <{mail_address}>"
             msg["To"] = email
+            # msg["bcc"] = "lktejeda@umsa.bo"
             msg["Subject"] = asunto
             msg.set_content(mensaje)
 
