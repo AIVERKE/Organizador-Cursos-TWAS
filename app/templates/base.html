@@ -37,22 +37,21 @@
 
       <div class="collapse navbar-collapse" id="navMain">
         <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
-          <li class="nav-item"><a class="nav-link fw-semibold" href="#inicioid">
+          <li class="nav-item"><a class="nav-link fw-semibold" href="{{ url_for('home.index') }}#inicioid">
             <span class="i18n i18n-es">Inicio</span><span class="i18n i18n-en">Home</span>
           </a></li>
-          <li class="nav-item"><a class="nav-link fw-semibold" href="#informacionid">
+          <li class="nav-item"><a class="nav-link fw-semibold" href="{{ url_for('home.index') }}#informacionid">
             <span class="i18n i18n-es">Información</span><span class="i18n i18n-en">Information</span>
           </a></li>
-          <li class="nav-item"><a class="nav-link fw-semibold" href="#nosotrosid">
+          <li class="nav-item"><a class="nav-link fw-semibold" href="{{ url_for('home.index') }}#nosotrosid">
             <span class="i18n i18n-es">Organizacion</span><span class="i18n i18n-en">Organization</span>
           </a></li>
-          <li class="nav-item"><a class="nav-link fw-semibold" href="#ubicacionid">
+          <li class="nav-item"><a class="nav-link fw-semibold" href="{{ url_for('home.index') }}#ubicacionid">
             <span class="i18n i18n-es">Ubicación</span><span class="i18n i18n-en">Location</span>
           </a></li>
-          <li class="nav-item"><a class="nav-link fw-semibold" href="#footerid">
+          <li class="nav-item"><a class="nav-link fw-semibold" href="{{ url_for('home.index') }}#footerid">
             <span class="i18n i18n-es">Contacto</span><span class="i18n i18n-en">Contact</span>
           </a></li>
-
         </ul>
 
         <div class="d-flex align-items-center gap-2">
@@ -61,24 +60,22 @@
                 <i class="fa-solid fa-globe"></i>
                 <span class="i18n i18n-es">ENGLISH</span><span class="i18n i18n-en">ESPAÑOL</span>
             </button>
-
-
             <!--
 
             <a href="{{ url_for('ins.index') }}" class="btn btn-outline-primary btn-sm"> 
                 <span class="i18n i18n-es">Asistencia</span><span class="i18n i18n-en">Attendance</span>
             </a>
-
+                -->
             <a href="{{ url_for('auth.login') }}" class="btn btn-outline-primary btn-sm">
                 <span class="i18n i18n-es">Iniciar Sesión</span><span class="i18n i18n-en">Login</span>
             </a>
-            -->
+            
 
           <!-- Logo UMSA y FCPN -->
           <a href="https://www.fcpn.edu.bo/" class="ms-1">
             <img src="/static/images/EscudoFCPN.webp" alt="FCPN" class="logo-fcpn">
           </a>
-          <a href="https://www.fcpn.edu.bo/" class="ms-1">
+          <a href="https://www.umsa.bo/" class="ms-1">
             <img src="/static/images/EscudoUMSA.png" alt="UMSA" class="logo-umsa">
           </a>
         </div>
@@ -113,15 +110,15 @@
         <div class="logo-column">
           <!-- Logos en 2 filas -->
           <div class="logo-grid">
-            <img src="{{ url_for('static', filename='images/TWAS_Logo.webp') }}" alt="UNESCO-TWAS" class="footer-logo">
-            <img src="{{ url_for('static', filename='images/TYAN.webp') }}" alt="TYAN" class="footer-logo">
-            <img src="{{ url_for('static', filename='images/EmbajadaBrasil.png') }}" alt="Embajada de Brasil" class="footer-logo">
+            <a href="https://twas.org/"><img src="{{ url_for('static', filename='images/TWAS_Logo.webp') }}" alt="UNESCO-TWAS" class="footer-logo"></a>
+            <a href="https://twas.org/tyan"><img src="{{ url_for('static', filename='images/TYAN.webp') }}" alt="TYAN" class="footer-logo"></a>
+            <a href="https://www.gov.br/mre/pt-br/embaixada-la-paz"><img src="{{ url_for('static', filename='images/EmbajadaBrasil.png') }}" alt="Embajada de Brasil" class="footer-logo"></a>
           </div>
           <div class="logo-grid2"> 
-            <img src="{{ url_for('static', filename='images/EscudoUMSA.png') }}" alt="Logo UMSA" class="footer-logo">
-            <img src="{{ url_for('static', filename='images/EscudoFCPN.webp') }}" alt="Escudo FCPN" class="footer-logo">
-            <img src="{{ url_for('static', filename='images/CarreraQuimica.png') }}" alt="Carrera de Química" class="footer-logo">
-            <img src="{{ url_for('static', filename='images/ing-quimica.jpg') }}" alt="Ingeniería Química" class="footer-logo">
+            <a href="https://www.umsa.bo/"><img src="{{ url_for('static', filename='images/EscudoUMSA.png') }}" alt="Logo UMSA" class="footer-logo"></a>
+            <a href="https://www.fcpn.edu.bo/"><img src="{{ url_for('static', filename='images/EscudoFCPN.webp') }}" alt="Escudo FCPN" class="footer-logo"></a>
+            <a href="#"><img src="{{ url_for('static', filename='images/CarreraQuimica.png') }}" alt="Carrera de Química" class="footer-logo"></a>
+            <a href="#"><img src="{{ url_for('static', filename='images/ing-quimica.jpg') }}" alt="Ingeniería Química" class="footer-logo"></a>
           </div>
         </div>
       </div>
@@ -145,6 +142,7 @@
   <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
   <script src="{{ url_for('static', filename='js/botonTraductor.js') }}"></script>
   <script src="{{ url_for('static', filename='js/CronogramaActividades.js') }}"></script>
+ 
 
   {% block extra_js %}{% endblock %}
 </body>

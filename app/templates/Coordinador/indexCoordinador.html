@@ -70,7 +70,6 @@
       </div>
     </main>
 
-
   <script>
   function verEstudiantes(idPonente) {
       fetch(`/ponente/estudiantes_curso/${idPonente}`)
@@ -109,8 +108,6 @@
     document.getElementById("modal-estudiantes").style.display = "none";
   }
   </script>
-
-
     <script>
 
 
@@ -148,7 +145,7 @@
                   tdNombre.appendChild(spanPin);
               }
 
-              // 3️⃣ Ocultar el botón “Generar Código de Asistencia”
+              // Ocultar el botón “Generar Código de Asistencia”
               const btnGenerar = filaCurso.querySelector(".btn-primary[onclick^='generarPin']");
               if (btnGenerar) btnGenerar.style.display = "none";
             }
@@ -175,6 +172,7 @@
                 return response.json();
               })
               .then(data => {
+                //console.log(data)
                 document.getElementById('id_usuario').value = data.id_usuario;
                 document.getElementById('nombre').value = data.nombre;
                 document.getElementById('apellido').value = data.apellido;
@@ -184,7 +182,29 @@
                 document.getElementById('pais_origen').value = data.pais_origen;
                 document.getElementById('id_rol').value = idRol;
 
+                //document.getElementById('fecha_nac').value = data.fecha_nac ? data.fecha_nac.split('T')[0] : '';
+                document.getElementById('fecha_nac').value = data.fecha_nac ? data.fecha_nac.split(' ')[0] : '';
+                document.getElementById('genero').value = data.genero;
+                document.getElementById('pais_residencia').value = data.pais_residencia;
+                document.getElementById('afiliacion_u').value = data.afiliacion_u;
+                document.getElementById('tipo_afiliacion').value = data.tipo_afiliacion;
+                document.getElementById('area_tematica').value = data.area_tematica;
+                document.getElementById('disciplina_cientifica').value = data.disciplina_cientifica;
+                const fechaNacimientoOriginal = new Date(data.fecha_nac);
+                const año = fechaNacimientoOriginal.getFullYear();
+                const mes = (fechaNacimientoOriginal.getMonth() + 1).toString().padStart(2, '0');
+                const dia = fechaNacimientoOriginal.getDate().toString().padStart(2, '0');
+                const fechaFormateada = `${año}-${mes}-${dia}`;
+                document.getElementById('fecha_nac').value = fechaFormateada;
+                document.getElementById('genero').value = data.genero;
+                document.getElementById('pais_residencia').value = data.pais_residencia;
+                document.getElementById('afiliacion_u').value = data.afiliacion_u;
+                document.getElementById('tipo_afiliacion').value = data.tipo_afiliacion;
+                document.getElementById('area_tematica').value = data.area_tematica;
+                document.getElementById('disciplina_cientifica').value = data.disciplina_cientifica;
+                
                 document.getElementById('modal-editar').classList.add("activo");
+                subEventosEdit();
               })
               .catch(err => alert("Error al obtener los datos: " + err.message));
           });
@@ -226,66 +246,123 @@
         //   });
         // }
 
-//Modifique estas vistas qlias y ahora estoy escuchando sabrina carpenter
+        //Modifique estas vistas qlias y ahora estoy escuchando sabrina carpenter
+        function subEventosEdit(){
+          const formEditar = document.getElementById('form-editar');
+          const editBtn = document.getElementById('btn-toggle-modo');
+          const btnGuardar = document.getElementById('btn-guardar');
+          const btnCancelar = document.getElementById('btn-cancel');
 
-// Envío editar
-const formEditar = document.getElementById('form-editar');
-if (formEditar) {
-  formEditar.addEventListener('submit', async function (e) {
-    e.preventDefault();
+          if(!formEditar || !editBtn || !btnGuardar || !btnCancelar) return;
+          let isReadonly = true;
+          // Arranca en modo lectura (inputs bloqueados)
+          formEditar.querySelectorAll("input, select, textarea").forEach(el => {
+            if(el.type !== 'hidden') {
+              el.dataset.original = el.value || '';
+              el.classList.remove('modificado');
+              el.disabled = true;
+            }
+          });
 
-    const id = document.getElementById('id_usuario').value;
-    const idRol = document.getElementById('id_rol').value; // ya lo pones en 3
+          editBtn.textContent = "Editar datos";
+          btnGuardar.style.display = "none";
+          btnCancelar.style.display = "none";
 
-    const payload = {
-      nombre: document.getElementById('nombre').value.trim(),
-      apellido: document.getElementById('apellido').value.trim(),
-      email: document.getElementById('email').value.trim(),
-      contrasena: (document.getElementById('contrasena').value || '').trim() || null,
-      documento: document.getElementById('documento').value.trim(),
-      pais_origen: document.getElementById('pais_origen').value.trim(),
-      id_rol: idRol,
-      // ---- campos que pedía el backend ----
-      fecha_nac: document.getElementById('fecha_nac').value || null,
-      genero: document.getElementById('genero').value.trim(),
-      pais_residencia: document.getElementById('pais_residencia').value.trim(),
-      afiliacion_u: document.getElementById('afiliacion_u').value.trim(),
-      tipo_afiliacion: document.getElementById('tipo_afiliacion').value.trim(),
-      area_tematica: document.getElementById('area_tematica').value.trim(),
-      disciplina_cientifica: document.getElementById('disciplina_cientifica').value.trim()
-    };
+          editBtn.onclick = function () {
+            isReadonly = !isReadonly;
 
-    try {
-      const resp = await fetch(`/usuarios/coor/estudiantes/${id}`, {
-        method: 'PUT',                       // tu ruta acepta PUT
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',              // manda cookie de sesión
-        body: JSON.stringify(payload)
-      });
+            formEditar.querySelectorAll("input, select, textarea").forEach(el => {
+              if (el.type !== 'hidden') el.disabled = isReadonly;
+            });
 
-      const ct = resp.headers.get('content-type') || '';
-      const raw = await resp.text();
+            btnGuardar.style.display = isReadonly ? "none" : "inline-block";
+            btnCancelar.style.display = isReadonly ? "none" : "inline-block";
 
-      if (!ct.includes('application/json')) {
-        // HTML => seguramente error/redirect
-        alert(`Respuesta no JSON (${resp.status}).\n` + raw.slice(0,200));
-        return;
-      }
+            this.textContent = isReadonly ? "Editar datos" : "Bloquear edición";
+          };
 
-      const data = JSON.parse(raw);
-      if (!resp.ok) {
-        alert(data.error || `Error ${resp.status}`);
-        return;
-      }
+          formEditar.querySelectorAll('input, select, textarea').forEach(el => {
+            el.addEventListener('input', () => {
+              if(el.value !== el.dataset.original) {
+                el.classList.add('modificado');
+              } else {
+                el.classList.remove('modificado');
+              }
+            });
+          });
+          // cancelar edicion
+          btnCancelar.onclick = () => {
+            formEditar.querySelectorAll('input, select, textarea').forEach(el => {
+              if(el.type !== 'hidden') {
+                el.value = el.dataset.original; // restaurar valor original
+                el.classList.remove('modificado');
+                el.disabled = true; // volver a modo lectura
+              }
+            });
+            isReadonly = true;
+            editBtn.textContent = "Editar datos";
+            btnGuardar.style.display = "none";
+            btnCancelar.style.display = "none";
+          };
+        }
+        // Envío editar
+        const formEditar = document.getElementById('form-editar');
+        if (formEditar) {
+          formEditar.addEventListener('submit', async function (e) {
+            e.preventDefault();
 
-      alert('Estudiante actualizado correctamente.');
-      cerrarModalEdit();
-      showSection('usuarios/coor/estudiantes');
-    } catch (err) {
-      alert('Error al actualizar: ' + err.message);
-    }
-  });
-}
+            const id = document.getElementById('id_usuario').value;
+            const idRol = document.getElementById('id_rol').value; // ya lo pones en 3
+
+            const payload = {
+              nombre: document.getElementById('nombre').value.trim(),
+              apellido: document.getElementById('apellido').value.trim(),
+              email: document.getElementById('email').value.trim(),
+              contrasena: (document.getElementById('contrasena').value || '').trim() || null,
+              documento: document.getElementById('documento').value.trim(),
+              pais_origen: document.getElementById('pais_origen').value.trim(),
+              id_rol: idRol,
+              // ---- campos que pedía el backend ----
+              fecha_nac: document.getElementById('fecha_nac').value || null,
+              genero: document.getElementById('genero').value.trim(),
+              pais_residencia: document.getElementById('pais_residencia').value.trim(),
+              afiliacion_u: document.getElementById('afiliacion_u').value.trim(),
+              tipo_afiliacion: document.getElementById('tipo_afiliacion').value.trim(),
+              area_tematica: document.getElementById('area_tematica').value.trim(),
+              disciplina_cientifica: document.getElementById('disciplina_cientifica').value.trim()
+            };
+
+            try {
+              const resp = await fetch(`/usuarios/coor/estudiantes/${id}`, {
+                method: 'PUT',                       // tu ruta acepta PUT
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',              // manda cookie de sesión
+                body: JSON.stringify(payload)
+              });
+
+              const ct = resp.headers.get('content-type') || '';
+              const raw = await resp.text();
+
+              if (!ct.includes('application/json')) {
+                // HTML => seguramente error/redirect
+                alert(`Respuesta no JSON (${resp.status}).\n` + raw.slice(0,200));
+                return;
+              }
+
+              const data = JSON.parse(raw);
+              if (!resp.ok) {
+                alert(data.error || `Error ${resp.status}`);
+                return;
+              }
+
+              alert('Estudiante actualizado correctamente.');
+              cerrarModalEdit();
+              showSection(`usuarios/coor/${tipo}`);
+            } catch (err) {
+              alert('Error al actualizar: ' + err.message);
+            }
+          });
+        }
         // Crear usuario
         document.querySelectorAll('.create-btn').forEach(btn => {
           btn.addEventListener("click", function () {
@@ -490,7 +567,7 @@ if (formEditar) {
 
                 // Mostrar modal
                 document.getElementById('modal-info').classList.add('activo');
-                console.log(data);
+                //console.log(data);
               })
               .catch(error => {
                 console.error("Error al obtener datos del servidor:", error);
@@ -842,11 +919,16 @@ if (formEditar) {
         const modal = document.getElementById("modal-mail");
         if (modal) modal.classList.remove("activo");
       }
+      window.onclick = function(event) {
+        if (event.target.classList.contains('modal')) {
+          event.target.classList.remove('activo');
+        }
+      };
       document.addEventListener("DOMContentLoaded", () => { 
         inicializarEventos();
         inicializarEventosCursos();    
         // Mostrar gráfico inicial
-        fetch("/cursos/estadisticas/inscritos")
+        fetch("/est_graf/estadisticas/inscritos")
         .then(res => res.json())
         .then(data => {
           if (data.success) {

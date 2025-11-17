@@ -5,71 +5,287 @@
 {% block extra_css %}
 <style>
     .expositor-card {
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         border: none;
+        border-radius: 16px;
         overflow: hidden;
         height: 100%;
+        cursor: pointer;
+        background: #ffffff;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+        border: 1px solid #f0f0f0;
+        position: relative;
+        max-width: 320px;
+        margin: 0 auto;
     }
+
     .expositor-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+        transform: translateY(-6px);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+        border-color: #e0e0e0;
     }
+
+    .expositor-img-container {
+        position: relative;
+        overflow: hidden;
+        height: 220px;
+        width: 220px;
+        margin: 0 auto;
+        border-radius: 50%;
+        margin-top: 1.5rem;
+        background: #f8f9fa;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
     .expositor-img {
-        height: 250px;
-        object-fit: cover;
         width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 50%;
+        transition: all 0.5s ease;
     }
+
+    .expositor-card:hover .expositor-img {
+        transform: scale(1.05);
+    }
+
+    .expositor-content {
+        padding: 1.5rem;
+        position: relative;
+        text-align: center;
+    }
+
     .expositor-title {
         color: #2c3e50;
         font-weight: 600;
         font-size: 1.2rem;
+        margin-bottom: 0.75rem;
+        line-height: 1.3;
+        position: relative;
     }
+
+    .expositor-title::after {
+        content: '';
+        position: absolute;
+        bottom: -8px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 40px;
+        height: 2px;
+        background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+        transition: width 0.3s ease;
+    }
+
+    .expositor-card:hover .expositor-title::after {
+        width: 60px;
+    }
+
     .expositor-text {
-        color: #7f8c8d;
+        color: #6c757d;
         font-size: 0.95rem;
+        line-height: 1.5;
+        margin-bottom: 1.5rem;
+        min-height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
+
     .btn-expositor {
-        background-color: #3498db;
-        border: none;
-        transition: background-color 0.3s ease;
+        background: #ffffff;
+        border: 1.5px solid #3498db;
+        border-radius: 8px;
+        padding: 10px 24px;
         font-weight: 500;
+        transition: all 0.3s ease;
+        width: 100%;
+        color: #3498db;
+        position: relative;
+        overflow: hidden;
     }
+
     .btn-expositor:hover {
-        background-color: #2980b9;
+        background: #3498db;
+        color: #ffffff;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
     }
+
     .page-title {
         color: #2c3e50;
-        margin-bottom: 2rem;
+        margin-bottom: 1.5rem;
         font-weight: 700;
-        font-size: 2.5rem;
+        font-size: 2.2rem;
+        position: relative;
+        display: inline-block;
     }
+
+    .page-title::after {
+        content: '';
+        position: absolute;
+        bottom: -8px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 3px;
+        background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+        border-radius: 2px;
+    }
+
     .page-subtitle {
-        color: #7f8c8d;
+        color: #6c757d;
         margin-bottom: 3rem;
-        font-size: 1.2rem;
+        font-size: 1.1rem;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
     }
-    .breadcrumb {
-        background-color: transparent;
-        padding: 0;
-        margin-bottom: 2rem;
+
+    /* Animaciones de entrada mejoradas */
+    @keyframes cardEntrance {
+        from {
+            opacity: 0;
+            transform: translateY(40px) scale(0.95);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
     }
+
+    .col {
+        animation: cardEntrance 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+        opacity: 0;
+        padding: 0.5rem;
+    }
+
+    .col:nth-child(1) { animation-delay: 0.1s; }
+    .col:nth-child(2) { animation-delay: 0.2s; }
+    .col:nth-child(3) { animation-delay: 0.3s; }
+    .col:nth-child(4) { animation-delay: 0.4s; }
+    .col:nth-child(5) { animation-delay: 0.5s; }
+
+    /* Efecto de línea sutil en hover */
+    .expositor-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 2px;
+        background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+        transition: left 0.4s ease;
+        z-index: 2;
+    }
+
+    .expositor-card:hover::before {
+        left: 0;
+    }
+
+    /* Estilos para el modal - MÁS GRANDE */
+    .modal-backdrop {
+        background-color: rgba(0, 0, 0, 0.85);
+    }
+    
+    .modal-content {
+        border: none;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        background: #ffffff;
+    }
+    
+    .modal-header {
+        border-bottom: 1px solid #e9ecef;
+        background: #f8f9fa;
+        padding: 1.5rem 2rem;
+    }
+    
+    .modal-title {
+        color: #2c3e50;
+        font-weight: 600;
+        font-size: 1.3rem;
+    }
+    
+    .btn-close {
+        font-size: 0.8rem;
+        opacity: 0.7;
+        transition: opacity 0.3s ease;
+    }
+    
+    .btn-close:hover {
+        opacity: 1;
+    }
+    
+    .video-container {
+        position: relative;
+        padding-bottom: 56.25%; /* Relación de aspecto 16:9 */
+        height: 0;
+        overflow: hidden;
+        background: #000;
+    }
+    
+    .video-container iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: 0;
+    }
+    
+    /* Modal más grande */
+    .modal-dialog {
+        max-width: 1000px;
+        margin: 1rem auto;
+    }
+    
+    .card-footer {
+        padding: 0 1.5rem 1.5rem;
+    }
+
+    /* Ajustes para el grid */
+    .row {
+        justify-content: center;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .expositor-img-container {
+            height: 200px;
+            width: 200px;
+        }
+        
+        .page-title {
+            font-size: 1.8rem;
+        }
+        
+        .modal-dialog {
+            margin: 0.5rem;
+        }
+        
+        .expositor-card {
+            max-width: 280px;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .expositor-img-container {
+            height: 180px;
+            width: 180px;
+        }
+        
+        .expositor-card {
+            max-width: 100%;
+        }
+    }
+
 </style>
 {% endblock %}
 
 {% block content %}
-<!-- Breadcrumb -->
-<nav aria-label="breadcrumb" class="container mt-4">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{{ url_for('home.index') }}">
-            <span class="i18n i18n-es">Inicio</span>
-            <span class="i18n i18n-en">Home</span>
-        </a></li>
-        <li class="breadcrumb-item active" aria-current="page">
-            <span class="i18n i18n-es">Expositores</span>
-            <span class="i18n i18n-en">Speakers</span>
-        </li>
-    </ol>
-</nav>
 
 <!-- Contenido Principal -->
 <div class="container my-5">
@@ -87,16 +303,19 @@
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
         <!-- Expositor 1 -->
         <div class="col">
-            <div class="card expositor-card h-100">
-                <div class="card-body">
-                    <h5 class="expositor-title">Dr. Ana García</h5>
+            <div class="card expositor-card h-100" data-bs-toggle="modal" data-bs-target="#videoModal" data-video-id="FTmWchX0n4w" data-expositor-name="Dra. Warshi Dandeniya">
+                <div class="expositor-img-container">
+                    <img src="{{ url_for('static', filename='images/Dandeniya.webp') }}" alt="Dra. Warshi Dandeniya" class="expositor-img">
+                </div>
+                <div class="expositor-content">
+                    <h5 class="expositor-title">Dra. Warshi Dandeniya</h5>
                     <p class="expositor-text">
-                        <span class="i18n i18n-es">Especialista en Nanotecnología y Materiales Avanzados</span>
-                        <span class="i18n i18n-en">Specialist in Nanotechnology and Advanced Materials</span>
+                        <span class="i18n i18n-es">Biofertilizantes para la producción sostenible de cultivos</span>
+                        <span class="i18n i18n-en">Biofertilizers for Sustainable Crop Production</span>
                     </p>
                 </div>
                 <div class="card-footer bg-transparent border-0">
-                    <button class="btn btn-primary btn-expositor w-100" onclick="window.open('https://www.youtube.com/watch?v=VIDEO_ID_1', '_blank')">
+                    <button class="btn btn-expositor">
                         <span class="i18n i18n-es">Ver Presentación</span>
                         <span class="i18n i18n-en">View Presentation</span>
                     </button>
@@ -105,96 +324,108 @@
         </div>
 
         <!-- Expositor 2 -->
-        <div class="col">
-            <div class="card expositor-card h-100">
-                <div class="card-body">
-                    <h5 class="expositor-title">Prof. Carlos López</h5>
-                    <p class="expositor-text">
-                        <span class="i18n i18n-es">Investigador en Inteligencia Artificial</span>
-                        <span class="i18n i18n-en">Researcher in Artificial Intelligence</span>
-                    </p>
-                </div>
-                <div class="card-footer bg-transparent border-0">
-                    <button class="btn btn-primary btn-expositor w-100" onclick="window.open('https://www.youtube.com/watch?v=VIDEO_ID_2', '_blank')">
-                        <span class="i18n i18n-es">Ver Presentación</span>
-                        <span class="i18n i18n-en">View Presentation</span>
-                    </button>
-                </div>
-            </div>
+<div class="col">
+    <div class="card expositor-card h-100" data-bs-toggle="modal" data-bs-target="#videoModal" data-video-id="HO3wqcu1rkc" data-expositor-name="Dr. Ranga Ambati">
+        <div class="expositor-img-container">
+            <img src="{{ url_for('static', filename='images/AbantiRaga.webp') }}" alt="Dr. Ranga Ambati" class="expositor-img">
         </div>
-
-        <!-- Expositor 3 -->
-        <div class="col">
-            <div class="card expositor-card h-100">
-                <div class="card-body">
-                    <h5 class="expositor-title">Dra. Maria Rodriguez</h5>
-                    <p class="expositor-text">
-                        <span class="i18n i18n-es">Experta en Bioquímica y Farmacología</span>
-                        <span class="i18n i18n-en">Expert in Biochemistry and Pharmacology</span>
-                    </p>
-                </div>
-                <div class="card-footer bg-transparent border-0">
-                    <button class="btn btn-primary btn-expositor w-100" onclick="window.open('https://www.youtube.com/watch?v=VIDEO_ID_3', '_blank')">
-                        <span class="i18n i18n-es">Ver Presentación</span>
-                        <span class="i18n i18n-en">View Presentation</span>
-                    </button>
-                </div>
-            </div>
+        <div class="expositor-content">
+            <h5 class="expositor-title">Dr. Ranga Ambati</h5>
+            <p class="expositor-text">
+                <span class="i18n i18n-es">Algas para la seguridad alimentaria y nutricional</span>
+                <span class="i18n i18n-en">Algae for Food and Nutritional Security</span>
+            </p>
         </div>
-
-        <!-- Expositor 4 -->
-        <div class="col">
-            <div class="card expositor-card h-100">
-                <div class="card-body">
-                    <h5 class="expositor-title">Dr. Roberto Silva</h5>
-                    <p class="expositor-text">
-                        <span class="i18n i18n-es">Pionero en Energías Renovables</span>
-                        <span class="i18n i18n-en">Pioneer in Renewable Energy</span>
-                    </p>
-                </div>
-                <div class="card-footer bg-transparent border-0">
-                    <button class="btn btn-primary btn-expositor w-100" onclick="window.open('https://www.youtube.com/watch?v=VIDEO_ID_4', '_blank')">
-                        <span class="i18n i18n-es">Ver Presentación</span>
-                        <span class="i18n i18n-en">View Presentation</span>
-                    </button>
-                </div>
-            </div>
+        <div class="card-footer bg-transparent border-0">
+            <button class="btn btn-expositor w-100">
+                <span class="i18n i18n-es">Ver Presentación</span>
+                <span class="i18n i18n-en">View Presentation</span>
+            </button>
         </div>
+    </div>
+</div>
 
-        <!-- Expositor 5 -->
-        <div class="col">
-            <div class="card expositor-card h-100">
-                <div class="card-body">
-                    <h5 class="expositor-title">Dra. Laura Martinez</h5>
-                    <p class="expositor-text">
-                        <span class="i18n i18n-es">Investigadora en Ciencias Ambientales</span>
-                        <span class="i18n i18n-en">Researcher in Environmental Sciences</span>
-                    </p>
-                </div>
-                <div class="card-footer bg-transparent border-0">
-                    <button class="btn btn-primary btn-expositor w-100" onclick="window.open('https://www.youtube.com/watch?v=VIDEO_ID_5', '_blank')">
-                        <span class="i18n i18n-es">Ver Presentación</span>
-                        <span class="i18n i18n-en">View Presentation</span>
-                    </button>
-                </div>
-            </div>
+<!-- Expositor 3 -->
+<div class="col">
+    <div class="card expositor-card h-100" data-bs-toggle="modal" data-bs-target="#videoModal" data-video-id="DjpuHK5kAiQ" data-expositor-name="Dr Pablo Bolaños-Villegas">
+        <div class="expositor-img-container">
+            <img src="{{ url_for('static', filename='images/PabloBollanos.png') }}" alt="Dr Pablo Bolaños-Villegas" class="expositor-img">
         </div>
+        <div class="expositor-content">
+            <h5 class="expositor-title">Dr Pablo Bolaños-Villegas</h5>
+            <p class="expositor-text">
+                <span class="i18n i18n-es">Biología de la reproducción vegetal para fitomejoradores</span>
+                <span class="i18n i18n-en">Plant Reproduction Biology for Breeders</span>
+            </p>
+        </div>
+        <div class="card-footer bg-transparent border-0">
+            <button class="btn btn-expositor w-100">
+                <span class="i18n i18n-es">Ver Presentación</span>
+                <span class="i18n i18n-en">View Presentation</span>
+            </button>
+        </div>
+    </div>
+</div>
 
-        <!-- Expositor 6 -->
-        <div class="col">
-            <div class="card expositor-card h-100">
-                <div class="card-body">
-                    <h5 class="expositor-title">Prof. Javier Hernandez</h5>
-                    <p class="expositor-text">
-                        <span class="i18n i18n-es">Especialista en Data Science</span>
-                        <span class="i18n i18n-en">Specialist in Data Science</span>
-                    </p>
-                </div>
-                <div class="card-footer bg-transparent border-0">
-                    <button class="btn btn-primary btn-expositor w-100" onclick="window.open('https://www.youtube.com/watch?v=VIDEO_ID_6', '_blank')">
-                        <span class="i18n i18n-es">Ver Presentación</span>
-                        <span class="i18n i18n-en">View Presentation</span>
-                    </button>
+<!-- Expositor 4 -->
+<div class="col">
+    <div class="card expositor-card h-100" data-bs-toggle="modal" data-bs-target="#videoModal" data-video-id="2rc4CX1o_e8" data-expositor-name="Dra. Mónica Izurieta Guevara">
+        <div class="expositor-img-container">
+            <img src="{{ url_for('static', filename='images/MonicaGuevara.webp') }}" alt="Dra. Mónica Izurieta Guevara" class="expositor-img">
+        </div>
+        <div class="expositor-content">
+            <h5 class="expositor-title">Dra. Mónica Izurieta Guevara</h5>
+            <p class="expositor-text">
+                <span class="i18n i18n-es">Pionero en Energías Renovables</span>
+                <span class="i18n i18n-en">Pioneer in Renewable Energy</span>
+            </p>
+        </div>
+        <div class="card-footer bg-transparent border-0">
+            <button class="btn btn-expositor w-100">
+                <span class="i18n i18n-es">Ver Presentación</span>
+                <span class="i18n i18n-en">View Presentation</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Expositor 5 -->
+<div class="col">
+    <div class="card expositor-card h-100" data-bs-toggle="modal" data-bs-target="#videoModal" data-video-id="Lj3d4AaZE7I" data-expositor-name="Dra. Sdenka Moscoso">
+        <div class="expositor-img-container">
+            <img src="{{ url_for('static', filename='images/Exp-Sdenka.webp') }}" alt="Dra. Sdenka Moscoso" class="expositor-img">
+        </div>
+        <div class="expositor-content">
+            <h5 class="expositor-title">Dra. Sdenka Moscoso</h5>
+            <p class="expositor-text">
+                <span class="i18n i18n-es">Modelos animales y aplicaciones en agroindustria y medio ambiente</span>
+                <span class="i18n i18n-en">Animal models and applications in agroindustry and environment</span>
+            </p>
+        </div>
+        <div class="card-footer bg-transparent border-0">
+            <button class="btn btn-expositor w-100">
+                <span class="i18n i18n-es">Ver Presentación</span>
+                <span class="i18n i18n-en">View Presentation</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+
+    </div>
+</div>
+
+<!-- Modal para videos - MÁS GRANDE -->
+<div class="modal fade" id="videoModal" tabindex="-1" aria-labelledby="videoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="videoModalLabel">Presentación del Expositor</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-0">
+                <div class="video-container">
+                    <iframe id="youtubeVideo" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                 </div>
             </div>
         </div>
@@ -204,9 +435,30 @@
 
 {% block extra_js %}
 <script>
-    // Script adicional si es necesario
     document.addEventListener('DOMContentLoaded', function() {
         console.log('Portal de expositores cargado correctamente');
+        
+        // Configurar el modal para mostrar el video correcto
+        const videoModal = document.getElementById('videoModal');
+        videoModal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget; // Botón que activó el modal
+            const videoId = button.getAttribute('data-video-id');
+            const expositorName = button.getAttribute('data-expositor-name');
+            
+            // Actualizar el título del modal
+            const modalTitle = videoModal.querySelector('.modal-title');
+            modalTitle.textContent = "Presentación: " + expositorName;
+            
+            // Actualizar el iframe con el video correcto
+            const iframe = videoModal.querySelector('#youtubeVideo');
+            iframe.src = "https://www.youtube.com/embed/" + videoId;
+        });
+        
+        // Limpiar el src del iframe cuando se cierra el modal para detener el video
+        videoModal.addEventListener('hidden.bs.modal', function () {
+            const iframe = videoModal.querySelector('#youtubeVideo');
+            iframe.src = "";
+        });
     });
 </script>
 {% endblock %}

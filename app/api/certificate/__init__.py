@@ -6,3 +6,4 @@ certificate_bp = Blueprint("certificate", __name__)
 
 # De este mismo directorio importamos las rutas
 from . import routes
+from . import utils

@@ -63,7 +63,7 @@ def generate_qr_by_id(id_usuario):
             return redirect(url_for("qrs.perfil_estudiante", id_usuario=id_usuario))
 
         contenido = (
-            f"https://organizador-cursos-twas.onrender.com/qrs/registrar?"
+            f"{os.getenv('URL_APP')}/qrs/registrar?"
             f"id_inscripcion={id_inscripcion}&id_curso={id_curso}"
             f"&id_usuario={id_usuario}&horario={horario}"
         )
@@ -94,7 +94,7 @@ def registrar():
         conn = get_connection()
         cursor = conn.cursor()
 
-        # 📌 Obtener horario de asistencia del curso
+        # Obtener horario del curso
         cursor.execute(
             """
             SELECT c.hora_inicio_asistencia, c.hora_fin_asistencia
@@ -109,7 +109,6 @@ def registrar():
         if horarios:
             hora_inicio, hora_fin = horarios
 
-            # Validar horario solo si existen valores
             if hora_inicio and hora_fin:
                 fecha_hoy = hora_registro.date()
                 hora_inicio_dt = datetime.combine(fecha_hoy, hora_inicio)
@@ -127,15 +126,17 @@ def registrar():
                         400,
                     )
 
-        # 📌 Verificar duplicado en el mismo día
+        # 📌 Verificar cuántas asistencias ya hay hoy
         cursor.execute(
             """
-            SELECT 1 FROM asistencias
+            SELECT COUNT(*) FROM asistencias
             WHERE id_inscripcion = %s AND DATE(fecha) = CURRENT_DATE
             """,
             (id_inscripcion,),
         )
-        if cursor.fetchone():
+        asistencias_hoy = cursor.fetchone()[0]
+
+        if asistencias_hoy >= 2:
             conn.close()
             return (
                 render_template(
@@ -144,7 +145,7 @@ def registrar():
                 200,
             )
 
-        # 📌 Insertar asistencia
+        # 📌 Insertar nueva asistencia
         cursor.execute(
             """
             INSERT INTO asistencias (id_inscripcion, fecha, presente)
@@ -159,7 +160,6 @@ def registrar():
 
     except Exception as e:
         return f"Error al registrar la asistencia: {str(e)}", 500
-
 
 @qrs_bp.route("/actualizar_horario_asistencia/<int:curso_id>", methods=["POST"])
 @login_required
@@ -203,23 +203,27 @@ def perfil_estudiante(id_usuario):
             qr_filename = None
         else:
             id_inscripcion = datos[0]["id_inscripcion"]
+            print("ID Inscripción👁👄👁:", id_inscripcion)
+            print(row)
             qr_filename = None
             for fname in os.listdir(BASE_DIR):
                 if fname.startswith(f"qr_{id_inscripcion}_") and fname.endswith(".png"):
                     qr_filename = fname
                     break
 
+        print ("aca estoy mi king 🦍🔥🔥")
         qr_path = f"/qrs/{qr_filename}" if qr_filename else None
-
+        print ("Ahora estoy aca estoy mi king 🦍🔥🔥🔥")
         return render_template(
             "Estudiante/Estudiante.html",
             estudiante=row,
             qr_path=qr_path,
+            
         )
 
     except Exception as e:
-        return str(e), 500
-
+        #return str(e), 500
+        return "Puta madre abuela 🗣🗣🔥🔥",500
 
 # Muestra las asistencias de un estudiante
 @qrs_bp.route("/asistencias/<int:id_usuario>", methods=["GET"])

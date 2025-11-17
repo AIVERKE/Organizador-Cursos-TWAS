@@ -1,74 +1,234 @@
-body {
-  font-family: 'Montserrat Alternates', sans-serif;
-  padding: 10px;
-  overflow-y: hidden;
+/* ===================== */
+/* VARIABLES Y RESET */
+/* ===================== */
+:root {
+  --primary-color: #0074c7;
+  --primary-dark: #005a9e;
+  --primary-light: #e3f2fd;
+  --text-color: #333;
+  --text-light: #666;
+  --bg-color: #fff;
+  --border-color: #e0e0e0;
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.12);
+  --radius: 8px;
+  --transition: all 0.3s ease;
 }
 
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Montserrat Alternates', sans-serif;
+  padding: 20px;
+  background: var(--bg-color);
+  color: var(--text-color);
+  line-height: 1.6;
+  animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* ===================== */
+/* LISTA DE CURSOS */
+/* ===================== */
+h2 {
+  color: var(--primary-color);
+  margin: 30px 0 20px;
+  font-family: 'Montserrat Alternates', sans-serif;
+  font-weight: 700;
+  font-size: 24px;
+  border-bottom: 2px solid var(--primary-light);
+  padding-bottom: 10px;
+}
+
+.lista-cursos {
+  list-style: none;
+  margin-bottom: 30px;
+}
+
+.lista-cursos li {
+  background: #fff;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  box-shadow: var(--shadow);
+  transition: var(--transition);
+  animation: slideIn 0.5s ease;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.lista-cursos li:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-hover);
+  border-color: var(--primary-color);
+}
+
+.lista-cursos li strong {
+  color: var(--primary-color);
+  font-size: 18px;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.lista-cursos li br {
+  margin-bottom: 0.5rem;
+  display: block;
+  content: "";
+}
+
+/* ===================== */
+/* CONTENEDOR PRINCIPAL */
+/* ===================== */
 .curso-contenido {
   max-width: 900px;
   margin: auto;
+  animation: slideIn 0.5s ease;
 }
 
 input[type="text"] {
-  padding: 6px 10px;
+  padding: 10px 15px;
   font-size: 16px;
-  border: 1px solid #0074c7;
-  border-radius: 4px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
   margin-bottom: 20px;
   font-family: 'Montserrat Alternates', sans-serif;
+  width: 100%;
+  transition: var(--transition);
+  background: #f9f9f9;
 }
 
-h2 {
-  color: #0074c7;
-  margin-top: 30px;
-  font-family: 'Montserrat Alternates', sans-serif;
+input[type="text"]:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(0, 116, 199, 0.2);
+  background: #fff;
+}
+
+/* ===================== */
+/* TABLAS */
+/* ===================== */
+.tabla-container {
+  overflow-x: auto;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  margin-bottom: 30px;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
-  margin-bottom: 20px;
+  margin-bottom: 0;
+  min-width: 600px;
 }
 
 th {
-  background-color: #0074c7;
+  background-color: var(--primary-color);
   color: white;
-  padding: 10px;
+  padding: 12px 10px;
   text-transform: capitalize;
+  font-weight: 600;
+  position: sticky;
+  top: 0;
 }
 
 td {
-  height: 60px;
+  height: 70px;
   text-align: center;
   cursor: pointer;
   font-size: 20px;
-  transition: background-color 0.3s ease;
+  transition: var(--transition);
   font-weight: bold;
+  border: 1px solid var(--border-color);
+  position: relative;
+  overflow: hidden;
+}
+
+td::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  transition: left 0.5s;
+}
+
+td:hover::before {
+  left: 100%;
 }
 
 .asistencia-si {
-  background-color: #d4f8d4;
-  color: green;
+  background-color: #e8f5e8;
+  color: #2e7d32;
+  border-left: 4px solid #2e7d32;
 }
 
 .asistencia-no {
-  background-color: #ffd9d9;
-  color: red;
+  background-color: #ffebee;
+  color: #c62828;
+  border-left: 4px solid #c62828;
 }
 
 td:hover {
   filter: brightness(0.95);
+  transform: scale(1.02);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1;
 }
 
-
+/* ===================== */
+/* RESPONSIVE */
+/* ===================== */
 @media (max-width: 768px) {
+  body {
+    padding: 10px;
+    overflow-y: auto;
+  }
+
   .curso-contenido {
-    padding: 0 1rem;
+    padding: 0;
   }
 
   input[type="text"] {
     width: 100%;
     font-size: 14px;
+  }
+
+  h2 {
+    font-size: 20px;
+    margin: 20px 0 15px;
+  }
+
+  .lista-cursos li {
+    padding: 1rem;
+  }
+
+  .lista-cursos li strong {
+    font-size: 16px;
+  }
+
+  .tabla-container {
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
   }
 
   table, thead, tbody, tr, td, th {
@@ -81,10 +241,14 @@ td:hover {
   }
 
   tr {
-    margin-bottom: 1rem;
-    border: 1px solid #0074c7;
-    border-radius: 6px;
-    padding: 0.5rem;
+    margin-bottom: 0;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  tr:last-child {
+    border-bottom: none;
   }
 
   td {
@@ -92,6 +256,17 @@ td:hover {
     padding-left: 50%;
     position: relative;
     font-size: 16px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex: 1 0 100%;
+    border: none;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  td:last-child {
+    border-bottom: none;
   }
 
   td::before {
@@ -101,10 +276,74 @@ td:hover {
     width: 45%;
     font-weight: bold;
     text-align: left;
-    color: #0074c7;
+    color: var(--primary-color);
+  }
+
+  .asistencia-si,
+  .asistencia-no {
+    border-left: none;
+    border-right: 4px solid;
+  }
+
+  .asistencia-si {
+    border-right-color: #2e7d32;
+  }
+
+  .asistencia-no {
+    border-right-color: #c62828;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    padding: 5px;
   }
 
   h2 {
-    font-size: 20px;
+    font-size: 18px;
   }
+
+  .lista-cursos li {
+    padding: 0.8rem;
+  }
+
+  td {
+    font-size: 14px;
+    height: 45px;
+  }
+}
+
+/* ===================== */
+/* ANIMACIONES ADICIONALES */
+/* ===================== */
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+.pulse {
+  animation: pulse 1.5s infinite;
+}
+
+/* Efecto de carga para tablas */
+.table-loading {
+  position: relative;
+  overflow: hidden;
+}
+
+.table-loading::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+  animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+  0% { left: -100%; }
+  100% { left: 100%; }
 }

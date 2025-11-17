@@ -2,13 +2,15 @@ import psycopg2
 from app.db_c import get_connection
 from werkzeug.security import generate_password_hash
 from datetime import datetime, timedelta, date
+from flask import jsonify
+import pandas as pd
 
 # --- Usuarios General
 def obtener_usuarios(rol):
     conn = get_connection()  # conecta a la base de datos
     cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
     cursor.execute(
-        "SELECT * FROM Usuarios WHERE id_rol = %s", (rol,)
+        "SELECT * FROM Usuarios WHERE id_rol = %s ORDER BY id_usuario ASC;", (rol,)
     )  # consulta SQL directa
     rows = cursor.fetchall()  # obtiene todos los resultados en una lista
     conn.close()  # cierra la conexión
@@ -40,14 +42,14 @@ def obtener_estudiantes():
 
 def obtener_estudiante(id_usuario):
     conn = get_connection()
-    cursor = conn.cursor()
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
     cursor.execute(
         "SELECT * FROM Usuarios WHERE id_usuario = %s ORDER BY id_usuario ASC;",
         (id_usuario,),
     )
     row = cursor.fetchone()
     conn.close()
-    return row
+    return row or {}
 
 
 # ----cambio 1
@@ -97,7 +99,7 @@ def actualizar_estudiante(id_usuario,nombre,apellido,email,contrasena,documento,
                 documento = %s,
                 pais_origen = %s,
                 id_rol = %s,
-                fecha_nac = %s,
+                fecha_nac = TO_DATE(%s, 'YYYY-MM-DD'),
                 genero = %s,
                 pais_residencia = %s,
                 afiliacion_u = %s,
@@ -253,7 +255,7 @@ def crear_estudiantes_con_inscripcion_con_lote(lista_estudiantes):
                 # 1) Buscar id_curso por nombre (case‐insensitive)
                 cursor.execute(
                     "SELECT id_curso FROM cursos WHERE LOWER(nombre) = LOWER(%s)",
-                    (est.get("nombre_curso", "").strip(),),
+                    (est.get("curso_interes", "").strip(),),
                 )
                 row = cursor.fetchone()
                 if not row:
@@ -266,8 +268,8 @@ def crear_estudiantes_con_inscripcion_con_lote(lista_estudiantes):
                 id_curso = row[0]
 
                 # 2) Verificar duplicados (email o documento)
-                cursor.execute("SELECT 1 FROM usuarios WHERE email = %s OR documento = %s",
-                               (est["email"], est["documento"]))
+                cursor.execute("SELECT 1 FROM usuarios WHERE email = %s",
+                               (est["email"],))
                 if cursor.fetchone():
                     conn.rollback()
                     fallidos.append({"usuario": est, "error": "Usuario ya registrado"})
@@ -281,11 +283,27 @@ def crear_estudiantes_con_inscripcion_con_lote(lista_estudiantes):
                 hashed = generate_password_hash(est["email"]
                 )
 
+                from datetime import datetime
+
+                fecha_nac = est.get("fecha_nac")
+                if pd.isna(fecha_nac):
+                    fecha_nac = None   # se inserta como NULL en la BD
+                else:
+                    # si viene como Timestamp de pandas
+                    if isinstance(fecha_nac, pd.Timestamp):
+                        fecha_nac = fecha_nac.date()
+                    # si viene como string
+                    elif isinstance(fecha_nac, str):
+                        try:
+                            fecha_nac = datetime.strptime(fecha_nac.strip(), "%Y-%m-%d").date()
+                        except:
+                            fecha_nac = None
+
                 # 3) Insertar usuario y obtener id_usuario
                 cursor.execute(
                     """
-                    INSERT INTO Usuarios (nombre, apellido, email, contrasena, documento, pais_origen, id_rol, fecha_nac, genero, pais_residencia, afiliacion_u, tipo_afiliacion, area_tematica, disciplina_cientifica)
-                    VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+                    INSERT INTO Usuarios (nombre, apellido, email, contrasena, pais_origen, id_rol, fecha_nac, genero, pais_residencia, afiliacion_u, tipo_afiliacion, area_tematica, disciplina_cientifica)
+                    VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
                     RETURNING id_usuario
                     """,
                     (
@@ -293,10 +311,9 @@ def crear_estudiantes_con_inscripcion_con_lote(lista_estudiantes):
                         est["apellido"],
                         est["email"],
                         hashed,
-                        est["documento"],
                         est["pais_origen"],
                         id_rol,
-                        est["fecha_nac"],
+                        fecha_nac,
                         est["genero"],
                         est["pais_residencia"],
                         est["afiliacion_u"],
@@ -309,10 +326,10 @@ def crear_estudiantes_con_inscripcion_con_lote(lista_estudiantes):
                 # 4) Crear inscripción
                 cursor.execute(
                     """
-                    INSERT INTO inscripciones (id_usuario,id_curso,fecha_inscripcion,modalidad,certificado_generado) 
-                    VALUES (%s,%s,%s,%s,%s) RETURNING id_inscripcion
+                    INSERT INTO inscripciones (id_usuario,id_curso,fecha_inscripcion,certificado_generado) 
+                    VALUES (%s,%s,%s,%s) RETURNING id_inscripcion
                     """,
-                    (id_usuario, id_curso,date.today(),est["modalidad"],False),
+                    (id_usuario, id_curso,date.today(),False),
                 )
                 id_insc = cursor.fetchone()[0]
 
@@ -325,18 +342,27 @@ def crear_estudiantes_con_inscripcion_con_lote(lista_estudiantes):
                 )
                 conn.commit()
 
-                exitosos.append({
-                    "usuario": est,
+                # 6) Generar QR automáticamente
+                try:
+                    qr_filename = generar_qr_estudiante(id_usuario, id_insc, id_curso)
+                except Exception as e:
+                    qr_filename = None
+                    print(f"Error generando QR para usuario {id_usuario}: {e}")
+
+                registro = est.copy()
+                registro.update({
                     "id_usuario": id_usuario,
-                    "id_inscripcion": id_insc
+                    "id_inscripcion": id_insc,
+                    "qr_path": qr_filename
                 })
+                exitosos.append(registro)
 
             except Exception as e:
                 conn.rollback()
-                fallidos.append({
-                        "usuario": est,
-                        "error": str(e)
-                })
+                registro = est.copy()
+                registro["error"] = str(e)
+                fallidos.append(registro)
+
                 continue
         return {"exitosos": exitosos, "fallidos": fallidos}
     except Exception as e:
@@ -348,18 +374,87 @@ def crear_estudiantes_con_inscripcion_con_lote(lista_estudiantes):
             cursor.close()
             conn.close()
 
+### Funcion logica de qr
+import os
+from datetime import datetime
+import segno
+
+BASE_DIR = "app/static/qrs"  # ejemplo, donde guardas los QR
+
+def generar_qr_estudiante(id_usuario, id_inscripcion, id_curso):
+    os.makedirs(BASE_DIR, exist_ok=True)
+
+    # Evita generar QR duplicados
+    existing_files = [
+        fname for fname in os.listdir(BASE_DIR)
+        if fname.startswith(f"qr_{id_inscripcion}_") and fname.endswith(".png")
+    ]
+    if existing_files:
+        return existing_files[0]  # si ya existe, retornamos el archivo existente
+
+    horario = datetime.now().strftime("%Y-%m-%d %H:%M")
+    contenido = (
+        f"{os.getenv('URL_APP')}/qrs/registrar?"
+        f"id_inscripcion={id_inscripcion}&id_curso={id_curso}"
+        f"&id_usuario={id_usuario}&horario={horario}"
+    )
+
+    qr = segno.make(contenido)
+    filename = f"qr_{id_inscripcion}_{datetime.now().strftime('%Y%m%d%H%M%S')}.png"
+    output_file = os.path.join(BASE_DIR, filename)
+    qr.save(output_file, scale=10)
+
+    return filename
+
 
 def eliminar_estudiante(id_usuario):
     try:
         conn = get_connection()
         cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-        cursor.execute("DELETE FROM Usuarios WHERE id_usuario = %s", (id_usuario,))
-        conn.commit()
-        conn.close()
-    except psycopg2.Error as e:
-        conn.rollback()
-        return {"status": "error", "mensaje": "Error al eliminar: " + str(e)}
+            
+        cursor.execute(
+            "SELECT id_inscripcion, id_nota FROM inscripciones "
+            "JOIN notas USING(id_inscripcion) "
+            "WHERE id_usuario = %s",
+            (id_usuario,)
+        )
+        inscripciones = cursor.fetchall()
 
+        for ins in inscripciones:
+            id_inscripcion = ins["id_inscripcion"]
+            id_nota = ins["id_nota"]
+            cursor.execute(
+                "DELETE FROM notas WHERE id_inscripcion = %s AND id_nota = %s",
+                (id_inscripcion, id_nota)
+            )
+            if cursor.rowcount == 0:
+                conn.rollback()
+                return jsonify({"status": "error", "mensaje": f"No se encontró nota {id_nota}"}), 404
+
+            cursor.execute(
+                "DELETE FROM inscripciones WHERE id_inscripcion = %s", (id_inscripcion,)
+            )
+            if cursor.rowcount == 0:
+                conn.rollback()
+                return jsonify({"status": "error", "mensaje": f"No se encontró inscripcion {id_inscripcion}"}), 404
+
+        # --- 3) Borrar usuario ---
+        cursor.execute("DELETE FROM usuarios WHERE id_usuario = %s", (id_usuario,))
+        if cursor.rowcount == 0:
+            conn.rollback()
+            return jsonify({"status": "error", "mensaje": "No se encontró el usuario"}), 404
+
+        conn.commit()
+        return jsonify({"status": "ok", "mensaje": "Usuario, inscripciones y notas eliminadas correctamente"})
+
+    except psycopg2.Error as e:
+        if conn:
+            conn.rollback()
+        return jsonify({"status": "error", "mensaje": f"Error al eliminar: {e}"}), 500
+    finally:
+        if conn:
+            cursor.close()
+            conn.close()
 
 # ------------------------
 # def obtener_materias_estudiante(id_usuario):
@@ -450,6 +545,7 @@ def crear_inscripcion(id_usuario, id_curso):
 def eliminar_inscripcion(id_inscripcion, id_nota):
     conn = get_connection()
     cursor = conn.cursor()
+
     cursor.execute(
         "DELETE FROM notas WHERE id_inscripcion = %s AND id_nota = %s",
         (id_inscripcion, id_nota),
@@ -535,7 +631,7 @@ def actualizar_ponente(
             documento = %s,
             pais_origen = %s,
             id_rol = %s,
-            fecha_nac = %s,
+            fecha_nac = TO_DATE(%s, 'YYYY-MM-DD'),
             genero = %s,
             pais_residencia = %s,
             afiliacion_u = %s,
@@ -573,7 +669,7 @@ def actualizar_ponente(
                 documento = %s,
                 pais_origen = %s,
                 id_rol = %s,
-                fecha_nac = %s,
+                fecha_nac = TO_DATE(%s, 'YYYY-MM-DD'),
                 genero = %s,
                 pais_residencia = %s,
                 afiliacion_u = %s,
@@ -704,8 +800,7 @@ def crear_ponentes_con_lote(lista_ponentes):
         for p in lista_ponentes:
             try:
                 # 1) Generar y hashear contraseña
-                hashed = generate_password_hash(
-                    generar_contrasena(p["apellido"], p["documento"])
+                hashed = generate_password_hash(est["email"]
                 )
 
                 # 2) Insertar usuario
@@ -845,3 +940,51 @@ def quitar_curso_a_ponente(id_curso):
 
 
 # ------------------------
+
+#PARA USAR EN MAIL
+# en tu módulo usu.py (o donde tengas las funciones de DB)
+
+def obtener_estudiantes_i():
+    conn = get_connection()
+    cur = conn.cursor()
+    #cur.execute("""
+    #    SELECT u.id_usuario, u.email, i.id_inscripcion
+    #    FROM usuarios u
+    #    JOIN inscripciones i ON u.id_usuario = i.id_usuario
+    #    WHERE u.notificado = FALSE
+    #    LIMIT 1
+    #""")
+    cur.execute("""
+        SELECT u.id_usuario, u.email, i.id_inscripcion, CONCAT(u.nombre,' ', u.apellido) as nom, c.nombre as cnombre
+        FROM usuarios u
+        JOIN inscripciones i ON u.id_usuario = i.id_usuario
+		JOIN cursos c ON i.id_curso = c.id_curso
+		WHERE u.notificado = FALSE
+        LIMIT 10
+    """)
+    rows = cur.fetchall()
+    cur.close()
+    conn.close()
+
+    # Retornar lista de diccionarios
+    #estudiantes = [{"id_usuario": r[0], "email": r[1], "id_inscripcion": r[2]} for r in rows]
+    estudiantes = [{"id_usuario": r[0], "email": r[1], "id_inscripcion": r[2], "nombre":r[3], "curso":r[4]} for r in rows]
+    return estudiantes
+
+
+def marcar_notificados(ids_usuarios):
+    conn = get_connection()
+    cur = conn.cursor()
+    
+    query = """
+        UPDATE usuarios
+        SET notificado = TRUE
+        WHERE id_usuario = %s
+    """
+    
+    for id_usuario in ids_usuarios:
+        cur.execute(query, (id_usuario,))
+    
+    conn.commit()
+    cur.close()
+    conn.close()

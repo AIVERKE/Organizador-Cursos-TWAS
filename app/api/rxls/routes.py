@@ -12,6 +12,7 @@ from app.models.user import Usuario
 from app.controllers import u_controller as usu, c_controller as cur
 from app.api.auth.utils import role_required
 
+import json
 ALLOWED_EXTENSIONS = {"xlsx", "xls", "csv"}
 
 
@@ -26,24 +27,44 @@ TIPOS = {
 
 PLANTILLAS = {
     "estudiantes": {
-        "columnas": ["nombre", "apellido", "email", "documento", "pais_origen",
-                     "fecha_nac", "genero", "pais_residencia", "afiliacion_u",
-                     "tipo_afiliacion", "area_tematica", "disciplina_cientifica", 
-                     "nombre_curso", "modalidad"],
-        "ejemplo": ["Juan", "Perez", "juan@mail.com", "123456", "Bolivia",
-                    "2000-01-01", "male", "Bolivia", "Universidad X", "public", 
-                    "Ciencias", "Matemática", "Curso 1", "Virtual"]
+        "columnas": [
+            "nombre / first name",
+            "apellido / surname",
+            "direccion de correo electronico",
+            "fecha de nacimiento",
+            "genero / gender",
+            "pais de origen",
+            "pais de residencia actual / country of residence",
+            "afiliacion - instituto o universidad a la que pertenece actualmente / affiliation-institution",
+            "tipo de afiliacion",
+            "area tematica field of knowledge",
+            "disciplina cientifica",
+            "seleccione solo un curso de su interes",
+        ],
+        "ejemplo": ["Juan", "Perez", "juan@mail.com", "2000-01-01",
+                    "male", "Bolivia", "Bolivia", "Universidad X", 
+                    "public", "Ciencias", "Matemática", "Curso 1"]
     },
     "ponentes": {
-        "columnas": ["nombre", "apellido", "email", "documento", "pais_origen",
-                     "fecha_nac", "genero", "pais_residencia", "afiliacion_u",
-                     "tipo_afiliacion", "area_tematica", "disciplina_cientifica"],
-        "ejemplo": ["Ana", "Gomez", "ana@mail.com", "987654", "Bolivia",
-                    "1990-05-05", "female", "Bolivia", "Universidad Y", "private", 
-                    "Ciencias", "Física"]
+        "columnas": [
+            "nombre / first name",
+            "apellido / surname",
+            "direccion de correo electronico",
+            "fecha de nacimiento",
+            "genero / gender",
+            "pais de origen",
+            "pais de residencia actual / country of residence",
+            "afiliacion - instituto o universidad a la que pertenece actualmente / affiliation-institution",
+            "tipo de afiliacion",
+            "area tematica field of knowledge",
+            "disciplina cientifica",
+        ],
+        "ejemplo": ["Ana", "Gomez", "ana@mail.com", "1990-05-05",
+            "female", "Bolivia", "Bolivia", "Universidad Y", 
+            "private", "Ciencias", "Física"]
     },
     "cursos": {
-        "columnas": ["nombre", "descripcion", "modalidad"],
+        "columnas": ["nombre de curso / course name", "descripcion / description", "modalidad / modality"],
         "ejemplo": ["Curso 1", "Descripción ejemplo", "Presencial"]
     }
 }
@@ -65,11 +86,28 @@ def remove_temp_file(path):
             os.remove(path)
     except Exception:
         pass
+
 def leer_y_normalizar(file, tipo):
-    """
-    Lee un FileStorage (CSV/XLSX), normaliza cabeceras y valores críticos.
-    Devuelve (df, errores_list).
-    """
+    DB_COLUMN_MAPPING = {
+        "nombre / first name": "nombre",
+        "apellido / surname": "apellido",
+        "direccion de correo electronico": "email",
+        "fecha de nacimiento": "fecha_nac",
+        "genero / gender": "genero",
+        "pais de origen": "pais_origen",
+        "pais de residencia actual / country of residence": "pais_residencia",
+        "afiliacion - instituto o universidad a la que pertenece actualmente / affiliation-institution": "afiliacion_u",
+        "tipo de afiliacion": "tipo_afiliacion",
+        "area tematica field of knowledge": "area_tematica",
+        "disciplina cientifica": "disciplina_cientifica",
+        "seleccione solo un curso de su interes": "curso_interes",
+        "nombre de curso / course name": "nombre_curso",
+        "descripcion / description": "descripcion",
+        "modalidad / modality": "modalidad",
+    }
+
+
+
     if not file or not getattr(file, "filename", None):
         return None, ["No se envió archivo"]
 
@@ -102,39 +140,84 @@ def leer_y_normalizar(file, tipo):
     except Exception as e:
         return None, [f"Error al leer archivo: {e}"]
 
-    # Normalizar cabeceras: strip, lower, quitar tildes
-    df.columns = df.columns.str.strip().str.lower().map(unidecode.unidecode)
+    # Normalizar cabeceras: strip, lower, quitar tildes y eliminar paréntesis
+    df.columns = (
+        df.columns.str.strip()
+        .str.lower()
+        .map(unidecode.unidecode)
+        .str.replace(r'\(.*\)', '', regex=True)
+        .str.replace(':', '', regex=False)
+        .str.replace(')', '', regex=False)
+        .str.replace('(', '', regex=False)
+        .str.replace(r'\s+', ' ', regex=True)
+        .str.strip()
+    )
+    # Usar flash con JSON
+    cols_list = df.columns.tolist()
+    flash(json.dumps(cols_list))
 
-    # Forzar columnas críticas a string (evita pérdida de ceros)
-    for c in ("documento", "email"):
-        if c in df.columns:
-            df[c] = df[c].astype(str).str.strip()
+    # Renombrar las columnas usando el mapeo
+    df.rename(columns=DB_COLUMN_MAPPING, inplace=True, errors='ignore')
 
     # Trim general de strings
     df = df.applymap(lambda v: v.strip() if isinstance(v, str) else v)
 
-    # Reemplazar valores NaN por None para evitar problemas al serializar
-    df = df.where(pd.notnull(df), None)
-
     # Validar columnas obligatorias
-    required = PLANTILLAS[tipo]["columnas"]
-    faltantes = [c for c in required if c not in df.columns]
+    required_db_names = [DB_COLUMN_MAPPING.get(c, c) for c in PLANTILLAS[tipo]["columnas"]]
+    required_db_names = [unidecode.unidecode(col).lower().strip() for col in required_db_names]
+    df_cols = [unidecode.unidecode(col).lower().strip() for col in df.columns]
+    #flash(json.dumps(df_cols))
+    #flash(json.dumps(required_db_names))
+    #flash(json.dumps(DB_COLUMN_MAPPING))
+    #flash(json.dumps(PLANTILLAS[tipo]["columnas"]))
+
+    faltantes = [c for c in required_db_names if c not in df_cols]
+
     if faltantes:
         return None, [f"Faltan columnas: {', '.join(faltantes)}"]
 
-    # Normalizaciones específicas
-    if "fecha_nac" in df.columns:
-        # intenta parsear con dayfirst=True (dd/mm/yyyy)
-        df["fecha_nac"] = pd.to_datetime(df["fecha_nac"], errors="coerce", dayfirst=True)
+    # ---- Normalizaciones según tipo ----
+    if tipo in ("estudiantes", "ponentes"):
+        # Capitalizar nombre y apellido
+        if "nombre" in df.columns:
+            df["nombre"] = df["nombre"].astype(str).str.strip().str.title()
 
-    if "genero" in df.columns:
-        df["genero"] = df["genero"].astype(str).str.strip().str.lower().map({
-            "masculino": "male", "m": "male", "male": "male",
-            "femenino": "female", "f": "female", "female": "female"
-        }).where(df["genero"].notnull(), None)
+        if "apellido" in df.columns:
+            df["apellido"] = df["apellido"].astype(str).str.strip().str.title()
 
-    if "email" in df.columns:
-        df["email"] = df["email"].astype(str).str.strip().str.lower()
+        #if "documento" in df.columns:
+        #    df["documento"] = df["documento"].astype(str).str.strip()
+        if "email" in df.columns:
+            df["email"] = df["email"].astype(str).str.strip().str.lower()
+        if "fecha_nac" in df.columns:
+            df["fecha_nac"] = pd.to_datetime(df["fecha_nac"], errors="coerce", dayfirst=True)
+            df["fecha_nac"] = df["fecha_nac"].dt.strftime("%Y-%m-%d")
+        if "genero" in df.columns:
+            df["genero"] = df["genero"].astype(str).str.strip().str.lower().map({
+                "masculino": "male", "m": "male", "male": "male", "masculino (male)":"male",
+                "femenino": "female", "f": "female", "female": "female","femenino (female)":"female"
+            }).where(df["genero"].notnull(), None)
+        if "tipo_afiliacion" in df.columns:
+            df["tipo_afiliacion"] = df["tipo_afiliacion"].astype(str).str.strip().str.lower().map({
+                "publica": "public", "publico": "public", "público":"public", "pública":"public",
+                "privada": "private", "privado": "private"
+            }).where(df["tipo_afiliacion"].notnull(), None)
+        if "curso_interes" in df.columns:
+            df[["curso_es", "curso_en"]] = df["curso_interes"].str.split("/", n=1, expand=True)
+            df["curso_es"] = df["curso_es"].str.strip()
+            df["curso_en"] = (
+                df["curso_en"]
+                .fillna("")  
+                .str.strip()
+                .str.replace(r"\)$", "", regex=True)
+            )
+
+            df["curso_interes"] = df["curso_es"]
+
+    elif tipo == "cursos":
+        if "modalidad" in df.columns:
+            df["modalidad"] = df["modalidad"].astype(str).str.strip().str.lower()
+            # ejemplo: "virtual", "presencial" → "Virtual", "Presencial"
 
     return df, []
 
@@ -196,9 +279,11 @@ def index(tipo):
             try:
                 df = load_temp_df(tmp_path)
 
-                for col in df.select_dtypes(include=["datetime64[ns]"]).columns:
-                    df[col] = df[col].dt.strftime("%Y-%m-%d")
-                    df[col] = df[col].replace("NaT", None)
+                for col in df.columns:
+                    if "fecha" in col:
+                        df[col] = pd.to_datetime(df[col], errors="coerce")
+                        df[col] = df[col].dt.strftime("%Y-%m-%d")
+                        df[col] = df[col].replace("NaT", None)
                 # pasar a lista de dicts al controlador
                 data = df.to_dict("records")
                 resultado = func_guardar(data)
@@ -212,7 +297,7 @@ def index(tipo):
                 }
                 # limpiar temp
                 remove_temp_file(tmp_path)
-                session.pop("df_data", None)
+                session.pop("tmp_df_path", None)
 
                 if fallidos:
                     flash(f"{len(fallidos)} registros fallidos.", "warning")
@@ -227,6 +312,8 @@ def index(tipo):
                 flash(f"Error al guardar {titulo}: {e}", "danger")
                 return redirect(request.url)
     
+    #flash(exitosos)
+    #flash(fallidos)
     return render_template(
         "readxls/readxls.html",
         titulo=titulo,
@@ -239,6 +326,27 @@ def index(tipo):
     )
 
 # --- DESCARGA DE EXCELS ---
+
+# Mapeo de nombres de la base de datos a los de la plantilla
+TEMPLATE_COLUMN_MAPPING = {
+    "usuario_nombre": "nombre / first name",
+    "usuario_apellido": "apellido / surname",
+    "usuario_email": "direccion de correo electronico",
+    "usuario_fecha_nac": "fecha de nacimiento",
+    "usuario_genero": "genero / gender",
+    "usuario_pais_origen": "pais de origen",
+    "usuario_pais_residencia": "pais de residencia actual / country of residence",
+    "usuario_afiliacion_u": "afiliacion - instituto o universidad a la que pertenece actualmente / affiliation-institution",
+    "usuario_tipo_afiliacion": "tipo de afiliacion",
+    "usuario_area_tematica": "area tematica field of knowledge",
+    "usuario_disciplina_cientifica": "disciplina cientifica",
+    "usuario_curso_interes": "seleccione solo un curso de su interes",
+    "id_inscripcion": "id_inscripcion",
+    "id_usuario": "id_usuario",
+    "qr_path": "qr_path",
+    "error" : "error",
+}
+
 def send_df_excel(df, filename):
     output = io.BytesIO()
     with pd.ExcelWriter(output, engine="openpyxl") as writer:
@@ -259,7 +367,21 @@ def descargar_exitosos(tipo):
         flash("No hay registros exitosos para descargar.", "info")
         return redirect(url_for("rxls.index", tipo=tipo))
 
-    df = pd.json_normalize(exitosos)
+    # Normalizar los datos a DataFrame
+    #df = pd.json_normalize(exitosos)
+    df = pd.json_normalize(exitosos, sep="_")  # 'usuario.nombre' → 'usuario_nombre'
+    #df = pd.json_normalize(exitosos, record_path=None, meta=None)
+    
+    # Renombrar las columnas a los nombres de la plantilla
+    df.rename(columns=TEMPLATE_COLUMN_MAPPING, inplace=True, errors='ignore')
+
+    # Reordenar las columnas para que coincidan con la plantilla
+    required_cols = PLANTILLAS[tipo]["columnas"]
+    extra_cols = ["id_inscripcion", "id_usuario", "qr_path"]
+    all_cols = required_cols + [c for c in extra_cols if c not in required_cols]
+    df = df[[c for c in all_cols if c in df.columns]]
+    df = df.reindex(columns=all_cols)
+
     return send_df_excel(df, f"{tipo}_exitosos.xlsx")
 
 @rxls_bp.route("/descargar/fallidos/<tipo>")
@@ -275,7 +397,19 @@ def descargar_fallidos(tipo):
         flash("No hay registros fallidos para descargar.", "info")
         return redirect(url_for("rxls.index", tipo=tipo))
 
+    # Normalizar los datos a DataFrame
     df = pd.json_normalize(fallidos)
+    df = pd.json_normalize(fallidos, sep="_")
+    # Renombrar las columnas a los nombres de la plantilla
+    df.rename(columns=TEMPLATE_COLUMN_MAPPING, inplace=True, errors='ignore')
+
+    # Reordenar las columnas para que coincidan con la plantilla
+    required_cols = PLANTILLAS[tipo]["columnas"]
+    extra_cols = ["error"]
+    all_cols = required_cols + [c for c in extra_cols if c not in required_cols]
+    df = df[[c for c in all_cols if c in df.columns]]
+    df = df.reindex(columns=all_cols)
+
     return send_df_excel(df, f"{tipo}_fallidos.xlsx")
 
 @rxls_bp.route("/descargar/plantilla/<tipo>")
