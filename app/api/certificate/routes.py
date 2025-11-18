@@ -716,11 +716,6 @@ The course comprised a total of 30 academic hours..."""
         pdf.set_xy(x, y+30)
         pdf.multi_cell(w=300, h=10, txt="TYAN-TWAS", align="C")
 
-        pdf.set_font("Poppins_Light", "", 10)
-        pdf.set_xy(500, 470)
-        # pdf.multi_cell(200, 10, "La Paz - Bolivia, Octubre de 2025")
-        pdf.multi_cell(200, 10, "Rio de Janeiro - Brazil, November 2025")
-
         # Firmas digitales
         pdf.image(os.path.join(base_dir, "Input", "firma_max_paoli_sin_fondo.png"), 220, 350, w=120*0.8, h=89*0.8)
         pdf.image(os.path.join(base_dir, "Input", "massih_firma.png"), 525, 370, w=105, h=37)
@@ -738,7 +733,7 @@ The course comprised a total of 30 academic hours..."""
         qr = segno.make(qr_url)
         qr.save(qr_path, scale=5)
 
-        pdf.image(qr_path, 740, 500, w=80, h=80)
+        #pdf.image(qr_path, 740, 500, w=80, h=80)
 
         # =============================
         #   Guardar PDF
@@ -760,7 +755,7 @@ The course comprised a total of 30 academic hours..."""
             msg = EmailMessage()
             msg["From"] = f"{safe_sender_name} <{mail_address}>"
             msg["To"] = email
-            msg["bcc"] = "andresguti2003@gmail.com"
+            msg["bcc"] = "lktejeda@umsa.bo"
             msg["Subject"] = asunto
             msg.set_content(mensaje)
 
@@ -1097,7 +1092,7 @@ def enviar_certificados_todos(rol_boton):
                     msg = EmailMessage()
                     msg["From"] = f"{safe_sender_name} <{mail_address}>"
                     msg["To"] = email
-                    msg["bcc"] = "andresguti2003@gmail.com"
+                    msg["bcc"] = "lktejeda@umsa.bo"
                     msg["Subject"] = asunto
                     msg.set_content(mensaje)
 
