@@ -760,7 +760,7 @@ The course comprised a total of 30 academic hours..."""
             msg = EmailMessage()
             msg["From"] = f"{safe_sender_name} <{mail_address}>"
             msg["To"] = email
-            msg["bcc"] = "andresguti2003@gmail.com"
+            msg["bcc"] = "lktejeda@umsa.bo"
             msg["Subject"] = asunto
             msg.set_content(mensaje)
 
@@ -1097,7 +1097,7 @@ def enviar_certificados_todos(rol_boton):
                     msg = EmailMessage()
                     msg["From"] = f"{safe_sender_name} <{mail_address}>"
                     msg["To"] = email
-                    msg["bcc"] = "andresguti2003@gmail.com"
+                    msg["bcc"] = "lktejeda@umsa.bo"
                     msg["Subject"] = asunto
                     msg.set_content(mensaje)
 
